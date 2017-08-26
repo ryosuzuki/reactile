@@ -28,33 +28,39 @@ void setup() {
 }
 
 void loop() {
-  turnOn(15, 38);
-  delay(100);
-  standby();
-  delay(2000);
-//
-//  for (int i = 1; i < 10; i++) {
-//    turnOn(15, 39);
-//    turnOff(15, 38);
-//    delay(10);
-//    turnOff(15, 39);
-//    turnOn(15, 38);
-//    delay(10*i);
-//  }
-//
-//  turnOn(15, 38);
-//  delay(100);
-//  standby();
-//  delay(2000);
-//
-//  for (int i = 1; i < 10; i++) {
-//    turnOn(15, 38);
-//    turnOff(15, 39);
-//    delay(10);
-//    turnOff(15, 38);
-//    turnOn(15, 39);
-//    delay(10*i);
-//  }
+
+  for (int n=39; n>0; n--) {
+    turnOn(15, n);
+    delay(10);
+    standby();
+    delay(10);
+    for (int i=1; i<10; i++) {
+      turnOn(15, n);
+      turnOff(15, n-1);
+      delay(1);
+      turnOff(15, n);
+      turnOn(15, n-1);
+      delay(1*i);
+    }
+  }
+
+  for (int n=0; n<40; n++) {
+    turnOn(15, n);
+    delay(10);
+    standby();
+    delay(10);
+    for (int i=1; i<10; i++) {
+      turnOn(15, n);
+      turnOff(15, n+1);
+      delay(1);
+      turnOff(15, n);
+      turnOn(15, n+1);
+      delay(1*i);
+    }
+  }
+
+  delay(10000);
+
 
   
 }
