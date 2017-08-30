@@ -27,10 +27,9 @@ const detect = (socketio) => {
     camera.read(function(err, im) {
       if (err) throw err;
 
-      socket.emit('frame', {
-        buffer: im.toBuffer(),
-        markers: []
-      })
+      let buffer1 = im.toBuffer()
+      socket.emit('buffer', buffer1)
+      socket.emit('markers', [{ x: 10, y: 10 }])
       return
 
       let result
@@ -50,12 +49,9 @@ const detect = (socketio) => {
       result = detectMarkers(im)
       im = result.im
       let markers = result.markers
-
-      let data = {
-        buffer: im.toBuffer(),
-        markers: markers
-      }
-      socket.emit('frame', data)
+      let buffer = im.toBuffer()
+      socket.emit('buffer', buffer)
+      socket.emit('markers', markers)
     })
   }, camInterval);
 }
