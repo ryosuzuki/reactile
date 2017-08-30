@@ -26,6 +26,15 @@ const detect = (socketio) => {
   setInterval(function() {
     camera.read(function(err, im) {
       if (err) throw err;
+
+      /*
+      socket.emit('frame', {
+        buffer: im.toBuffer(),
+        markers: []
+      })
+      return
+      */
+
       let result
       result = detectRect(im)
       let rect = result.rect
@@ -98,8 +107,8 @@ const detectMarkers = (im) => {
       let red = [0, 0, 255]
       im.ellipse(pos.x, pos.y, 10, 10, red)
 
-      let x = Math.floor((pos.x - xMin) / xPixel)
-      let y = Math.floor((pos.y - yMin) / yPixel)
+      let x = 15 - Math.floor((pos.x - xMin) / xPixel)
+      let y = 39 - Math.floor((pos.y - yMin) / yPixel)
       markers.push({ x: x, y: y })
     }
   }

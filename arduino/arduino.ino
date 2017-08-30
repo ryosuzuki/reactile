@@ -28,7 +28,27 @@ void setup() {
 }
 
 void loop() {
+  String json = "";
+  while (Serial.available() > 0) {
+    json += (char) Serial.read();
+    delay(5);
+  }
 
+  if (json != "") {
+    Serial.println("received");
+    StaticJsonBuffer<200> jsonBuffer;
+    JsonObject &root = jsonBuffer.parseObject(json);
+
+    int p = root["p"];
+    int n = root["n"];
+    Serial.println(p);
+    Serial.println(n);
+    turnOn(p, n);
+    delay(200);
+    standby();
+  }
+
+  /*
   for (int n=39; n>0; n--) {
     turnOn(15, n);
     delay(10);
@@ -60,9 +80,7 @@ void loop() {
   }
 
   delay(10000);
-
-
-  
+  */
 }
 
 

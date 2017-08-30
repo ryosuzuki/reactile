@@ -6,12 +6,15 @@ const img = new Image();
 context.fillStyle = '#333';
 context.fillText('Loading...', canvas.width/2-30, canvas.height/3);
 
-
-
 $('#button').click((event) => {
   if (window.markers.length === 0) return
-  let current = markers[0]
-  let data = JSON.stringify(current)
+  // let current = markers[0]
+  let val = $('input').val()
+  let x = parseInt(val.split(',')[0])
+  let y = parseInt(val.split(',')[1])
+  console.log(x, y)
+  if (isNaN(x) || isNaN(y)) return
+  let data = JSON.stringify({ x: x, y: y })
   $.ajax({
     type: 'POST',
     url: '/move',
