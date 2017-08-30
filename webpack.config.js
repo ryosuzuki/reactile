@@ -49,9 +49,8 @@ module.exports = {
     inline: true,
     port: 4000,
     proxy: {
-      '^/*': {
-        target: 'http://localhost:8080/',
-        secure: false
+      '**': {
+        target: 'http://localhost:8080'
       }
     }
   },

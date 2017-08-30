@@ -27,8 +27,9 @@ app.get('/', (req, res) => {
 app.post('/move', (req, res) => {
   console.log(req.body)
   let data = { p: req.body.x, n: req.body.y }
-  port.write(JSON.stringify(data))
-  res.send('ok')
+  // port.write(JSON.stringify(data))
+  res.contentType('json')
+  res.send({ result: 'ok' })
 })
 
 const server = http.Server(app)

@@ -7,22 +7,24 @@ context.fillStyle = '#333';
 context.fillText('Loading...', canvas.width/2-30, canvas.height/3);
 
 $('#button').click((event) => {
-  alert('hoge')
-
-  if (window.markers.length === 0) return
-  // let current = markers[0]
-  let val = $('input').val()
-  let x = parseInt(val.split(',')[0])
-  let y = parseInt(val.split(',')[1])
-  console.log(x, y)
-  if (isNaN(x) || isNaN(y)) return
+  // if (window.markers.length === 0) return
+  // let val = $('input').val()
+  // let x = parseInt(val.split(',')[0])
+  // let y = parseInt(val.split(',')[1])
+  // console.log(x, y)
+  // if (isNaN(x) || isNaN(y)) return
+  let x = 10
+  let y = 10
   let data = JSON.stringify({ x: x, y: y })
   $.ajax({
     type: 'POST',
     url: '/move',
     dataType: 'JSON',
     contentType: 'application/json',
-    data: data
+    data: data,
+    success: (data) => {
+      console.log(data)
+    }
   })
 })
 
