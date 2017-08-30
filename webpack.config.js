@@ -47,7 +47,13 @@ module.exports = {
     compress: true,
     hot: true,
     inline: true,
-    port: 8080
+    port: 4000,
+    proxy: {
+      '^/*': {
+        target: 'http://localhost:8080/',
+        secure: false
+      }
+    }
   },
   node: {
     fs: 'empty',

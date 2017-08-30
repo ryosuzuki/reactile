@@ -27,13 +27,11 @@ const detect = (socketio) => {
     camera.read(function(err, im) {
       if (err) throw err;
 
-      /*
       socket.emit('frame', {
         buffer: im.toBuffer(),
         markers: []
       })
       return
-      */
 
       let result
       result = detectRect(im)
