@@ -16,18 +16,7 @@ class Grid extends Component {
         let x = (marker.x + 1) % 16
         let y = marker.y
         let data = JSON.stringify({ x: x, y: y })
-        $.ajax({
-          type: 'POST',
-          url: '/move',
-          dataType: 'JSON',
-          contentType: 'application/json',
-          data: data,
-          success: (data) => {
-            console.log(data)
-            this.props.app.updateState({ markers: [{ x: x, y: y }] })
-            resolve()
-          }
-        })
+        this.props.app.socket.emit('move', data)
       })
     }
 
@@ -38,7 +27,7 @@ class Grid extends Component {
       // }
     }
 
-    // run()
+    run()
   }
 
   render() {
@@ -54,7 +43,7 @@ class Grid extends Component {
     const margin = 15
     return (
       <div>
-        <button onClick={ this.move() }>Move</button>
+        <button onClick={ this.move.bind(this) }>Move</button>
         { this.props.markers.map((marker, index) => {
           return (
             <div className="marker" key={index} style={{
