@@ -26,7 +26,7 @@ module.exports = {
         loader: 'babel-loader',
         exclude: /node_modules/,
         options: {
-          presets: ['react', 'es2015', 'stage-3']
+          presets: ['react', 'es2015', 'stage-3', 'stage-0']
         }
       }, {
         test: /\.css$/,
@@ -47,10 +47,10 @@ module.exports = {
     compress: true,
     hot: true,
     inline: true,
-    port: 4000,
+    port: 8080,
     proxy: {
       '**': {
-        target: 'http://localhost:8080'
+        target: 'http://localhost:4000'
       }
     }
   },

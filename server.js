@@ -25,16 +25,18 @@ app.get('/', (req, res) => {
 })
 
 app.post('/move', (req, res) => {
-  console.log(req.body)
   let data = { p: req.body.x, n: req.body.y }
   // port.write(JSON.stringify(data))
-  res.contentType('json')
-  res.send({ result: 'ok' })
+  setTimeout(() => {
+    console.log(req.body)
+    res.contentType('json')
+    res.send({ result: 'ok' })
+  }, 1000)
 })
 
 const server = http.Server(app)
-server.listen(8080, () => {
-  console.log('listening 8080')
+server.listen(4000, () => {
+  console.log('listening 4000')
 })
 
 const io = socketio(server)
