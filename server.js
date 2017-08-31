@@ -18,7 +18,7 @@ server.listen(4000, () => {
 
 const io = socketio(server)
 const Track = require('./track')
-const track = new Track()
-io.on('connection', track.start.bind(track))
+// const track = new Track()
+// io.on('connection', track.start.bind(track))
 
 

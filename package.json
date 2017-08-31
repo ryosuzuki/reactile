@@ -22,10 +22,12 @@
   "dependencies": {
     "async": "^2.5.0",
     "body-parser": "^1.17.2",
+    "createjs": "github:ryosuzuki/createjs",
     "express": "^4.15.3",
     "glob": "^7.1.2",
     "jquery": "^3.2.1",
     "lodash": "^4.17.4",
+    "munkres-js": "^1.2.2",
     "opencv": "^6.0.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",

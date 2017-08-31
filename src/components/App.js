@@ -2,9 +2,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from '../redux/actions'
-// import 'yuki-createjs'
+import 'createjs'
 
 import Grid from './Grid'
+import Shape from './Shape'
+
 const socket = io.connect('http://localhost:8080/')
 
 class App extends Component {
@@ -12,17 +14,38 @@ class App extends Component {
     super(props)
     window.app = this
 
+    this.pSize = 40 // 16
+    this.nSize = 40 // 40
+    this.offset = 20
+
     this.state = {
       width: 1080,
       height: 720
     }
-
+    this.update = true
     this.socket = socket
-    this.socket.on('markers', this.update.bind(this))
+    // this.socket.on('markers', this.update.bind(this))
   }
 
   componentDidMount() {
+    this.stage = new createjs.Stage(this.refs.canvas)
+    this.stage.enableMouseOver(10)
     this.resize()
+    createjs.Touch.enable(this.stage)
+    createjs.Ticker.on('tick', this.tick.bind(this))
+
+    this.grid = new Grid()
+    this.grid.render()
+
+    this.shape = new Shape()
+    this.shape.render()
+  }
+
+  tick(event) {
+    if (this.update || this.animate) {
+      this.update = false
+      this.stage.update(event)
+    }
   }
 
   update(markers) {
@@ -30,19 +53,8 @@ class App extends Component {
   }
 
   resize() {
-    let width = window.innerWidth / 2
-    let height = window.innerHeight
-
-    if (width/height > 16/9) {
-      width = height * 16 / 9
-    } else {
-      height = width * 9 / 16
-    }
-
-    this.setState({
-      width: width,
-      height: height
-    })
+    this.stage.canvas.width = window.innerWidth
+    this.stage.canvas.height = window.innerHeight
   }
 
   updateState(state) {
@@ -50,13 +62,21 @@ class App extends Component {
     return result.state
   }
 
+  random() {
+    return Math.floor(Math.random()*40) * this.offset
+  }
+
   render() {
     return (
       <div className="ui grid">
+        {/*
         <div className="eight wide column">
           <canvas id="canvas-video" width={ this.state.width } height={ this.state.height }></canvas>
         </div>
-        <div className="eight wide column">
+        */}
+        <div className="sixteen wide column">
+          <canvas ref="canvas" id="canvas" width="1000" height="600"></canvas>
+          {/*
           <Grid
             app={ this }
             markers={ this.props.markers }
@@ -64,6 +84,7 @@ class App extends Component {
           <pre id="markers"></pre>
           <input type="text" id="input"></input>
           <button id="button">Move</button>
+          */}
         </div>
       </div>
     )
@@ -73,6 +94,23 @@ class App extends Component {
 window.addEventListener('resize', () => {
   window.app.resize()
 }, false)
+
+/*
+resize() {
+  let width = window.innerWidth / 2
+  let height = window.innerHeight
+
+  if (width/height > 16/9) {
+    width = height * 16 / 9
+  } else {
+    height = width * 9 / 16
+  }
+
+  this.setState({
+    width: width,
+    height: height
+  })
+}
 
 socket.on('buffer', function (buffer) {
   const canvas = document.getElementById('canvas-video')
@@ -86,6 +124,7 @@ socket.on('buffer', function (buffer) {
   }
   img.src = 'data:image/png;base64,' + base64String
 })
+*/
 
 function mapStateToProps(state) {
   return state

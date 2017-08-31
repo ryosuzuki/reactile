@@ -1,78 +1,36 @@
 import React, { Component } from 'react'
-import async from 'async'
-import 'babel-polyfill'
+import 'createjs'
 
-class Grid extends Component {
+class Grid extends createjs.Shape {
+  constructor() {
+    super()
+    this.app = app
+    window.grid = this
 
-  componentDidMount() {
+    this.init()
   }
 
-  move() {
-    if (this.props.markers.length < 1) return
-
-    const command = () => {
-      return new Promise((resolve) => {
-        let marker = this.props.markers[0]
-        let x = (marker.x + 1) % 16
-        let y = marker.y
-        let data = JSON.stringify({ x: x, y: y })
-        this.props.app.socket.emit('move', data)
-      })
+  init() {
+    this.line = new createjs.Shape()
+    this.line.graphics.setStrokeStyle(1)
+    this.line.graphics.beginStroke('#000')
+    for (let i = 0; i < this.app.pSize; i++) {
+      let pos = this.app.offset * (i + 1)
+      this.line.graphics.moveTo(pos, 0)
+      this.line.graphics.lineTo(pos, 1000)
     }
 
-    const run = async () => {
-      await command()
-      // for (let i = 0; i < 10; i++) {
-      //   await command()
-      // }
+    for (let i = 0; i < this.app.nSize; i++) {
+      let pos = this.app.offset * (i + 1)
+      this.line.graphics.moveTo(0, pos)
+      this.line.graphics.lineTo(1000, pos)
     }
-
-    run()
+    this.line.graphics.endStroke()
   }
 
   render() {
-    let P = []
-    let N = []
-    for (let i = 0; i < 16; i++) {
-      P.push(i)
-    }
-    for (let i = 0; i < 40; i++) {
-      N.push(i)
-    }
-    const unit = 20
-    const margin = 15
-    return (
-      <div>
-        <button onClick={ this.move.bind(this) }>Move</button>
-        { this.props.markers.map((marker, index) => {
-          return (
-            <div className="marker" key={index} style={{
-              'left' : `${unit * marker.x - margin}px`,
-              'top'  : `${unit * marker.y - margin}px`,
-              // 'transform': `rotate(${robot.rotate}deg)`
-            }}>
-              { marker.id }
-            </div>
-          )
-        }) }
-        <table id="grid" className="">
-          <tbody>
-            { N.map((n) => {
-              return (
-                <tr key={ n }>
-                  { P.map((p) => {
-                    return (
-                      <td key={ p }>
-                      </td>
-                    )
-                  }) }
-                </tr>
-              )
-            }) }
-          </tbody>
-        </table>
-      </div>
-    )
+    this.app.stage.addChild(this.line)
+    this.app.update = true
   }
 
 }
