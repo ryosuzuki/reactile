@@ -23,7 +23,7 @@ class Track {
 
     this.index = 0
     this.rect = []
-    this.markers = [{ x: 10, y: 10 }]
+    this.markers = []
 
     this.redMin = [170, 128, 70]
     this.redMax = [180, 255, 255]
@@ -41,9 +41,39 @@ class Track {
   start(socket) {
     this.socket = socket
     this.connect()
-    this.socket.on('move', this.move)
+    this.socket.on('markers:move', this.testMove.bind(this))
 
-    this.run()
+    // this.run()
+    this.testRun()
+  }
+
+  testRun() {
+    this.markers = []
+    for (let i = 0; i < 20; i++) {
+      this.markers.push({
+        x: this.random(),
+        y: this.random()
+      })
+    }
+
+    setInterval(() => {
+      this.socket.emit('markers:update', this.markers)
+    }, this.camInterval * 10)
+  }
+
+  testMove(positions) {
+    setTimeout(() => {
+      console.log(positions)
+      this.markers = positions
+    }, 100)
+  }
+
+  random() {
+    return Math.floor(Math.random()*40)
+  }
+
+  move(data) {
+    // this.port.write(JSON.stringify(data))
   }
 
   run() {
@@ -62,15 +92,7 @@ class Track {
     }, this.camInterval)
   }
 
-  move(data) {
-    // this.port.write(JSON.stringify(data))
-    //
-    // For Debugging
-    setTimeout(() => {
-      console.log(data)
-      this.markers = [JSON.parse(data)]
-    }, 100)
-  }
+
 }
 
 module.exports = Track

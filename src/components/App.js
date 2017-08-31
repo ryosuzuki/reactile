@@ -18,13 +18,42 @@ class App extends Component {
     this.nSize = 40 // 40
     this.offset = 20
 
+    this.markers = []
+
     this.state = {
       width: 1080,
       height: 720
     }
     this.update = true
     this.socket = socket
-    // this.socket.on('markers', this.update.bind(this))
+    this.socket.on('markers:update', this.updateMarkers.bind(this))
+  }
+
+  sendCommand(positions) {
+    this.socket.emit('markers:move', positions)
+  }
+
+  updateMarkers(positions) {
+    if (this.markers.length === 0) {
+      for (let pos of positions) {
+        this.marker = new createjs.Shape()
+        this.marker.graphics.beginFill('#f00')
+        this.marker.graphics.drawCircle(0, 0, 10)
+        this.marker.x = pos.x * this.offset
+        this.marker.y = pos.y * this.offset
+        this.stage.addChild(this.marker)
+        this.markers.push(this.marker)
+      }
+    }
+
+    for (let i = 0; i < this.markers.length; i++) {
+      let marker = this.markers[i]
+      let pos = positions[i]
+      marker.x = pos.x * this.offset
+      marker.y = pos.y * this.offset
+    }
+    this.update = true
+    this.updateState({ positions: positions })
   }
 
   componentDidMount() {
@@ -48,10 +77,6 @@ class App extends Component {
     }
   }
 
-  update(markers) {
-    this.updateState({ markers: markers })
-  }
-
   resize() {
     this.stage.canvas.width = window.innerWidth
     this.stage.canvas.height = window.innerHeight
@@ -63,7 +88,7 @@ class App extends Component {
   }
 
   random() {
-    return Math.floor(Math.random()*40) * this.offset
+    return Math.floor(Math.random()*40)
   }
 
   render() {
@@ -95,23 +120,20 @@ window.addEventListener('resize', () => {
   window.app.resize()
 }, false)
 
-/*
-resize() {
-  let width = window.innerWidth / 2
-  let height = window.innerHeight
-
-  if (width/height > 16/9) {
-    width = height * 16 / 9
-  } else {
-    height = width * 9 / 16
-  }
-
-  this.setState({
-    width: width,
-    height: height
-  })
+function mapStateToProps(state) {
+  return state
 }
 
+function mapDispatchToProps(dispatch) {
+  return {
+    actions: bindActionCreators(actions, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)
+
+
+/*
 socket.on('buffer', function (buffer) {
   const canvas = document.getElementById('canvas-video')
   const context = canvas.getContext('2d')
@@ -125,15 +147,3 @@ socket.on('buffer', function (buffer) {
   img.src = 'data:image/png;base64,' + base64String
 })
 */
-
-function mapStateToProps(state) {
-  return state
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    actions: bindActionCreators(actions, dispatch)
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(App)

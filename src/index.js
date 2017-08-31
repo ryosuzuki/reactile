@@ -9,7 +9,7 @@ import { Provider } from 'react-redux'
 
 
 let initialStore = {
-  markers: []
+  positions: [],
 }
 
 let store = configureStore(initialStore)
