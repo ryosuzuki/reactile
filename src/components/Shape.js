@@ -9,17 +9,32 @@ class Shape extends createjs.Shape {
     this.targets = []
     window.shape = this
 
-    this.init()
+    // this.init()
   }
 
-  init() {
-    this.targets = []
-    for (let i = 0; i < 20; i++) {
-      this.targets.push({
-        x: this.app.random(),
-        y: this.app.random()
-      })
+  init(contours) {
+    this.target = []
+    for (let contour of contours) {
+      let target = {
+        x: contour[0] / this.app.offset,
+        y: contour[1] / this.app.offset
+      }
+      this.targets.push(target)
     }
+  }
+
+  render() {
+    for (let target of this.targets) {
+      this.circle = new createjs.Shape()
+      this.circle.graphics.beginFill('#00f')
+      this.circle.graphics.drawCircle(0, 0, 10)
+      this.circle.x = target.x * this.app.offset
+      this.circle.y = target.y * this.app.offset
+      this.app.stage.addChild(this.circle)
+    }
+    this.app.update = true
+
+    // this.calculate()
   }
 
   calculate() {
@@ -71,20 +86,6 @@ class Shape extends createjs.Shape {
     }
 
     this.app.sendCommand(nextPositions)
-  }
-
-  render() {
-    for (let target of this.targets) {
-      this.circle = new createjs.Shape()
-      this.circle.graphics.beginFill('#00f')
-      this.circle.graphics.drawCircle(0, 0, 10)
-      this.circle.x = target.x * this.app.offset
-      this.circle.y = target.y * this.app.offset
-      this.app.stage.addChild(this.circle)
-    }
-    this.app.update = true
-
-    this.calculate()
   }
 
   drawLine() {

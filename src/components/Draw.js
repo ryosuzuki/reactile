@@ -1,5 +1,9 @@
 import ShapeDetector from 'shape-detector'
+import { getPoints, toPath } from 'svg-shapes'
+import parse from 'parse-svg-path'
+import contours from 'svg-path-contours'
 
+import Shape from './Shape'
 
 class Draw {
   constructor() {
@@ -79,15 +83,47 @@ class Draw {
           y: (maxY + minY) / 2
         }
         this.shape.graphics.drawCircle(center.x, center.y, radius)
+
+        this.svg = getPoints('circle', {
+          cx: center.x,
+          cy: center.y,
+          r: radius
+        })
+
         break
 
       case 'square':
         let width = maxX - minX
         let height = maxY - minY
         this.shape.graphics.drawRect(minX, minY, width, height)
+
+        this.svg = getPoints('rect', {
+          x: minX,
+          y: minY,
+          width: width,
+          height: height
+        })
+
+        break
+
+      case 'triangle':
+
+
+        break
+
       default:
         break
     }
+
+    this.pathData = toPath(this.svg)
+    this.path = parse(this.pathData)
+    this.contours = contours(this.path)[0]
+
+    console.log(this.contours)
+
+    this.target = new Shape()
+    this.target.init(this.contours)
+    this.target.render()
 
     this.line.graphics.clear()
     this.app.update = true

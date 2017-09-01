@@ -5,7 +5,6 @@ import actions from '../redux/actions'
 import 'createjs'
 
 import Grid from './Grid'
-import Shape from './Shape'
 import Draw from './Draw'
 
 const socket = io.connect('http://localhost:8080/')
@@ -66,9 +65,6 @@ class App extends Component {
 
     this.grid = new Grid()
     this.grid.render()
-
-    this.shape = new Shape()
-    this.shape.render()
 
     this.draw = new Draw()
     this.draw.init()
