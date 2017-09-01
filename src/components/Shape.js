@@ -22,6 +22,8 @@ class Shape extends createjs.Shape {
       }
       this.targets.push(target)
     }
+    this.targets = _.uniqWith(this.targets, _.isEqual)
+
   }
 
   render() {
