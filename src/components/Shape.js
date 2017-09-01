@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import munkres from 'munkres-js'
+import _ from 'lodash'
 import 'createjs'
 
 class Shape extends createjs.Shape {
@@ -16,8 +17,8 @@ class Shape extends createjs.Shape {
     this.target = []
     for (let contour of contours) {
       let target = {
-        x: contour[0] / this.app.offset,
-        y: contour[1] / this.app.offset
+        x: Math.round(contour[0] / this.app.offset),
+        y: Math.round(contour[1] / this.app.offset)
       }
       this.targets.push(target)
     }
@@ -26,10 +27,11 @@ class Shape extends createjs.Shape {
   render() {
     for (let target of this.targets) {
       this.circle = new createjs.Shape()
-      this.circle.graphics.beginFill('#00f')
+      this.circle.graphics.beginFill('#f00')
       this.circle.graphics.drawCircle(0, 0, 10)
       this.circle.x = target.x * this.app.offset
       this.circle.y = target.y * this.app.offset
+      this.circle.alpha = 0.3
       this.app.stage.addChild(this.circle)
     }
     this.app.update = true
@@ -50,13 +52,25 @@ class Shape extends createjs.Shape {
     if (!this.distMatrix.length) return
     this.ids = munkres(this.distMatrix)
 
-    if (this.debug) this.drawLine()
+    this.drawLine()
   }
 
   move() {
-    this.calculate()
-    let nextPositions = []
+    const timer = setInterval(() => {
+      this.check()
+      console.log('run')
+      if (!_.isEqual(this.app.props.positions, this.nextPositions)) {
+        this.app.sendCommand(this.nextPositions)
+      } else {
+        console.log('clear')
+        clearInterval(timer)
+      }
+    }, 100)
+  }
 
+  check() {
+    this.calculate()
+    this.nextPositions = _.clone(this.app.props.positions)
     for (let id of this.ids) {
       let mid = id[0]
       let tid = id[1]
@@ -82,10 +96,8 @@ class Shape extends createjs.Shape {
           y = y + 1
         }
       }
-      nextPositions.push({ x: x, y: y })
+      this.nextPositions[mid] = { x: x, y: y }
     }
-
-    this.app.sendCommand(nextPositions)
   }
 
   drawLine() {

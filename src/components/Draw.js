@@ -2,6 +2,7 @@ import ShapeDetector from 'shape-detector'
 import { getPoints, toPath } from 'svg-shapes'
 import parse from 'parse-svg-path'
 import contours from 'svg-path-contours'
+import simplify from 'simplify-path'
 
 import Shape from './Shape'
 
@@ -120,12 +121,15 @@ class Draw {
     this.contours = contours(this.path)[0]
 
     console.log(this.contours)
+    this.contours = simplify.radialDistance(this.contours, 3 * this.app.offset)
+    console.log(this.contours)
 
     this.target = new Shape()
     this.target.init(this.contours)
     this.target.render()
 
     this.line.graphics.clear()
+    this.shape.graphics.clear()
     this.app.update = true
 
   }
