@@ -37,6 +37,7 @@
     "redux-thunk": "^2.2.0",
     "semantic-ui-css": "^2.2.12",
     "serialport": "^4",
+    "shape-detector": "^0.2.1",
     "socket.io": "^2.0.3"
   },
   "devDependencies": {

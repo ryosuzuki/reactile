@@ -6,6 +6,7 @@ import 'createjs'
 
 import Grid from './Grid'
 import Shape from './Shape'
+import Draw from './Draw'
 
 const socket = io.connect('http://localhost:8080/')
 
@@ -68,6 +69,9 @@ class App extends Component {
 
     this.shape = new Shape()
     this.shape.render()
+
+    this.draw = new Draw()
+    this.draw.init()
   }
 
   tick(event) {
@@ -86,6 +90,8 @@ class App extends Component {
     let result = this.props.store.dispatch(actions.updateState(state))
     return result.state
   }
+
+
 
   random() {
     return Math.floor(Math.random()*40)
