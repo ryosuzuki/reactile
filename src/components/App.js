@@ -5,6 +5,7 @@ import actions from '../redux/actions'
 import 'createjs'
 
 import Grid from './Grid'
+import Marker from './Marker'
 import Draw from './Draw'
 
 const socket = io.connect('http://localhost:8080/')
@@ -21,6 +22,7 @@ class App extends Component {
     this.markers = []
 
     this.state = {
+      mode: '',
       width: 1080,
       height: 720
     }
@@ -36,13 +38,10 @@ class App extends Component {
   updateMarkers(positions) {
     if (this.markers.length === 0) {
       for (let pos of positions) {
-        this.marker = new createjs.Shape()
-        this.marker.graphics.beginFill('#f00')
-        this.marker.graphics.drawCircle(0, 0, 10)
-        this.marker.x = pos.x * this.offset
-        this.marker.y = pos.y * this.offset
-        this.stage.addChild(this.marker)
-        this.markers.push(this.marker)
+        let marker = new Marker()
+        marker.x = pos.x * this.offset
+        marker.y = pos.y * this.offset
+        this.markers.push(marker)
       }
     }
 
@@ -87,20 +86,26 @@ class App extends Component {
     return result.state
   }
 
-
-
   random() {
     return Math.floor(Math.random()*40)
   }
 
+  onClick(mode) {
+    console.log(mode)
+    this.setState({ mode: mode })
+  }
+
   render() {
     return (
-      <div className="ui grid">
+      <div>
         {/*
         <div className="eight wide column">
           <canvas id="canvas-video" width={ this.state.width } height={ this.state.height }></canvas>
         </div>
         */}
+        <button className={ `ui button ${ this.state.mode === 'draw' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'draw') }>Draw</button>
+        <button className={ `ui button ${ this.state.mode === 'constraint' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'constraint') }>Constraint</button>
+        <button className={ `ui button ${ this.state.mode === 'demonstrate' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'demonstrate') }>Demonstrate</button>
         <div className="sixteen wide column">
           <canvas ref="canvas" id="canvas" width="1000" height="600"></canvas>
           {/*

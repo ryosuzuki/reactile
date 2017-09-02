@@ -56,6 +56,17 @@ class Track {
       })
     }
 
+    this.markers = [
+      {x: 23, y: 14},
+      {x: 20, y: 15},
+      {x: 19, y: 18},
+      {x: 20, y: 22},
+      {x: 23, y: 23},
+      {x: 26, y: 22},
+      {x: 28, y: 19},
+      {x: 27, y: 16}
+    ]
+
     setInterval(() => {
       this.socket.emit('markers:update', this.markers)
     }, this.camInterval * 10)

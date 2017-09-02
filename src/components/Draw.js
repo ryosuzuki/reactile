@@ -14,6 +14,7 @@ class Draw {
   init() {
     this.app = app
     this.drawing = false
+    this.stroke = []
     this.detector = new ShapeDetector(ShapeDetector.defaultShapes)
 
     this.line = new createjs.Shape()
@@ -27,6 +28,7 @@ class Draw {
   }
 
   start() {
+    if (this.app.state.mode !== 'draw') return
     this.drawing = true
     this.stroke = []
     this.line.graphics.clear()
@@ -35,6 +37,7 @@ class Draw {
 
   draw(event) {
     if (!this.drawing) return
+    console.log('stage move')
 
     this.stroke.push({
       x: this.app.stage.mouseX,

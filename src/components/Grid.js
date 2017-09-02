@@ -1,5 +1,3 @@
-import React, { Component } from 'react'
-import 'createjs'
 
 class Grid extends createjs.Shape {
   constructor() {
