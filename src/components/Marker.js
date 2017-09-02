@@ -55,10 +55,7 @@ class Marker extends createjs.Shape {
       x: Math.round(this.x / this.app.offset),
       y: Math.round(this.y / this.app.offset)
     }
-
     this.app.socket.emit('update:pos', { id: this.id, pos: pos })
-
-    // this.drag()
   }
 
 

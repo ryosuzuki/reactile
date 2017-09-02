@@ -74,25 +74,8 @@ class App extends Component {
     this.draw = new Draw()
     this.draw.init()
 
-    /*
-    this.draw.stroke = [
-      { x: 481, y: 229 },
-      { x: 421, y: 243 },
-      { x: 372, y: 287 },
-      { x: 350, y: 349 },
-      { x: 363, y: 416 },
-      { x: 408, y: 467 },
-      { x: 472, y: 489 },
-      { x: 540, y: 475 },
-      { x: 589, y: 431 },
-      { x: 611, y: 369 },
-      { x: 598, y: 302 },
-      { x: 553, y: 251 },
-      { x: 489, y: 229 },
-      { x: 481, y: 229 }
-    ]
+    // this.draw.stroke = [{ x: 481, y: 229 }, { x: 421, y: 243 }, { x: 372, y: 287 }, { x: 350, y: 349 }, { x: 363, y: 416 }, { x: 408, y: 467 }, { x: 472, y: 489 }, { x: 540, y: 475 }, { x: 589, y: 431 }, { x: 611, y: 369 }, { x: 598, y: 302 }, { x: 553, y: 251 }, { x: 489, y: 229 }, { x: 481, y: 229 }]
     this.draw.beautify()
-    */
 
     this.constraint = new Constraint()
     this.constraint.init()
