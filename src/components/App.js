@@ -7,6 +7,8 @@ import 'createjs'
 import Grid from './Grid'
 import Marker from './Marker'
 import Draw from './Draw'
+import Shape from './Shape'
+import Constraint from './Constraint'
 
 const socket = io.connect('http://localhost:8080/')
 
@@ -50,9 +52,11 @@ class App extends Component {
       let pos = positions[i]
       marker.x = pos.x * this.offset
       marker.y = pos.y * this.offset
+      marker.id = i
     }
     this.update = true
     this.updateState({ positions: positions })
+    this.constraint.check()
   }
 
   componentDidMount() {
@@ -67,6 +71,11 @@ class App extends Component {
 
     this.draw = new Draw()
     this.draw.init()
+
+    this.shape = new Shape()
+
+    this.constraint = new Constraint()
+    this.constraint.init()
   }
 
   tick(event) {

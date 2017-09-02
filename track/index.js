@@ -42,9 +42,15 @@ class Track {
     this.socket = socket
     this.connect()
     this.socket.on('markers:move', this.testMove.bind(this))
-
+    this.socket.on('update:pos', this.updatePos.bind(this))
     // this.run()
     this.testRun()
+  }
+
+  updatePos(data) {
+    let id = data.id
+    let pos = data.pos
+    this.markers[id] = pos
   }
 
   testRun() {
