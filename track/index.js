@@ -62,20 +62,11 @@ class Track {
       })
     }
 
-    this.markers = [
-      {x: 23, y: 14},
-      {x: 20, y: 15},
-      {x: 19, y: 18},
-      {x: 20, y: 22},
-      {x: 23, y: 23},
-      {x: 26, y: 22},
-      {x: 28, y: 19},
-      {x: 27, y: 16}
-    ]
+    // this.markers = [{x: 24, y: 11}, {x: 21, y: 12}, {x: 19, y: 14}, {x: 18, y: 17}, {x: 18, y: 21}, {x: 20, y: 23}, {x: 24, y: 24}, {x: 27, y: 24}, {x: 29, y: 22}, {x: 31, y: 18}, {x: 30, y: 15}, {x: 28, y: 13}]
 
     setInterval(() => {
       this.socket.emit('markers:update', this.markers)
-    }, this.camInterval * 10)
+    }, this.camInterval )
   }
 
   testMove(positions) {

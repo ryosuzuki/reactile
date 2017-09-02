@@ -49,16 +49,16 @@ class Draw {
   }
 
   end() {
+    if (!this.drawing) return
     this.drawing = false
     this.prev = null
     this.line.graphics.endStroke()
-
-    if (this.stroke.length > 1) {
-      this.beautify()
-    }
+    this.beautify()
   }
 
   beautify() {
+    if (this.stroke.length < 2) return
+
     let shape = this.detector.spot(this.stroke)
     console.log(shape)
 
@@ -104,6 +104,7 @@ class Draw {
 
     this.app.shape.init()
     this.app.shape.render()
+    this.app.shape.move()
   }
 
 }

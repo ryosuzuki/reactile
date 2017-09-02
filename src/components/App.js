@@ -69,10 +69,30 @@ class App extends Component {
     this.grid = new Grid()
     this.grid.render()
 
+    this.shape = new Shape()
+
     this.draw = new Draw()
     this.draw.init()
 
-    this.shape = new Shape()
+    /*
+    this.draw.stroke = [
+      { x: 481, y: 229 },
+      { x: 421, y: 243 },
+      { x: 372, y: 287 },
+      { x: 350, y: 349 },
+      { x: 363, y: 416 },
+      { x: 408, y: 467 },
+      { x: 472, y: 489 },
+      { x: 540, y: 475 },
+      { x: 589, y: 431 },
+      { x: 611, y: 369 },
+      { x: 598, y: 302 },
+      { x: 553, y: 251 },
+      { x: 489, y: 229 },
+      { x: 481, y: 229 }
+    ]
+    this.draw.beautify()
+    */
 
     this.constraint = new Constraint()
     this.constraint.init()
@@ -101,7 +121,11 @@ class App extends Component {
 
   onClick(mode) {
     console.log(mode)
-    this.setState({ mode: mode })
+    if (mode === 'run') {
+      this.constraint.run()
+    } else {
+      this.setState({ mode: mode })
+    }
   }
 
   render() {
@@ -115,6 +139,7 @@ class App extends Component {
         <button className={ `ui button ${ this.state.mode === 'draw' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'draw') }>Draw</button>
         <button className={ `ui button ${ this.state.mode === 'constraint' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'constraint') }>Constraint</button>
         <button className={ `ui button ${ this.state.mode === 'demonstrate' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'demonstrate') }>Demonstrate</button>
+        <button className="ui button" onClick={ this.onClick.bind(this, 'run') }>Run</button>
         <div className="sixteen wide column">
           <canvas ref="canvas" id="canvas" width="1000" height="600"></canvas>
           {/*

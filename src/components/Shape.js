@@ -12,12 +12,28 @@ class Shape extends createjs.Shape {
     super()
     this.app = app
     this.targets = []
+    this.targetMarkers = []
     this.info = null
     window.shape = this
 
     this.outline = new createjs.Shape()
     this.app.stage.addChild(this.outline)
     this.app.stage.addChild(this)
+  }
+
+  scale(value) {
+    switch (this.info.type) {
+      case 'circle':
+        this.info.radius *= value
+        break
+      case 'rect':
+        this.info.width *= value
+        this.info.height *= value
+        break
+    }
+    this.init()
+    this.render()
+    this.move()
   }
 
   init() {
@@ -60,10 +76,7 @@ class Shape extends createjs.Shape {
     this.path = parse(this.pathData)
     this.contours = contours(this.path)[0]
 
-    console.log(this.contours)
     this.contours = simplify.radialDistance(this.contours, 3 * this.app.offset)
-    console.log(this.contours)
-
     // this.outline.graphics.clear()
 
     this.targets = []
@@ -78,14 +91,20 @@ class Shape extends createjs.Shape {
   }
 
   render() {
+    for (let targetMarker of this.targetMarkers) {
+      this.app.stage.removeChild(targetMarker)
+    }
+
+    this.targetMarkers = []
     for (let target of this.targets) {
-      this.circle = new createjs.Shape()
-      this.circle.graphics.beginFill('#f00')
-      this.circle.graphics.drawCircle(0, 0, 10)
-      this.circle.x = target.x * this.app.offset
-      this.circle.y = target.y * this.app.offset
-      this.circle.alpha = 0.3
-      this.app.stage.addChild(this.circle)
+      this.targetMarker = new createjs.Shape()
+      this.targetMarker.graphics.beginFill('#f00')
+      this.targetMarker.graphics.drawCircle(0, 0, 10)
+      this.targetMarker.x = target.x * this.app.offset
+      this.targetMarker.y = target.y * this.app.offset
+      this.targetMarker.alpha = 0.3
+      this.app.stage.addChild(this.targetMarker)
+      this.targetMarkers.push(this.targetMarker)
     }
     this.app.update = true
 

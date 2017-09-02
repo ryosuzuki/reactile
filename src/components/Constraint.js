@@ -11,10 +11,17 @@ class Constraint {
     this.line = new createjs.Shape()
     this.line.alpha = 0.4
     this.app.stage.addChild(this.line)
+  }
 
-    this.ov
-    this.cv
-
+  run() {
+    console.log('run')
+    console.log(this.diff)
+    if (Math.abs(this.diff.angle) > 10 && Math.abs(this.diff.dist) < 10) {
+      // this.app.shape.rotate(this.diff.angle)
+    }
+    if (Math.abs(this.diff.angle) < 10 && Math.abs(this.diff.dist) > 10) {
+      this.app.shape.scale(this.diff.scale)
+    }
   }
 
   check() {
@@ -38,11 +45,6 @@ class Constraint {
         x: r1.x - r0.x,
         y: r1.y - r0.y
       }
-      this.dv = {
-        x: this.cv.x - this.ov.x,
-        y: this.cv.y - this.ov.y
-      }
-
       this.diff = this.calculate(this.cv, this.ov)
     }
     this.app.update = true
@@ -52,7 +54,13 @@ class Constraint {
     let cd = this.dist(cv)
     let od = this.dist(ov)
     let angle = this.angle(cv, ov)
-    return { dist: cd - od, angle: angle }
+    let dist = cd - od
+    let scale = cd / od
+    return {
+      dist: dist,
+      scale: scale,
+      angle: angle
+    }
   }
 
   dist(v) {
@@ -66,10 +74,6 @@ class Constraint {
     let cos = dot / (d1 * d2)
     return Math.acos(cos) / Math.PI * 180
     // return Math.atan2(v2.y-v1.y, v2.x-v1.x) / Math.PI * 180
-  }
-
-  calculate() {
-
   }
 
 }
