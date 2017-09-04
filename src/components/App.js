@@ -127,13 +127,15 @@ class App extends Component {
     return (
       <div>
         <div id="sidepanel">
+
+        </div>
+        <div id="main">
+          <canvas ref="canvas" id="canvas" width="1000" height="600"></canvas>
+
           <button className={ `ui button ${ this.state.mode === 'draw' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'draw') }>Draw</button>
           <button className={ `ui button ${ this.state.mode === 'constraint' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'constraint') }>Constraint</button>
           <button className={ `ui button ${ this.state.mode === 'demonstrate' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'demonstrate') }>Demonstrate</button>
           <button className="ui button" onClick={ this.onClick.bind(this, 'run') }>Run</button>
-        </div>
-        <div id="main">
-          <canvas ref="canvas" id="canvas" width="1000" height="600"></canvas>
         </div>
       </div>
     )
