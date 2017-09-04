@@ -11,7 +11,7 @@ class Grid extends createjs.Shape {
   init() {
     this.line = new createjs.Shape()
     this.line.graphics.setStrokeStyle(1)
-    this.line.graphics.beginStroke('#000')
+    this.line.graphics.beginStroke('#fff')
     for (let i = 0; i < this.app.pSize; i++) {
       let pos = this.app.offset * (i + 1)
       let end = this.app.offset * (this.app.pSize + 1)

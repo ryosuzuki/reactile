@@ -1,4 +1,5 @@
 import 'semantic-ui-css/semantic.js'
+import 'maptastic/build/maptastic.js'
 import './style.css'
 
 import React from 'react'

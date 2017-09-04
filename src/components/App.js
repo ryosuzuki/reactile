@@ -61,6 +61,7 @@ class App extends Component {
 
   componentDidMount() {
     this.stage = new createjs.Stage(this.refs.canvas)
+    this.stage.canvas.style.backgroundColor = '#000'
     this.stage.enableMouseOver(10)
     this.resize()
     createjs.Touch.enable(this.stage)
@@ -79,6 +80,15 @@ class App extends Component {
 
     this.constraint = new Constraint()
     this.constraint.init()
+
+    if (window.Maptastic) {
+      const config = {
+        autoSave: false,
+        autoLoad: false,
+        layers: ['react-app']
+      }
+      Maptastic(config)
+    }
   }
 
   tick(event) {
@@ -89,8 +99,10 @@ class App extends Component {
   }
 
   resize() {
-    this.stage.canvas.width = window.innerWidth
-    this.stage.canvas.height = window.innerHeight
+    this.stage.canvas.width = this.offset * (this.pSize + 1)
+    this.stage.canvas.height = this.offset * (this.nSize + 1)
+
+    // $('canvas').css('left', '300px')
   }
 
   updateState(state) {
@@ -114,26 +126,14 @@ class App extends Component {
   render() {
     return (
       <div>
-        {/*
-        <div className="eight wide column">
-          <canvas id="canvas-video" width={ this.state.width } height={ this.state.height }></canvas>
+        <div id="sidepanel">
+          <button className={ `ui button ${ this.state.mode === 'draw' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'draw') }>Draw</button>
+          <button className={ `ui button ${ this.state.mode === 'constraint' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'constraint') }>Constraint</button>
+          <button className={ `ui button ${ this.state.mode === 'demonstrate' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'demonstrate') }>Demonstrate</button>
+          <button className="ui button" onClick={ this.onClick.bind(this, 'run') }>Run</button>
         </div>
-        */}
-        <button className={ `ui button ${ this.state.mode === 'draw' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'draw') }>Draw</button>
-        <button className={ `ui button ${ this.state.mode === 'constraint' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'constraint') }>Constraint</button>
-        <button className={ `ui button ${ this.state.mode === 'demonstrate' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'demonstrate') }>Demonstrate</button>
-        <button className="ui button" onClick={ this.onClick.bind(this, 'run') }>Run</button>
-        <div className="sixteen wide column">
+        <div id="main">
           <canvas ref="canvas" id="canvas" width="1000" height="600"></canvas>
-          {/*
-          <Grid
-            app={ this }
-            markers={ this.props.markers }
-          />
-          <pre id="markers"></pre>
-          <input type="text" id="input"></input>
-          <button id="button">Move</button>
-          */}
         </div>
       </div>
     )

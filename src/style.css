@@ -1,13 +1,17 @@
+body {
+  background: black;
+}
 
-#sidebar {
-  width: 20%;
+
+#sidepanel {
+  width: 30%;
   height: 100vh;
   float: left;
   padding: 20px;
 }
 
 #main {
-  width: 80%;
+  width: 70%;
   float: left;
   margin-top: 20px;
   position: relative;
