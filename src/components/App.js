@@ -8,6 +8,7 @@ import Grid from './Grid'
 import Marker from './Marker'
 import Draw from './Draw'
 import Shape from './Shape'
+import Panel from './Panel'
 import Constraint from './Constraint'
 
 const socket = io.connect('http://localhost:8080/')
@@ -127,7 +128,9 @@ class App extends Component {
     return (
       <div>
         <div id="sidepanel">
-
+          <Panel
+            pathData={ this.props.pathData }
+           />
         </div>
         <div id="main">
           <canvas ref="canvas" id="canvas" width="1000" height="600"></canvas>
