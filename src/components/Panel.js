@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import _ from 'lodash'
 import 'createjs'
 
 class Panel extends Component {
@@ -26,8 +27,6 @@ class Panel extends Component {
       width: 260,
       height: 220,
       margin: 10,
-      connections: [1, 0],
-      items: items
     }
   }
 
@@ -37,19 +36,18 @@ class Panel extends Component {
   render() {
     return (
       <div id="panel" className="panel">
-        { this.state.connections.map((connection, index) => {
+        { this.props.mappings.map((mapping, index) => {
           return (
-            this.drawConnector(connection)
+            this.drawConnector(mapping)
           )
         }) }
-        <p>{ this.state.items[0].name }</p>
-        { this.state.items.map((item) => {
+        { this.props.items.map((item) => {
           return (
-            <div className="ui card" key={ item.name } style={{ width: '100%', height: this.state.height, margin: `${this.state.margin}px 0` }}>
-              <div className="content">
-                <div className="header">{ item.name }</div>
+            <div className="ui card" key={ item.type } style={{ width: '100%', height: this.state.height, margin: `${this.state.margin}px 0` }}>
+              <div className="content" style={{ flexGrow: 0 }}>
+                <div className="header">{ _.capitalize(item.type) }</div>
               </div>
-              { this.drawSvg(item.name) }
+              { this.drawSvg(item.type) }
               <div className="content">
                 { item.variables.map((variable) => {
                   return (
@@ -61,15 +59,21 @@ class Panel extends Component {
           )
         }) }
 
-        <div className="ui card" style={{ width: '100%', height: this.state.height, marginTop: `${this.state.margin*5}px` }}>
+        <div className="ui card" style={{ display: (this.props.mappings.length > 0) ? 'block' : 'none', width: '100%', height: this.state.height, marginTop: `${this.state.margin*5}px` }}>
           <div className="content">
             <div className="header">Mapping</div>
           </div>
           <div className="content">
-            <span className="ui teal label">circle.radius</span>
-            <span> = </span>
-            <span className="ui teal label">slider.value</span>
-            <span> / 100 </span>
+            { this.props.mappings.map((mapping) => {
+              return (
+                <div>
+                  <span className="ui teal label">circle.radius</span>
+                  <span> = </span>
+                  <span className="ui teal label">slider.value</span>
+                  <span> / 100 </span>
+                </div>
+              )
+            })}
           </div>
         </div>
 

@@ -13,9 +13,9 @@ class Track {
     this.camInterval = 1000 / this.camFps
     this.rectThickness = 2
 
-    this.camera = new cv.VideoCapture(0)
-    this.camera.setWidth(this.camWidth)
-    this.camera.setHeight(this.camHeight)
+    // this.camera = new cv.VideoCapture(0)
+    // this.camera.setWidth(this.camWidth)
+    // this.camera.setHeight(this.camHeight)
 
     this.buffer = null
     this.im = null

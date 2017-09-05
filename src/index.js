@@ -13,6 +13,8 @@ import { Provider } from 'react-redux'
 
 let initialStore = {
   positions: [],
+  items: [],
+  mappings: []
 }
 
 let store = configureStore(initialStore)

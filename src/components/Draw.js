@@ -57,6 +57,8 @@ class Draw {
   }
 
   beautify() {
+    this.line.graphics.clear()
+    this.app.update = true
     if (this.stroke.length < 2) return
 
     let shape = this.detector.spot(this.stroke)
@@ -77,30 +79,27 @@ class Draw {
           x: (maxX + minX) / 2,
           y: (maxY + minY) / 2
         }
-        this.app.shape.info = {
+        Object.assign(this.app.shape.info, {
           type: 'circle',
           radius: radius,
           x: center.x,
           y: center.y
-        }
+        })
         break
       case 'square':
         let width = maxX - minX
         let height = maxY - minY
-        this.app.shape.info = {
+        Object.assign(this.app.shape.info, {
           type: 'rect',
           x: minX,
           y: minY,
           width: width,
           height: height
-        }
+        })
         break
       default:
         break
     }
-
-    this.line.graphics.clear()
-    this.app.update = true
 
     this.app.shape.init()
     this.app.shape.render()

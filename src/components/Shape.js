@@ -13,31 +13,26 @@ class Shape extends createjs.Shape {
     this.app = app
     this.targets = []
     this.targetMarkers = []
-    this.info = null
+    this.info = {
+      type: 'point',
+      x: 20 * this.app.offset,
+      y: 20 * this.app.offset,
+      variables: []
+    }
     window.shape = this
 
     this.outline = new createjs.Shape()
     this.app.stage.addChild(this.outline)
     this.app.stage.addChild(this)
-  }
 
-  scale(value) {
-    switch (this.info.type) {
-      case 'circle':
-        this.info.radius *= value
-        break
-      case 'rect':
-        this.info.width *= value
-        this.info.height *= value
-        break
-    }
     this.init()
     this.render()
     this.move()
   }
 
   init() {
-    if (!this.info) return
+    this.app.updateState({ items: [this.info] })
+
     this.outline.graphics.clear()
     this.outline.graphics.beginStroke('#0f0')
     this.outline.graphics.setStrokeStyle(3)
@@ -61,6 +56,17 @@ class Shape extends createjs.Shape {
           y: this.info.y,
           width: this.info.width,
           height: this.info.height
+        })
+        break
+      case 'point':
+        let radius = 10
+        this.outline.graphics.drawCircle(0, 0, radius)
+        this.outline.x = this.info.x
+        this.outline.y = this.info.y
+        this.svg = getPoints('circle', {
+          cx: this.info.x,
+          cy: this.info.y,
+          r: radius,
         })
         break
       case 'triangle':
@@ -109,6 +115,21 @@ class Shape extends createjs.Shape {
     this.app.update = true
 
     // this.calculate()
+  }
+
+  scale(value) {
+    switch (this.info.type) {
+      case 'circle':
+        this.info.radius *= value
+        break
+      case 'rect':
+        this.info.width *= value
+        this.info.height *= value
+        break
+    }
+    this.init()
+    this.render()
+    this.move()
   }
 
   calculate() {
