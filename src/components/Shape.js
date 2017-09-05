@@ -31,7 +31,9 @@ class Shape extends createjs.Shape {
   }
 
   init() {
-    this.app.updateState({ items: [this.info] })
+    let items = this.app.props.items
+    items[this.app.currentIndex] = this.info
+    this.app.updateState({ items: items })
 
     this.outline.graphics.clear()
     this.outline.graphics.beginStroke('#0f0')

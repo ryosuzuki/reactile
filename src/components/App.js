@@ -23,12 +23,15 @@ class App extends Component {
     this.offset = 20
 
     this.markers = []
+    this.currentIndex = 0
 
     this.state = {
       mode: '',
       width: 1080,
       height: 720
     }
+    this.shapes = []
+
     this.update = true
     this.socket = socket
     this.socket.on('markers:update', this.updateMarkers.bind(this))
@@ -72,6 +75,7 @@ class App extends Component {
     this.grid.render()
 
     this.shape = new Shape()
+    this.shapes.push(this.shape)
 
     this.draw = new Draw()
     this.draw.init()
@@ -119,6 +123,15 @@ class App extends Component {
     console.log(mode)
     if (mode === 'run') {
       this.constraint.run()
+    } else if (mode === 'new') {
+      this.markers = this.markers.map((marker) => {
+        marker.isReference = false
+        marker.render()
+        return marker
+      })
+      this.currentIndex++
+      this.shape = new Shape()
+
     } else {
       this.setState({ mode: mode })
     }
@@ -137,6 +150,7 @@ class App extends Component {
         <div id="main">
           <canvas ref="canvas" id="canvas" width="1000" height="600"></canvas>
 
+          <button className={ `ui button ${ this.state.mode === 'draw' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'new') }>New</button>
           <button className={ `ui button ${ this.state.mode === 'draw' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'draw') }>Draw</button>
           <button className={ `ui button ${ this.state.mode === 'constraint' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'constraint') }>Constraint</button>
           <button className={ `ui button ${ this.state.mode === 'demonstrate' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'demonstrate') }>Demonstrate</button>

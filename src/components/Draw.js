@@ -75,15 +75,14 @@ class Draw {
     switch (shape.pattern) {
       case 'circle':
         let radius = (maxX + maxY - minX - minY) / 4
-        let center = {
-          x: (maxX + minX) / 2,
-          y: (maxY + minY) / 2
-        }
+        let x = (maxX + minX) / 2
+        let y = (maxY + minY) / 2
         Object.assign(this.app.shape.info, {
           type: 'circle',
           radius: radius,
-          x: center.x,
-          y: center.y
+          x: x,
+          y: y,
+          variables: []
         })
         break
       case 'square':
@@ -94,7 +93,8 @@ class Draw {
           x: minX,
           y: minY,
           width: width,
-          height: height
+          height: height,
+          variables: []
         })
         break
       default:

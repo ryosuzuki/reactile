@@ -41,9 +41,9 @@ class Panel extends Component {
             this.drawConnector(mapping)
           )
         }) }
-        { this.props.items.map((item) => {
+        { this.props.items.map((item, index) => {
           return (
-            <div className="ui card" key={ item.type } style={{ width: '100%', height: this.state.height, margin: `${this.state.margin}px 0` }}>
+            <div className="ui card" key={ index } style={{ width: '100%', height: this.state.height, margin: `${this.state.margin}px 0` }}>
               <div className="content" style={{ flexGrow: 0 }}>
                 <div className="header">{ _.capitalize(item.type) }</div>
               </div>
