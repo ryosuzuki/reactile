@@ -25,7 +25,7 @@ class Constraint {
   }
 
   check() {
-    this.references = this.app.markers.filter(marker => marker.isReference)
+    this.references = this.app.props.markers.filter(marker => marker.isReference)
     this.diff = null
     this.line.graphics.clear()
     if (this.references.length > 1) {

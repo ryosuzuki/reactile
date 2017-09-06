@@ -12,7 +12,7 @@ import { Provider } from 'react-redux'
 
 
 let initialStore = {
-  positions: [],
+  markers: [],
   items: [],
   mappings: []
 }

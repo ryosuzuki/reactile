@@ -1,52 +1,52 @@
 
-class Marker extends createjs.Shape {
+class Marker {
   constructor() {
-    super()
     this.app = app
-
     this.isReference = false
-    this.moving = false
+    this.isMoving = false
+    this.sketch = new createjs.Shape()
     this.origin = new createjs.Shape()
     this.shapeId = null
 
     this.app.stage.addChild(this.origin)
-    this.app.stage.addChild(this)
-    this.render()
-    this.on('click', this.onClick)
-    this.on('pressmove', this.onPressMove)
+    this.app.stage.addChild(this.sketch)
+    this.sketch.on('click', this.onClick.bind(this))
+    this.sketch.on('pressmove', this.onPressMove.bind(this))
     // this.on('mouseup', this.onMouseUp)
 
     window.marker = this
   }
 
-  render() {
+  update() {
     if (this.isReference) {
-      this.graphics.beginFill('#00f')
-      this.graphics.drawCircle(0, 0, 10)
-
+      this.sketch.graphics.beginFill('#00f')
       this.origin.graphics.beginFill('#f00')
       this.origin.graphics.drawCircle(0, 0, 10)
       this.origin.alpha = 0.2
-      this.origin.x = this.x
-      this.origin.y = this.y
+      this.origin.x = this.sketch.x
+      this.origin.y = this.sketch.y
 
     } else {
-      this.graphics.beginFill('#f00')
-      this.graphics.drawCircle(0, 0, 10)
+      this.sketch.graphics.beginFill('#f00')
       this.origin.graphics.clear()
     }
+
+    this.sketch.graphics.drawCircle(0, 0, 10)
+    this.sketch.x = this.x * this.app.offset
+    this.sketch.y = this.y * this.app.offset
+
     this.app.update = true
   }
 
   onClick(event) {
-    if (this.moving) {
-      this.moving = false
+    if (this.isMoving) {
+      this.isMoving = false
       return
     }
     console.log('click')
     if (this.app.state.mode !== 'constraint') return
     this.isReference = !this.isReference
-    this.render()
+    this.update()
   }
 
   onPressMove(event) {
@@ -54,15 +54,15 @@ class Marker extends createjs.Shape {
       if (!this.isReference) return
     }
 
-    this.moving = true
+    this.isMoving = true
     console.log('move')
-    this.x = this.app.stage.mouseX
-    this.y = this.app.stage.mouseY
+    this.sketch.x = this.app.stage.mouseX
+    this.sketch.y = this.app.stage.mouseY
     this.app.update = true
 
     let pos = {
-      x: Math.round(this.x / this.app.offset),
-      y: Math.round(this.y / this.app.offset)
+      x: Math.round(this.sketch.x / this.app.offset),
+      y: Math.round(this.sketch.y / this.app.offset)
     }
     this.app.socket.emit('update:pos', { id: this.id, pos: pos })
 

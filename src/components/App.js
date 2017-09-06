@@ -22,7 +22,6 @@ class App extends Component {
     this.nSize = 40 // 40
     this.offset = 20
 
-    this.markers = []
     this.shapes = []
     this.currentIndex = -1
 
@@ -42,24 +41,26 @@ class App extends Component {
   }
 
   updateMarkers(positions) {
-    if (this.markers.length === 0) {
+    let markers = this.props.markers
+    if (markers.length === 0) {
       for (let pos of positions) {
         let marker = new Marker()
-        marker.x = pos.x * this.offset
-        marker.y = pos.y * this.offset
-        this.markers.push(marker)
+        marker.x = pos.x
+        marker.y = pos.y
+        marker.update()
+        markers.push(marker)
       }
     }
 
-    for (let i = 0; i < this.markers.length; i++) {
-      let marker = this.markers[i]
+    for (let i = 0; i < markers.length; i++) {
+      let marker = markers[i]
       let pos = positions[i]
-      marker.x = pos.x * this.offset
-      marker.y = pos.y * this.offset
+      marker.x = pos.x
+      marker.y = pos.y
       marker.id = i
+      marker.update()
     }
-    this.update = true
-    this.updateState({ positions: positions })
+    this.updateState({ markers: markers })
     this.constraint.check()
   }
 
@@ -103,7 +104,6 @@ class App extends Component {
   resize() {
     this.stage.canvas.width = this.offset * (this.pSize + 1)
     this.stage.canvas.height = this.offset * (this.nSize + 1)
-
     // $('canvas').css('left', '300px')
   }
 
@@ -126,11 +126,12 @@ class App extends Component {
     if (mode === 'run') {
       this.constraint.run()
     } else if (mode === 'new') {
-      this.markers = this.markers.map((marker) => {
+      let markers = this.props.markers.map((marker) => {
         marker.isReference = false
-        marker.render()
+        marker.update()
         return marker
       })
+      this.updateState({ markers: markers })
       this.currentIndex++
       this.shape = new Shape()
       this.shape.init()

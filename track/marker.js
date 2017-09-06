@@ -1,6 +1,5 @@
 
 function detectMarker() {
-  this.markers = []
   this.positions = []
 
   let imCanny = this.im.copy()
@@ -44,13 +43,13 @@ function detectMarker() {
       let red = [0, 0, 255]
       this.im.ellipse(pos.x, pos.y, 10, 10, red)
 
-      let x = 15 - Math.floor((pos.x - xMin) / xPixel)
-      let y = 39 - Math.floor((pos.y - yMin) / yPixel)
-      this.markers.push({ x: x, y: y })
+      let n = 15 - Math.floor((pos.x - xMin) / xPixel)
+      let p = 39 - Math.floor((pos.y - yMin) / yPixel)
+      this.positions.push({ n: n, p: p })
     }
   }
 
-  this.socket.emit('markers', this.markers)
+  this.socket.emit('markers:update', this.positions)
 }
 
 module.exports = detectMarker

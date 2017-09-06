@@ -23,7 +23,7 @@ class Track {
 
     this.index = 0
     this.rect = []
-    this.markers = []
+    this.positions = []
 
     this.redMin = [170, 128, 70]
     this.redMax = [180, 255, 255]
@@ -50,29 +50,29 @@ class Track {
   updatePos(data) {
     let id = data.id
     let pos = data.pos
-    this.markers[id] = pos
+    this.positions[id] = pos
   }
 
   testRun() {
-    this.markers = []
+    this.positions = []
     for (let i = 0; i < 20; i++) {
-      this.markers.push({
+      this.positions.push({
         x: this.random(),
         y: this.random()
       })
     }
 
-    // this.markers = [{x: 24, y: 11}, {x: 21, y: 12}, {x: 19, y: 14}, {x: 18, y: 17}, {x: 18, y: 21}, {x: 20, y: 23}, {x: 24, y: 24}, {x: 27, y: 24}, {x: 29, y: 22}, {x: 31, y: 18}, {x: 30, y: 15}, {x: 28, y: 13}]
+    // this.positions = [{x: 24, y: 11}, {x: 21, y: 12}, {x: 19, y: 14}, {x: 18, y: 17}, {x: 18, y: 21}, {x: 20, y: 23}, {x: 24, y: 24}, {x: 27, y: 24}, {x: 29, y: 22}, {x: 31, y: 18}, {x: 30, y: 15}, {x: 28, y: 13}]
 
     setInterval(() => {
-      this.socket.emit('markers:update', this.markers)
+      this.socket.emit('markers:update', this.positions)
     }, this.camInterval )
   }
 
   testMove(positions) {
     setTimeout(() => {
       console.log(positions)
-      this.markers = positions
+      this.positions = positions
     }, 100)
   }
 

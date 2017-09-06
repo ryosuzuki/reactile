@@ -1,15 +1,12 @@
-import React, { Component } from 'react'
 import munkres from 'munkres-js'
-import _ from 'lodash'
-import { getPoints, toPath } from 'svg-shapes'
 import parse from 'parse-svg-path'
 import contours from 'svg-path-contours'
 import simplify from 'simplify-path'
-import 'createjs'
+import { getPoints, toPath } from 'svg-shapes'
+import _ from 'lodash'
 
-class Shape extends createjs.Shape {
+class Shape {
   constructor() {
-    super()
     this.app = app
     this.targets = []
     this.targetMarkers = []
@@ -35,7 +32,6 @@ class Shape extends createjs.Shape {
 
     this.outline = new createjs.Shape()
     this.app.stage.addChild(this.outline)
-    this.app.stage.addChild(this)
   }
 
   init() {
@@ -147,13 +143,10 @@ class Shape extends createjs.Shape {
 
   calculate() {
     this.distMatrix = []
-
-    for (let i = 0; i < this.app.props.positions.length; i++) {
-      let pos = this.app.props.positions[i]
-      let marker = this.app.markers[i]
+    for (let marker of this.app.props.markers) {
       let distArray = []
       for (let target of this.targets) {
-        let dist = Math.abs(pos.x - target.x) + Math.abs(pos.y - target.y)
+        let dist = Math.abs(marker.x - target.x) + Math.abs(marker.y - target.y)
         if (marker.shapeId != null && marker.shapeId !== this.app.currentIndex) {
           dist = Infinity
         }
@@ -169,16 +162,23 @@ class Shape extends createjs.Shape {
 
   move() {
     const timer = setInterval(() => {
-      this.check()
+      let res = this.check()
+      let change = res.change
+      let markers = res.markers
       console.log('run')
-      if (!_.isEqual(this.app.props.positions, this.nextPositions)) {
-        this.app.sendCommand(this.nextPositions)
+      if (change) {
+        let positions = markers.map((marker) => {
+          return { x: marker.x, y: marker.y }
+        })
+        this.app.sendCommand(positions)
       } else {
         console.log('clear')
         clearInterval(timer)
         let mids = this.ids.map(a => a[0])
         for (let id of mids) {
-          this.app.markers[id].shapeId = this.app.currentIndex
+          let markers = this.app.props.markers
+          markers[id].shapeId = this.app.currentIndex
+          this.app.updateState({ markers: markers })
         }
       }
     }, 100)
@@ -186,11 +186,12 @@ class Shape extends createjs.Shape {
 
   check() {
     this.calculate()
-    this.nextPositions = _.clone(this.app.props.positions)
+    let change = false
+    let markers = this.app.props.markers
     for (let id of this.ids) {
       let mid = id[0]
       let tid = id[1]
-      let marker = this.app.props.positions[mid]
+      let marker = markers[mid]
       let target = this.targets[tid]
 
       let dx = marker.x - target.x
@@ -212,8 +213,13 @@ class Shape extends createjs.Shape {
           y = y + 1
         }
       }
-      this.nextPositions[mid] = { x: x, y: y }
+      if (marker.x !== x || marker.y !== y) {
+        marker.x = x
+        marker.y = y
+        change = true
+      }
     }
+    return { change: change, markers: markers }
   }
 
   drawLine() {
@@ -225,7 +231,7 @@ class Shape extends createjs.Shape {
     this.line.graphics.setStrokeStyle(3)
     this.line.graphics.beginStroke('#0f0')
     for (let id of this.ids) {
-      let pos = this.app.props.positions[id[0]]
+      let pos = this.app.props.markers[id[0]]
       let target = this.targets[id[1]]
       this.line.graphics.moveTo(pos.x * this.app.offset, pos.y * this.app.offset)
       this.line.graphics.lineTo(target.x * this.app.offset, target.y * this.app.offset)
