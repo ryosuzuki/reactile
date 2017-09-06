@@ -66,7 +66,7 @@ class Track {
 
     setInterval(() => {
       this.socket.emit('markers:update', this.positions)
-    }, this.camInterval )
+    }, this.camInterval)
   }
 
   testMove(positions) {

@@ -64,8 +64,8 @@ class Draw {
     this.app.update = true
     if (this.stroke.length < 2) return
 
-    let shape = this.detector.spot(this.stroke)
-    console.log(shape)
+    let detect = this.detector.spot(this.stroke)
+    console.log(detect)
 
     let x = this.stroke.map(p => p.x)
     let y = this.stroke.map(p => p.y)
@@ -74,37 +74,33 @@ class Draw {
     let maxY = Math.max(...y)
     let minY = Math.min(...y)
 
-    let info = {}
-    switch (shape.pattern) {
+    // let shape = this.app.props.shapes[this.app.currentId]
+    switch (detect.pattern) {
       case 'circle':
         let radius = (maxX + maxY - minX - minY) / 4
         let x = (maxX + minX) / 2
         let y = (maxY + minY) / 2
-        Object.assign(this.app.shape.info, {
+        this.app.shape.initFromCanvas({
           type: 'circle',
           radius: radius,
           x: x,
-          y: y,
-          variables: []
+          y: y
         })
         break
       case 'square':
         let width = maxX - minX
         let height = maxY - minY
-        Object.assign(this.app.shape.info, {
+        this.app.shape.initFromCanvas({
           type: 'rect',
           x: minX,
           y: minY,
           width: width,
           height: height,
-          variables: []
         })
         break
       default:
         break
     }
-
-    this.app.shape.init()
   }
 
 }

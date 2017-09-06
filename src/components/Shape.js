@@ -1,15 +1,11 @@
 import munkres from 'munkres-js'
-import parse from 'parse-svg-path'
-import contours from 'svg-path-contours'
-import simplify from 'simplify-path'
-import { getPoints, toPath } from 'svg-shapes'
-import _ from 'lodash'
+
+import Outline from './Outline'
 
 class Shape {
   constructor() {
     this.app = app
     this.targets = []
-    this.targetMarkers = []
     this.ids = []
     this.id = this.app.currentId
 
@@ -26,114 +22,16 @@ class Shape {
       this.variables = ['y']
       this.values['y'] = this.y
     }
-    this.outline = new createjs.Shape()
-    this.app.stage.addChild(this.outline)
+    this.outline = new Outline(this)
     window.shape = this
   }
 
   init() {
+    this.outline.init()
+    this.targets = this.outline.targets
     let shapes = this.app.props.shapes
     shapes[this.id] = this
     this.app.updateState({ shapes: shapes })
-
-    this.outline.graphics.clear()
-    this.outline.graphics.beginStroke('#0f0')
-    this.outline.graphics.setStrokeStyle(3)
-    switch (this.type) {
-      case 'circle':
-        this.outline.graphics.drawCircle(0, 0, this.radius)
-        this.outline.x = this.x
-        this.outline.y = this.y
-        this.svg = getPoints('circle', {
-          cx: this.x,
-          cy: this.y,
-          r: this.radius
-        })
-        break
-      case 'rect':
-        this.outline.graphics.drawRect(0, 0, this.width, this.height)
-        this.outline.x = this.x
-        this.outline.y = this.y
-        this.svg = getPoints('rect', {
-          x: this.x,
-          y: this.y,
-          width: this.width,
-          height: this.height
-        })
-        break
-      case 'point':
-        let radius = 10
-        this.outline.graphics.drawCircle(0, 0, radius)
-        this.outline.x = this.x
-        this.outline.y = this.y
-        this.svg = getPoints('circle', {
-          cx: this.x,
-          cy: this.y,
-          r: radius,
-        })
-        break
-      case 'triangle':
-        break
-      default:
-        break
-    }
-    this.generate()
-    this.render()
-    this.move()
-  }
-
-  generate() {
-    this.pathData = toPath(this.svg)
-    this.path = parse(this.pathData)
-    this.contours = contours(this.path)[0]
-
-    this.contours = simplify.radialDistance(this.contours, 3 * this.app.offset)
-    // this.outline.graphics.clear()
-
-    this.targets = []
-    for (let contour of this.contours) {
-      let target = {
-        x: Math.round(contour[0] / this.app.offset),
-        y: Math.round(contour[1] / this.app.offset)
-      }
-      this.targets.push(target)
-    }
-    this.targets = _.uniqWith(this.targets, _.isEqual)
-  }
-
-  render() {
-    for (let targetMarker of this.targetMarkers) {
-      this.app.stage.removeChild(targetMarker)
-    }
-
-    this.targetMarkers = []
-    for (let target of this.targets) {
-      this.targetMarker = new createjs.Shape()
-      this.targetMarker.graphics.beginFill('#f00')
-      this.targetMarker.graphics.drawCircle(0, 0, 10)
-      this.targetMarker.x = target.x * this.app.offset
-      this.targetMarker.y = target.y * this.app.offset
-      this.targetMarker.alpha = 0.3
-      this.app.stage.addChild(this.targetMarker)
-      this.targetMarkers.push(this.targetMarker)
-    }
-    this.app.update = true
-
-    // this.calculate()
-  }
-
-  scale(value) {
-    switch (this.type) {
-      case 'circle':
-        this.radius *= value
-        break
-      case 'rect':
-        this.width *= value
-        this.height *= value
-        break
-    }
-    this.init()
-    this.render()
     this.move()
   }
 
@@ -234,7 +132,41 @@ class Shape {
     }
     this.line.graphics.endStroke()
     this.app.stage.addChild(this.line)
-    this.app.update = true
+    // this.app.update = true
+  }
+
+  initFromCanvas(info) {
+    this.type = info.type
+    this.x = this.convert(info.x)
+    this.y = this.convert(info.y)
+    this.variables = []
+    switch (info.type) {
+      case 'circle':
+        this.radius = this.convert(info.radius)
+        break
+      case 'rect':
+        this.width = this.convert(info.width)
+        this.height = this.convert(info.height)
+        break
+    }
+    this.init()
+  }
+
+  convert(val) {
+    return Math.round(val / this.app.offset)
+  }
+
+  scale(value) {
+    switch (this.type) {
+      case 'circle':
+        this.radius *= value
+        break
+      case 'rect':
+        this.width *= value
+        this.height *= value
+        break
+    }
+    this.init()
   }
 
 }

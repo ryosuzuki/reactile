@@ -109,6 +109,7 @@ class App extends Component {
 
   updateState(state) {
     let result = this.props.store.dispatch(actions.updateState(state))
+    this.setState({})
     return result.state
   }
 
@@ -155,7 +156,7 @@ class App extends Component {
         <div id="main">
           <canvas ref="canvas" id="canvas" width="1000" height="600"></canvas>
 
-          <button className={ `ui button ${ this.state.mode === 'draw' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'new') }>New</button>
+          <button className="ui button" onClick={ this.onClick.bind(this, 'new') }>New</button>
           <button className={ `ui button ${ this.state.mode === 'draw' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'draw') }>Draw</button>
           <button className={ `ui button ${ this.state.mode === 'constraint' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'constraint') }>Constraint</button>
           <button className={ `ui button ${ this.state.mode === 'demonstrate' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'demonstrate') }>Demonstrate</button>
