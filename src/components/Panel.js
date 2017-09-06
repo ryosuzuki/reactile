@@ -64,10 +64,10 @@ class Panel extends Component {
                   return (
                     <button
                       id={ `${shape.id}-${variable}` }
-                      className={ `ui button ${ this.includes(this.state.selected, variable) ? 'orange' : 'teal' }` }
+                      className={ `ui button ${ this.includes(this.state.selected, { shapeId: shape.id, variable: variable }) ? 'orange' : 'teal' }` }
                       style={{ width: '100%', marginBottom: '10px' }}
                       key={ variable }
-                      onClick={ this.onClick.bind(this, shape, variable) }
+                      onClick={ this.onClick.bind(this, shape.id, variable) }
                     >
                       { `${variable} : ${value}` }
                     </button>
@@ -88,9 +88,9 @@ class Panel extends Component {
               let name1 = this.getName(mapping[1])
               return (
                 <div key={ index }>
-                  <span className="ui teal label">{ name0 }</span>
+                  <span className="ui teal large label">{ name0 }</span>
                   <span> = </span>
-                  <span className="ui teal label">{ name1 }</span>
+                  <span className="ui teal large label">{ name1 }</span>
                 </div>
               )
             })}
@@ -103,7 +103,7 @@ class Panel extends Component {
 
   getName(info) {
     let shape = this.props.shapes[info.shapeId]
-    return `${shape.type}.${info.name}`
+    return `${shape.type}.${info.variable}`
   }
 
   drawConnector(id1, id2, index) {

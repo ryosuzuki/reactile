@@ -48,7 +48,7 @@ class Constraint {
       Object.assign(info, { variables: variables })
       this.app.updateState({ info: info })
     }
-    this.app.update = true
+    // this.app.update = true
   }
 
   visualize() {
