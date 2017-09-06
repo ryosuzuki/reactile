@@ -18,13 +18,13 @@ class Panel extends Component {
   componentDidMount() {
   }
 
-  onClick(shape, name) {
+  onClick(shapeId, variable) {
     let selected = this.state.selected
-    let variable = { shapeId: shape.id, name: name }
-    if (!this.includes(selected, variable)) {
-      selected.push(variable)
+    let info = { shapeId: shapeId, variable: variable }
+    if (!this.includes(selected, info)) {
+      selected.push(info)
     } else {
-      _.pullAllWith(selected, [variable], _.isEqual)
+      _.pullAllWith(selected, [info], _.isEqual)
     }
 
     if (selected.length === 2) {
@@ -37,8 +37,8 @@ class Panel extends Component {
     this.setState({ selected: selected })
   }
 
-  includes(selected, variable) {
-    return _.intersectionWith(selected, [variable], _.isEqual).length > 0
+  includes(selected, info) {
+    return _.intersectionWith(selected, [info], _.isEqual).length > 0
   }
 
   render() {
@@ -59,18 +59,17 @@ class Panel extends Component {
               </div>
               { this.drawSvg(shape.type) }
               <div className="content">
-                { shape.variables.map((name) => {
-                  let value = shape.values[name]
-                  let variable = { shapeId: shape.id, name: name }
+                { shape.variables.map((variable) => {
+                  let value = shape[variable]
                   return (
                     <button
-                      id={ `${shape.id}-${name}` }
+                      id={ `${shape.id}-${variable}` }
                       className={ `ui button ${ this.includes(this.state.selected, variable) ? 'orange' : 'teal' }` }
                       style={{ width: '100%', marginBottom: '10px' }}
-                      key={ name }
-                      onClick={ this.onClick.bind(this, shape, name) }
+                      key={ variable }
+                      onClick={ this.onClick.bind(this, shape, variable) }
                     >
-                      { `${name} : ${value}` }
+                      { `${variable} : ${value}` }
                     </button>
                   )
                 }) }

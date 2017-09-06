@@ -1,5 +1,4 @@
 import munkres from 'munkres-js'
-
 import Outline from './Outline'
 
 class Shape {

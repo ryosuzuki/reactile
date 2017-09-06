@@ -12,7 +12,6 @@ class Marker {
     this.app.stage.addChild(this.sketch)
     this.sketch.on('click', this.onClick.bind(this))
     this.sketch.on('pressmove', this.onPressMove.bind(this))
-    // this.on('mouseup', this.onMouseUp)
 
     window.marker = this
   }
@@ -49,6 +48,53 @@ class Marker {
     this.update()
   }
 
+  moved() {
+    if (this.shapeId == null) return
+    let shapes = this.app.props.shapes
+    let shape = shapes[this.shapeId]
+    switch (shape.type) {
+      case 'circle':
+
+        break
+      case 'point':
+        // let origin = info.variables.origin
+        if (shape.variables.includes('x')) {
+          shape.x = this.x
+        }
+        if (shape.variables.includes('y')) {
+          shape.y = this.y
+        }
+        break
+      default:
+        break
+    }
+    shape.init()
+
+    /*
+    let mapping = this.app.props.mappings.filter((mapping) => {
+      let shapeIds = mapping.map(m => m.shapeId)
+      return shapeIds.includes(this.shapeId)
+    })[0]
+
+    let base
+    let target
+    if (mapping[0].shapeId === this.shapeId) {
+      base = mapping[0]
+      target = mapping[1]
+    } else {
+      base = mapping[1]
+      target = mapping[0]
+    }
+
+    console.log(target)
+
+    let targetShape = this.app.shapes[target.shapeId]
+    // TODO: rewrite with mapping function
+    targetShape.info[target.name] = this[base.name] // pos[base.name] * this.app.offset
+    targetShape.init()
+    */
+  }
+
   onPressMove(event) {
     if (['constraint', 'demonstrate'].includes(this.app.state.mode)) {
       if (!this.isReference) return
@@ -60,61 +106,14 @@ class Marker {
     this.sketch.y = this.app.stage.mouseY
     this.app.update = true
 
-    let pos = {
-      x: Math.round(this.sketch.x / this.app.offset),
-      y: Math.round(this.sketch.y / this.app.offset)
-    }
+    this.x = Math.round(this.sketch.x / this.app.offset)
+    this.y = Math.round(this.sketch.y / this.app.offset)
+
+    let pos = { x: this.x, y: this.y }
     this.app.socket.emit('update:pos', { id: this.id, pos: pos })
 
     if (this.app.state.mode === '') {
-      if (this.shapeId != null) {
-        let shapes = this.app.props.shapes
-        let shape = shapes[this.shapeId]
-        switch (info.type) {
-          case 'circle':
-
-            break
-          case 'point':
-            // let origin = info.variables.origin
-            let x = pos.x // - origin.x
-            let y = pos.y // - origin.y
-            if (shape.values['x']) {
-              shape.values['x'] = x
-            }
-            if (shape.values['y']) {
-              shape.values['y'] = y
-            }
-            break
-          default:
-            break
-        }
-        shapes[this.shapeId] = shape
-        this.app.updateState({ shapes: shapes })
-
-
-        let mapping = this.app.props.mappings.filter((mapping) => {
-          let shapeIds = mapping.map(m => m.shapeId)
-          return shapeIds.includes(this.shapeId)
-        })[0]
-
-        let base
-        let target
-        if (mapping[0].shapeId === this.shapeId) {
-          base = mapping[0]
-          target = mapping[1]
-        } else {
-          base = mapping[1]
-          target = mapping[0]
-        }
-
-        console.log(target)
-
-        let targetShape = this.app.shapes[target.shapeId]
-        // TODO: rewrite with mapping function
-        targetShape.info[target.name] = this[base.name] // pos[base.name] * this.app.offset
-        targetShape.init()
-
-      }
+      this.moved()
     }
   }
 
