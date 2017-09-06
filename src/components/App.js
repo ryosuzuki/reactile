@@ -36,7 +36,7 @@ class App extends Component {
     this.socket.on('markers:update', this.updateMarkers.bind(this))
   }
 
-  sendCommand(positions) {
+  sendPositions(positions) {
     this.socket.emit('markers:move', positions)
   }
 

@@ -7,7 +7,6 @@ class Constraint {
 
   init() {
     this.app = app
-
     this.line = new createjs.Shape()
     this.line.alpha = 0.4
     this.app.stage.addChild(this.line)

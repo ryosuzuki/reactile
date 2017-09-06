@@ -170,7 +170,7 @@ class Shape {
         let positions = markers.map((marker) => {
           return { x: marker.x, y: marker.y }
         })
-        this.app.sendCommand(positions)
+        this.app.sendPositions(positions)
       } else {
         console.log('clear')
         clearInterval(timer)
