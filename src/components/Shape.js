@@ -11,68 +11,64 @@ class Shape {
     this.targets = []
     this.targetMarkers = []
     this.ids = []
-    this.id = this.app.currentIndex
-    this.info = {
-      type: 'point',
-      id: this.app.currentIndex,
-      x: 20 * this.app.offset + 10 * this.app.currentIndex * this.app.offset,
-      y: 20 * this.app.offset,
-      variables: [],
-      values: {},
-    }
-    if (this.app.currentIndex === 0) {
-      this.info.variables = ['x']
-      this.info.values['x'] = this.info.x / this.app.offset
+    this.id = this.app.currentId
+
+    this.type = 'point'
+    this.x = 20 + 10 * this.id
+    this.y = 20
+    this.variables = []
+    this.values = {}
+
+    if (this.id === 0) {
+      this.variables = ['x']
+      this.values['x'] = this.x
     } else {
-      this.info.variables = ['y']
-      this.info.values['y'] = this.info.y / this.app.offset
+      this.variables = ['y']
+      this.values['y'] = this.y
     }
-
-    window.shape = this
-
     this.outline = new createjs.Shape()
     this.app.stage.addChild(this.outline)
+    window.shape = this
   }
 
   init() {
-    let items = this.app.props.items
-
-    items[this.id] = this.info
-    this.app.updateState({ items: items })
+    let shapes = this.app.props.shapes
+    shapes[this.id] = this
+    this.app.updateState({ shapes: shapes })
 
     this.outline.graphics.clear()
     this.outline.graphics.beginStroke('#0f0')
     this.outline.graphics.setStrokeStyle(3)
-    switch (this.info.type) {
+    switch (this.type) {
       case 'circle':
-        this.outline.graphics.drawCircle(0, 0, this.info.radius)
-        this.outline.x = this.info.x
-        this.outline.y = this.info.y
+        this.outline.graphics.drawCircle(0, 0, this.radius)
+        this.outline.x = this.x
+        this.outline.y = this.y
         this.svg = getPoints('circle', {
-          cx: this.info.x,
-          cy: this.info.y,
-          r: this.info.radius
+          cx: this.x,
+          cy: this.y,
+          r: this.radius
         })
         break
       case 'rect':
-        this.outline.graphics.drawRect(0, 0, this.info.width, this.info.height)
-        this.outline.x = this.info.x
-        this.outline.y = this.info.y
+        this.outline.graphics.drawRect(0, 0, this.width, this.height)
+        this.outline.x = this.x
+        this.outline.y = this.y
         this.svg = getPoints('rect', {
-          x: this.info.x,
-          y: this.info.y,
-          width: this.info.width,
-          height: this.info.height
+          x: this.x,
+          y: this.y,
+          width: this.width,
+          height: this.height
         })
         break
       case 'point':
         let radius = 10
         this.outline.graphics.drawCircle(0, 0, radius)
-        this.outline.x = this.info.x
-        this.outline.y = this.info.y
+        this.outline.x = this.x
+        this.outline.y = this.y
         this.svg = getPoints('circle', {
-          cx: this.info.x,
-          cy: this.info.y,
+          cx: this.x,
+          cy: this.y,
           r: radius,
         })
         break
@@ -127,13 +123,13 @@ class Shape {
   }
 
   scale(value) {
-    switch (this.info.type) {
+    switch (this.type) {
       case 'circle':
-        this.info.radius *= value
+        this.radius *= value
         break
       case 'rect':
-        this.info.width *= value
-        this.info.height *= value
+        this.width *= value
+        this.height *= value
         break
     }
     this.init()
@@ -147,7 +143,7 @@ class Shape {
       let distArray = []
       for (let target of this.targets) {
         let dist = Math.abs(marker.x - target.x) + Math.abs(marker.y - target.y)
-        if (marker.shapeId != null && marker.shapeId !== this.app.currentIndex) {
+        if (marker.shapeId != null && marker.shapeId !== this.app.currentId) {
           dist = Infinity
         }
         distArray.push(dist)
@@ -177,7 +173,7 @@ class Shape {
         let mids = this.ids.map(a => a[0])
         for (let id of mids) {
           let markers = this.app.props.markers
-          markers[id].shapeId = this.app.currentIndex
+          markers[id].shapeId = this.app.currentId
           this.app.updateState({ markers: markers })
         }
       }

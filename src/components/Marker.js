@@ -68,8 +68,8 @@ class Marker {
 
     if (this.app.state.mode === '') {
       if (this.shapeId != null) {
-        let items = this.app.props.items
-        let info = items[this.shapeId]
+        let shapes = this.app.props.shapes
+        let shape = shapes[this.shapeId]
         switch (info.type) {
           case 'circle':
 
@@ -78,18 +78,18 @@ class Marker {
             // let origin = info.variables.origin
             let x = pos.x // - origin.x
             let y = pos.y // - origin.y
-            if (info.values['x']) {
-              info.values['x'] = x
+            if (shape.values['x']) {
+              shape.values['x'] = x
             }
-            if (info.values['y']) {
-              info.values['y'] = y
+            if (shape.values['y']) {
+              shape.values['y'] = y
             }
             break
           default:
             break
         }
-        items[this.shapeId] = info
-        this.app.updateState({ items: items })
+        shapes[this.shapeId] = shape
+        this.app.updateState({ shapes: shapes })
 
 
         let mapping = this.app.props.mappings.filter((mapping) => {
@@ -109,10 +109,10 @@ class Marker {
 
         console.log(target)
 
-        let shape = this.app.shapes[target.shapeId]
+        let targetShape = this.app.shapes[target.shapeId]
         // TODO: rewrite with mapping function
-        shape.info[target.name] = this[base.name] // pos[base.name] * this.app.offset
-        shape.init()
+        targetShape.info[target.name] = this[base.name] // pos[base.name] * this.app.offset
+        targetShape.init()
 
       }
     }

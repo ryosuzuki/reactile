@@ -30,7 +30,7 @@ class Constraint {
     if (this.references.length > 1) {
       this.visualize()
       this.calculate()
-      let info = this.app.props.items[this.app.currentIndex]
+      let info = this.app.props.shapes[this.app.currentId]
       let type = info.type
       let variables = info.variables
       switch (type) {

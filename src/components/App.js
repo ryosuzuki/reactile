@@ -23,7 +23,7 @@ class App extends Component {
     this.offset = 20
 
     this.shapes = []
-    this.currentIndex = -1
+    this.currentId = -1
 
     this.state = {
       mode: '',
@@ -132,7 +132,7 @@ class App extends Component {
         return marker
       })
       this.updateState({ markers: markers })
-      this.currentIndex++
+      this.currentId++
       this.shape = new Shape()
       this.shape.init()
       this.shapes.push(this.shape)
@@ -148,7 +148,7 @@ class App extends Component {
         <div id="sidepanel">
           <Panel
             pathData={ this.props.pathData }
-            items={ this.props.items }
+            shapes={ this.props.shapes }
             mappings={ this.props.mappings }
            />
         </div>

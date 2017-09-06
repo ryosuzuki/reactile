@@ -7,23 +7,6 @@ class Panel extends Component {
     super()
     this.app = app
     window.panel = this
-
-    let items = [{
-      name: 'Circle',
-      variables: ['radius']
-    }, {
-      name: 'Slider',
-      variables: ['value']
-    }]
-
-    items = [{
-      name: 'Data',
-      variables: ['month', 'temperature']
-    }, {
-      name: 'Point',
-      variables: ['x', 'y']
-    }]
-
     this.state = {
       width: 260,
       height: 220,
@@ -35,9 +18,9 @@ class Panel extends Component {
   componentDidMount() {
   }
 
-  onClick(item, name) {
+  onClick(shape, name) {
     let selected = this.state.selected
-    let variable = { shapeId: item.id, name: name }
+    let variable = { shapeId: shape.id, name: name }
     if (!this.includes(selected, variable)) {
       selected.push(variable)
     } else {
@@ -68,24 +51,24 @@ class Panel extends Component {
             this.drawConnector(id0, id1, index)
           )
         }) }
-        { this.props.items.map((item, index) => {
+        { this.props.shapes.map((shape, index) => {
           return (
             <div className="ui card" key={ index } style={{ width: '100%', height: this.state.height, margin: `${this.state.margin}px 0` }}>
               <div className="content" style={{ flexGrow: 0 }}>
-                <div className="header">{ _.capitalize(item.type) }</div>
+                <div className="header">{ _.capitalize(shape.type) }</div>
               </div>
-              { this.drawSvg(item.type) }
+              { this.drawSvg(shape.type) }
               <div className="content">
-                { item.variables.map((name) => {
-                  let value = item.values[name]
-                  let variable = { shapeId: item.id, name: name }
+                { shape.variables.map((name) => {
+                  let value = shape.values[name]
+                  let variable = { shapeId: shape.id, name: name }
                   return (
                     <button
-                      id={ `${item.id}-${name}` }
+                      id={ `${shape.id}-${name}` }
                       className={ `ui button ${ this.includes(this.state.selected, variable) ? 'orange' : 'teal' }` }
                       style={{ width: '100%', marginBottom: '10px' }}
                       key={ name }
-                      onClick={ this.onClick.bind(this, item, name) }
+                      onClick={ this.onClick.bind(this, shape, name) }
                     >
                       { `${name} : ${value}` }
                     </button>
@@ -120,8 +103,8 @@ class Panel extends Component {
   }
 
   getName(info) {
-    let item = this.props.items[info.shapeId]
-    return `${item.type}.${info.name}`
+    let shape = this.props.shapes[info.shapeId]
+    return `${shape.type}.${info.name}`
   }
 
   drawConnector(id1, id2, index) {
@@ -231,3 +214,22 @@ class Panel extends Component {
 
 
 export default Panel
+
+
+/*
+let shapes = [{
+  name: 'Circle',
+  variables: ['radius']
+}, {
+  name: 'Slider',
+  variables: ['value']
+}]
+
+shapes = [{
+  name: 'Data',
+  variables: ['month', 'temperature']
+}, {
+  name: 'Point',
+  variables: ['x', 'y']
+}]
+*/
