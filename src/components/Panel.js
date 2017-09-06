@@ -5,6 +5,7 @@ import 'createjs'
 class Panel extends Component {
   constructor() {
     super()
+    this.app = app
     window.panel = this
 
     let items = [{
@@ -27,18 +28,41 @@ class Panel extends Component {
       width: 260,
       height: 220,
       margin: 10,
+      selected: []
     }
   }
 
   componentDidMount() {
   }
 
+  onClick(variable) {
+    let selected = this.state.selected
+    if (!selected.includes(variable)) {
+      selected.push(variable)
+    } else {
+      _.pull(selected, variable)
+    }
+
+    if (selected.length === 2) {
+      let mapping = selected
+      let mappings = this.props.mappings
+      if (!mappings.includes(mapping)) {
+        mappings.push(mapping)
+      }
+      this.app.updateState({ mappings: mappings })
+      selected = []
+    }
+    this.setState({ selected: selected })
+  }
+
   render() {
     return (
       <div id="panel" className="panel">
         { this.props.mappings.map((mapping, index) => {
+          let id1 = mapping[0].replace('.', '-')
+          let id2 = mapping[1].replace('.', '-')
           return (
-            this.drawConnector(mapping)
+            this.drawConnector(id1, id2, index)
           )
         }) }
         { this.props.items.map((item, index) => {
@@ -49,9 +73,10 @@ class Panel extends Component {
               </div>
               { this.drawSvg(item.type) }
               <div className="content">
-                { item.variables.map((variable) => {
+                { item.variables.map((name) => {
+                  let variable = `${item.type}.${name}`
                   return (
-                    <button className="ui teal button" style={{ width: '100%', marginBottom: '10px' }} key={ variable }>{ variable }</button>
+                    <button id={ `${item.type}-${name}` } className={ `ui button ${ (this.state.selected.includes(variable) ? 'orange' : 'teal' ) }`} style={{ width: '100%', marginBottom: '10px' }} key={ name } onClick={ this.onClick.bind(this, variable) }>{ name }</button>
                   )
                 }) }
               </div>
@@ -64,13 +89,12 @@ class Panel extends Component {
             <div className="header">Mapping</div>
           </div>
           <div className="content">
-            { this.props.mappings.map((mapping) => {
+            { this.props.mappings.map((mapping, index) => {
               return (
-                <div>
-                  <span className="ui teal label">circle.radius</span>
+                <div key={ index }>
+                  <span className="ui teal label">{ mapping[0] }</span>
                   <span> = </span>
-                  <span className="ui teal label">slider.value</span>
-                  <span> / 100 </span>
+                  <span className="ui teal label">{ mapping[1] }</span>
                 </div>
               )
             })}
@@ -81,6 +105,63 @@ class Panel extends Component {
     )
   }
 
+  drawConnector(id1, id2, index) {
+    let el1 = $(`#${id1}`)
+    let el2 = $(`#${id2}`)
+    let info1 = {
+      x: el1.offset().left,
+      y: el1.offset().top,
+      width: el1.width(),
+      height: el1.height()
+    }
+    let info2 = {
+      x: el2.offset().left,
+      y: el2.offset().top,
+      width: el2.width(),
+      height: el2.height()
+    }
+
+    let offset = 20 * (index + 1)
+    let left = info1.x + info1.width
+    let top = info1.y
+    let height = Math.abs(info1.y - info2.y)
+
+    let connector = {
+      position: 'absolute',
+      width: 0,
+      height: height + 5,
+      left: left + offset,
+      top: top,
+      zIndex: 1000,
+      borderRight: '10px solid teal'
+    }
+    let topOffset = {
+      position: 'absolute',
+      width: offset + 10,
+      height: 0,
+      left: left,
+      top: top - 5,
+      zIndex: 1000,
+      borderTop: '10px solid teal'
+    }
+    let bottomOffset = {
+      position: 'absolute',
+      width: offset + 10,
+      height: 0,
+      left: left,
+      top: top + height - 5,
+      zIndex: 1000,
+      borderBottom: '10px solid teal'
+    }
+
+    return (
+      <div key={ index }>
+        <div style={ topOffset }></div>
+        <div style={ connector }></div>
+        <div style={ bottomOffset }></div>
+      </div>
+    )
+  }
 
   drawSvg(type) {
     type = type.toLowerCase()
@@ -125,46 +206,6 @@ class Panel extends Component {
     }
   }
 
-  drawConnector(index) {
-    let width = 40 - index * 20
-    let left = 300 - index * 20
-    let top = 230 - index * 50
-    let style1 = {
-      position: 'absolute',
-      width: `${0}px`,
-      height: `${this.state.height + this.state.margin*2}px`,
-      left: `${left}px`,
-      top: `${top}px`,
-      zIndex: 1000,
-      borderRight: '10px solid teal'
-    }
-    let style2 = {
-      position: 'absolute',
-      width: `${width}px`,
-      height: `${0}px`,
-      left: `${left - width}px`,
-      top: `${top}px`,
-      zIndex: 1000,
-      borderTop: '10px solid teal'
-    }
-    let style3 = {
-      position: 'absolute',
-      width: `${width}px`,
-      height: `${0}px`,
-      left: `${left - width}px`,
-      top: `${top + this.state.height + this.state.margin}px`,
-      zIndex: 1000,
-      borderBottom: '10px solid teal'
-    }
-
-    return (
-      <div>
-        <div style={ style1 }></div>
-        <div style={ style2 }></div>
-        <div style={ style3 }></div>
-      </div>
-    )
-  }
 
 }
 

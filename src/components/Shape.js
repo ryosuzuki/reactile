@@ -13,12 +13,19 @@ class Shape extends createjs.Shape {
     this.app = app
     this.targets = []
     this.targetMarkers = []
+    this.ids = []
     this.info = {
       type: 'point',
       x: 20 * this.app.offset,
       y: 20 * this.app.offset,
       variables: []
     }
+    if (this.app.currentIndex === 0) {
+      this.info.variables = ['x']
+    } else {
+      this.info.variables = ['y']
+    }
+
     window.shape = this
 
     this.outline = new createjs.Shape()
