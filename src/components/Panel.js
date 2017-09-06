@@ -35,34 +35,37 @@ class Panel extends Component {
   componentDidMount() {
   }
 
-  onClick(variable) {
+  onClick(item, name) {
     let selected = this.state.selected
-    if (!selected.includes(variable)) {
+    let variable = { shapeId: item.id, name: name }
+    if (!this.includes(selected, variable)) {
       selected.push(variable)
     } else {
-      _.pull(selected, variable)
+      _.pullAllWith(selected, [variable], _.isEqual)
     }
 
     if (selected.length === 2) {
       let mapping = selected
       let mappings = this.props.mappings
-      if (!mappings.includes(mapping)) {
-        mappings.push(mapping)
-      }
+      mappings.push(mapping)
       this.app.updateState({ mappings: mappings })
       selected = []
     }
     this.setState({ selected: selected })
   }
 
+  includes(selected, variable) {
+    return _.intersectionWith(selected, [variable], _.isEqual).length > 0
+  }
+
   render() {
     return (
       <div id="panel" className="panel">
         { this.props.mappings.map((mapping, index) => {
-          let id1 = mapping[0].replace('.', '-')
-          let id2 = mapping[1].replace('.', '-')
+          let id0 = _.values(mapping[0]).join('-')
+          let id1 = _.values(mapping[1]).join('-')
           return (
-            this.drawConnector(id1, id2, index)
+            this.drawConnector(id0, id1, index)
           )
         }) }
         { this.props.items.map((item, index) => {
@@ -74,10 +77,18 @@ class Panel extends Component {
               { this.drawSvg(item.type) }
               <div className="content">
                 { item.variables.map((name) => {
-                  let variable = `${item.type}.${name}`
                   let value = item.values[name]
+                  let variable = { shapeId: item.id, name: name }
                   return (
-                    <button id={ `${item.type}-${name}` } className={ `ui button ${ (this.state.selected.includes(variable) ? 'orange' : 'teal' ) }`} style={{ width: '100%', marginBottom: '10px' }} key={ name } onClick={ this.onClick.bind(this, variable) }>{ `${name} : ${value}` }</button>
+                    <button
+                      id={ `${item.id}-${name}` }
+                      className={ `ui button ${ this.includes(this.state.selected, variable) ? 'orange' : 'teal' }` }
+                      style={{ width: '100%', marginBottom: '10px' }}
+                      key={ name }
+                      onClick={ this.onClick.bind(this, item, name) }
+                    >
+                      { `${name} : ${value}` }
+                    </button>
                   )
                 }) }
               </div>
@@ -91,11 +102,13 @@ class Panel extends Component {
           </div>
           <div className="content">
             { this.props.mappings.map((mapping, index) => {
+              let name0 = this.getName(mapping[0])
+              let name1 = this.getName(mapping[1])
               return (
                 <div key={ index }>
-                  <span className="ui teal label">{ mapping[0] }</span>
+                  <span className="ui teal label">{ name0 }</span>
                   <span> = </span>
-                  <span className="ui teal label">{ mapping[1] }</span>
+                  <span className="ui teal label">{ name1 }</span>
                 </div>
               )
             })}
@@ -104,6 +117,11 @@ class Panel extends Component {
 
       </div>
     )
+  }
+
+  getName(info) {
+    let item = this.props.items[info.shapeId]
+    return `${item.type}.${info.name}`
   }
 
   drawConnector(id1, id2, index) {

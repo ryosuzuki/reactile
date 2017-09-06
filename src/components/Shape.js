@@ -14,8 +14,10 @@ class Shape extends createjs.Shape {
     this.targets = []
     this.targetMarkers = []
     this.ids = []
+    this.id = this.app.currentIndex
     this.info = {
       type: 'point',
+      id: this.app.currentIndex,
       x: 20 * this.app.offset + 10 * this.app.currentIndex * this.app.offset,
       y: 20 * this.app.offset,
       variables: [],
@@ -34,15 +36,12 @@ class Shape extends createjs.Shape {
     this.outline = new createjs.Shape()
     this.app.stage.addChild(this.outline)
     this.app.stage.addChild(this)
-
-    this.init()
-    this.render()
-    this.move()
   }
 
   init() {
     let items = this.app.props.items
-    items[this.app.currentIndex] = this.info
+
+    items[this.id] = this.info
     this.app.updateState({ items: items })
 
     this.outline.graphics.clear()
@@ -87,6 +86,8 @@ class Shape extends createjs.Shape {
         break
     }
     this.generate()
+    this.render()
+    this.move()
   }
 
   generate() {
@@ -146,10 +147,16 @@ class Shape extends createjs.Shape {
 
   calculate() {
     this.distMatrix = []
-    for (let pos of this.app.props.positions) {
+
+    for (let i = 0; i < this.app.props.positions.length; i++) {
+      let pos = this.app.props.positions[i]
+      let marker = this.app.markers[i]
       let distArray = []
       for (let target of this.targets) {
         let dist = Math.abs(pos.x - target.x) + Math.abs(pos.y - target.y)
+        if (marker.shapeId != null && marker.shapeId !== this.app.currentIndex) {
+          dist = Infinity
+        }
         distArray.push(dist)
       }
       this.distMatrix.push(distArray)
@@ -169,6 +176,10 @@ class Shape extends createjs.Shape {
       } else {
         console.log('clear')
         clearInterval(timer)
+        let mids = this.ids.map(a => a[0])
+        for (let id of mids) {
+          this.app.markers[id].shapeId = this.app.currentIndex
+        }
       }
     }, 100)
   }
@@ -201,7 +212,6 @@ class Shape extends createjs.Shape {
           y = y + 1
         }
       }
-      this.app.markers[mid].shapeIndex = this.app.currentIndex
       this.nextPositions[mid] = { x: x, y: y }
     }
   }

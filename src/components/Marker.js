@@ -7,7 +7,7 @@ class Marker extends createjs.Shape {
     this.isReference = false
     this.moving = false
     this.origin = new createjs.Shape()
-    this.shapeIndex = null
+    this.shapeId = null
 
     this.app.stage.addChild(this.origin)
     this.app.stage.addChild(this)
@@ -67,9 +67,9 @@ class Marker extends createjs.Shape {
     this.app.socket.emit('update:pos', { id: this.id, pos: pos })
 
     if (this.app.state.mode === '') {
-      if (this.shapeIndex >= 0) {
+      if (this.shapeId != null) {
         let items = this.app.props.items
-        let info = items[this.shapeIndex]
+        let info = items[this.shapeId]
         switch (info.type) {
           case 'circle':
 
@@ -81,15 +81,39 @@ class Marker extends createjs.Shape {
             if (info.values['x']) {
               info.values['x'] = x
             }
-            if (info.values['x']) {
+            if (info.values['y']) {
               info.values['y'] = y
             }
             break
           default:
             break
         }
-        items[this.shapeIndex] = info
+        items[this.shapeId] = info
         this.app.updateState({ items: items })
+
+
+        let mapping = this.app.props.mappings.filter((mapping) => {
+          let shapeIds = mapping.map(m => m.shapeId)
+          return shapeIds.includes(this.shapeId)
+        })[0]
+
+        let base
+        let target
+        if (mapping[0].shapeId === this.shapeId) {
+          base = mapping[0]
+          target = mapping[1]
+        } else {
+          base = mapping[1]
+          target = mapping[0]
+        }
+
+        console.log(target)
+
+        let shape = this.app.shapes[target.shapeId]
+        // TODO: rewrite with mapping function
+        shape.info[target.name] = this[base.name] // pos[base.name] * this.app.offset
+        shape.init()
+
       }
     }
   }

@@ -22,6 +22,9 @@ class Draw {
   }
 
   start() {
+    if (this.app.state.mode === 'constraint') {
+
+    }
     if (this.app.state.mode !== 'draw') return
     this.drawing = true
     this.stroke = []
@@ -102,8 +105,6 @@ class Draw {
     }
 
     this.app.shape.init()
-    this.app.shape.render()
-    this.app.shape.move()
   }
 
 }

@@ -23,6 +23,7 @@ class App extends Component {
     this.offset = 20
 
     this.markers = []
+    this.shapes = []
     this.currentIndex = -1
 
     this.state = {
@@ -30,7 +31,6 @@ class App extends Component {
       width: 1080,
       height: 720
     }
-    this.shapes = []
 
     this.update = true
     this.socket = socket
@@ -133,6 +133,8 @@ class App extends Component {
       })
       this.currentIndex++
       this.shape = new Shape()
+      this.shape.init()
+      this.shapes.push(this.shape)
 
     } else {
       this.setState({ mode: mode })
