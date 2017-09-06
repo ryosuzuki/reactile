@@ -23,7 +23,7 @@ class App extends Component {
     this.offset = 20
 
     this.markers = []
-    this.currentIndex = 0
+    this.currentIndex = -1
 
     this.state = {
       mode: '',
@@ -74,9 +74,6 @@ class App extends Component {
     this.grid = new Grid()
     this.grid.render()
 
-    this.shape = new Shape()
-    this.shapes.push(this.shape)
-
     this.draw = new Draw()
     this.draw.init()
 
@@ -120,6 +117,11 @@ class App extends Component {
   }
 
   onClick(mode) {
+    if (this.state.mode === mode) {
+      this.setState({ mode: '' })
+      return
+    }
+
     console.log(mode)
     if (mode === 'run') {
       this.constraint.run()

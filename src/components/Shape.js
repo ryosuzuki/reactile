@@ -16,14 +16,17 @@ class Shape extends createjs.Shape {
     this.ids = []
     this.info = {
       type: 'point',
-      x: 20 * this.app.offset,
+      x: 20 * this.app.offset + 10 * this.app.currentIndex * this.app.offset,
       y: 20 * this.app.offset,
-      variables: []
+      variables: [],
+      values: {},
     }
     if (this.app.currentIndex === 0) {
       this.info.variables = ['x']
+      this.info.values['x'] = this.info.x / this.app.offset
     } else {
       this.info.variables = ['y']
+      this.info.values['y'] = this.info.y / this.app.offset
     }
 
     window.shape = this
@@ -198,6 +201,7 @@ class Shape extends createjs.Shape {
           y = y + 1
         }
       }
+      this.app.markers[mid].shapeIndex = this.app.currentIndex
       this.nextPositions[mid] = { x: x, y: y }
     }
   }

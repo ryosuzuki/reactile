@@ -5,14 +5,16 @@ class Marker extends createjs.Shape {
     this.app = app
 
     this.isReference = false
-
+    this.moving = false
     this.origin = new createjs.Shape()
+    this.shapeIndex = null
 
     this.app.stage.addChild(this.origin)
     this.app.stage.addChild(this)
     this.render()
-    this.on('mousedown', this.onMouseDown)
+    this.on('click', this.onClick)
     this.on('pressmove', this.onPressMove)
+    // this.on('mouseup', this.onMouseUp)
 
     window.marker = this
   }
@@ -36,16 +38,23 @@ class Marker extends createjs.Shape {
     this.app.update = true
   }
 
-  onMouseDown(event) {
+  onClick(event) {
+    if (this.moving) {
+      this.moving = false
+      return
+    }
+    console.log('click')
     if (this.app.state.mode !== 'constraint') return
-    console.log('down')
     this.isReference = !this.isReference
     this.render()
   }
 
   onPressMove(event) {
-    if (this.app.state.mode !== 'demonstrate') return
-    if (!this.isReference) return
+    if (['constraint', 'demonstrate'].includes(this.app.state.mode)) {
+      if (!this.isReference) return
+    }
+
+    this.moving = true
     console.log('move')
     this.x = this.app.stage.mouseX
     this.y = this.app.stage.mouseY
@@ -56,6 +65,33 @@ class Marker extends createjs.Shape {
       y: Math.round(this.y / this.app.offset)
     }
     this.app.socket.emit('update:pos', { id: this.id, pos: pos })
+
+    if (this.app.state.mode === '') {
+      if (this.shapeIndex >= 0) {
+        let items = this.app.props.items
+        let info = items[this.shapeIndex]
+        switch (info.type) {
+          case 'circle':
+
+            break
+          case 'point':
+            // let origin = info.variables.origin
+            let x = pos.x // - origin.x
+            let y = pos.y // - origin.y
+            if (info.values['x']) {
+              info.values['x'] = x
+            }
+            if (info.values['x']) {
+              info.values['y'] = y
+            }
+            break
+          default:
+            break
+        }
+        items[this.shapeIndex] = info
+        this.app.updateState({ items: items })
+      }
+    }
   }
 
 

@@ -75,8 +75,9 @@ class Panel extends Component {
               <div className="content">
                 { item.variables.map((name) => {
                   let variable = `${item.type}.${name}`
+                  let value = item.values[name]
                   return (
-                    <button id={ `${item.type}-${name}` } className={ `ui button ${ (this.state.selected.includes(variable) ? 'orange' : 'teal' ) }`} style={{ width: '100%', marginBottom: '10px' }} key={ name } onClick={ this.onClick.bind(this, variable) }>{ name }</button>
+                    <button id={ `${item.type}-${name}` } className={ `ui button ${ (this.state.selected.includes(variable) ? 'orange' : 'teal' ) }`} style={{ width: '100%', marginBottom: '10px' }} key={ name } onClick={ this.onClick.bind(this, variable) }>{ `${name} : ${value}` }</button>
                   )
                 }) }
               </div>
