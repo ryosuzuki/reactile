@@ -11,9 +11,11 @@ class Shape {
     this.type = 'point'
     this.x = 20 + 10 * this.id
     this.y = 20
+    this.angle = 0
+    this.scale = 1
     this.variables = []
     this.values = {}
-
+    /*
     if (this.id === 0) {
       this.variables = ['x']
       this.values['x'] = this.x
@@ -21,6 +23,7 @@ class Shape {
       this.variables = ['y']
       this.values['y'] = this.y
     }
+    */
     this.outline = new Outline(this)
     window.shape = this
   }
@@ -132,21 +135,23 @@ class Shape {
     }
     this.line.graphics.endStroke()
     this.app.stage.addChild(this.line)
-    // this.app.update = true
+    this.app.update = true
   }
 
   initFromCanvas(info) {
     this.type = info.type
-    this.x = this.convert(info.x)
-    this.y = this.convert(info.y)
     this.variables = []
     switch (info.type) {
       case 'circle':
+        this.x = this.convert(info.x)
+        this.y = this.convert(info.y)
         this.radius = this.convert(info.radius)
         break
       case 'rect':
         this.width = this.convert(info.width)
         this.height = this.convert(info.height)
+        this.x = this.convert(info.x) + this.width / 2
+        this.y = this.convert(info.y) + this.height / 2
         break
     }
     this.init()
@@ -154,19 +159,6 @@ class Shape {
 
   convert(val) {
     return Math.round(val / this.app.offset)
-  }
-
-  scale(value) {
-    switch (this.type) {
-      case 'circle':
-        this.radius *= value
-        break
-      case 'rect':
-        this.width *= value
-        this.height *= value
-        break
-    }
-    this.init()
   }
 
 }

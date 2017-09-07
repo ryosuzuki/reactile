@@ -69,11 +69,19 @@ class Marker {
         }
         break
       case 'rect':
+        let minX = _.min(shape.targets.map(t => t.x))
+        let maxX = _.max(shape.targets.map(t => t.x))
+        let minY = _.min(shape.targets.map(t => t.y))
+        let maxY = _.max(shape.targets.map(t => t.y))
         if (shape.variables.includes('width')) {
-
+          if (this.x <= minX) shape.width = maxX - this.x
+          if (this.x >= maxX) shape.width = this.x - minX
+          console.log(minX, maxX)
+          console.log(this.x)
         }
         if (shape.variables.includes('height')) {
-
+          if (this.y <= minY) shape.height = maxY - this.y
+          if (this.y >= maxY) shape.height = this.y - minY
         }
         if (shape.variables.includes('scale')) {
 
