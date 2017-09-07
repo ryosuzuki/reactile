@@ -13,9 +13,9 @@ class Track {
     this.camInterval = 1000 / this.camFps
     this.rectThickness = 2
 
-    // this.camera = new cv.VideoCapture(0)
-    // this.camera.setWidth(this.camWidth)
-    // this.camera.setHeight(this.camHeight)
+    this.camera = new cv.VideoCapture(1)
+    this.camera.setWidth(this.camWidth)
+    this.camera.setHeight(this.camHeight)
 
     this.buffer = null
     this.im = null
@@ -43,14 +43,30 @@ class Track {
     this.connect()
     this.socket.on('markers:move', this.testMove.bind(this))
     this.socket.on('update:pos', this.updatePos.bind(this))
-    // this.run()
-    this.testRun()
+    this.run()
+    // this.testRun()
   }
 
   updatePos(data) {
     let id = data.id
     let pos = data.pos
     this.positions[id] = pos
+  }
+
+  run() {
+    setInterval(() => {
+      this.camera.read((err, im) => {
+        if (err) throw err
+        this.im = im
+
+        // this.detectRect()
+        // if (!this.calibrating) {
+        //   this.detectMarker(this)
+        // }
+        this.buffer = this.im.toBuffer()
+        this.socket.emit('buffer', this.buffer)
+      })
+    }, this.camInterval)
   }
 
   testRun() {
@@ -61,9 +77,6 @@ class Track {
         y: this.random()
       })
     }
-
-    // this.positions = [{x: 24, y: 11}, {x: 21, y: 12}, {x: 19, y: 14}, {x: 18, y: 17}, {x: 18, y: 21}, {x: 20, y: 23}, {x: 24, y: 24}, {x: 27, y: 24}, {x: 29, y: 22}, {x: 31, y: 18}, {x: 30, y: 15}, {x: 28, y: 13}]
-
     setInterval(() => {
       this.socket.emit('markers:update', this.positions)
     }, this.camInterval)
@@ -82,22 +95,6 @@ class Track {
 
   move(data) {
     // this.port.write(JSON.stringify(data))
-  }
-
-  run() {
-    setInterval(() => {
-      this.camera.read((err, im) => {
-        if (err) throw err
-        this.im = im
-
-        this.detectRect()
-        if (!this.calibrating) {
-          this.detectMarker(this)
-        }
-        this.buffer = this.im.toBuffer()
-        this.socket.emit('buffer', this.buffer)
-      })
-    }, this.camInterval)
   }
 
 

@@ -10,6 +10,10 @@ app.use('/', express.static(__dirname))
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname + '/index.html'));
 })
+app.get('/camera', (req, res) => {
+  res.sendFile(path.join(__dirname + '/camera.html'));
+})
+
 
 const server = http.Server(app)
 server.listen(4000, () => {
