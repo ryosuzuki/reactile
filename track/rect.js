@@ -1,6 +1,8 @@
 const _ = require('lodash')
 
 function detectRect() {
+  if (this.ready) return
+
   this.min = this.blueMin
   this.max = this.blueMax
   let imCanny = this.im.copy()
@@ -36,13 +38,16 @@ function detectRect() {
     let top =  _.orderBy(points, 'y').slice(0, 2)
     let bottom =  _.orderBy(points, 'y').slice(2, 4)
 
-    let leftTop = _.orderBy(left, 'y')[0]
-    let leftBottom = _.orderBy(left, 'y')[1]
-    let rightBottom = _.orderBy(right, 'y')[1]
-    let rightTop = _.orderBy(right, 'y')[0]
+    let topLeft = _.orderBy(left, 'y')[0]
+    let bottomLeft = _.orderBy(left, 'y')[1]
+    let bottomRight = _.orderBy(right, 'y')[1]
+    let topRight = _.orderBy(right, 'y')[0]
 
     this.rect = [
-      leftTop, leftBottom, rightBottom, rightTop
+      topLeft,
+      bottomLeft,
+      bottomRight,
+      topRight
     ]
 
     for (let i = 0; i < this.rect.length; i++) {
@@ -50,8 +55,10 @@ function detectRect() {
       let ni = (i+1) % 4
       let p0 = [this.rect[ci].x, this.rect[ci].y]
       let p1 = [this.rect[ni].x, this.rect[ni].y]
-      this.im.line(p0, p1)
+      let black = [0, 0, 0]
+      this.im.line(p0, p1, black)
     }
+    this.ready = true
   }
 }
 

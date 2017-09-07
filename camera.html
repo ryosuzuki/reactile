@@ -9,6 +9,10 @@
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io.connect('http://localhost:4000/')
+    socket.on('markers:update', function (positions) {
+      window.positions = positions
+    })
+
     socket.on('buffer', function (data) {
       let buffer = data.buffer
       let rect = data.rect

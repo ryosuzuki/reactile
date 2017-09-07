@@ -4,6 +4,7 @@ const _ = require('lodash')
 const connect = require('./connect')
 const detectRect = require('./rect')
 const detectMarker = require('./marker')
+const warpWithRect = require('./warp')
 
 class Track {
   constructor() {
@@ -19,7 +20,7 @@ class Track {
 
     this.buffer = null
     this.im = null
-    this.calibrating = true
+    this.ready = false
 
     this.index = 0
     this.rect = {}
@@ -40,6 +41,7 @@ class Track {
     this.connect = connect.bind(this)
     this.detectRect = detectRect.bind(this)
     this.detectMarker = detectMarker.bind(this)
+    this.warpWithRect = warpWithRect.bind(this)
   }
 
   start(socket) {
@@ -64,9 +66,10 @@ class Track {
         this.im = im
 
         this.detectRect()
-        // if (!this.calibrating) {
-        //   this.detectMarker(this)
-        // }
+        if (this.ready) {
+          this.warpWithRect()
+          this.detectMarker()
+        }
         this.buffer = this.im.toBuffer()
         this.socket.emit('buffer', {
           buffer: this.buffer,

@@ -8,10 +8,11 @@ const bodyParser = require('body-parser')
 app.use(bodyParser.json())
 app.use('/', express.static(__dirname))
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname + '/index.html'));
+  track.ready = false
+  res.sendFile(path.join(__dirname + '/index.html'))
 })
 app.get('/camera', (req, res) => {
-  res.sendFile(path.join(__dirname + '/camera.html'));
+  res.sendFile(path.join(__dirname + '/camera.html'))
 })
 
 
