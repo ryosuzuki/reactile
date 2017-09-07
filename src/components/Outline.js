@@ -91,6 +91,7 @@ class Outline extends createjs.Shape {
   }
 
   renderTargets() {
+    // this.graphics.clear()
     for (let targetMarker of this.targetMarkers) {
       this.app.stage.removeChild(targetMarker)
     }

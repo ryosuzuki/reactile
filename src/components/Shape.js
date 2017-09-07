@@ -40,9 +40,10 @@ class Shape {
       let distArray = []
       for (let target of this.targets) {
         let dist = Math.abs(marker.x - target.x) + Math.abs(marker.y - target.y)
-        if (marker.shapeId != null && marker.shapeId !== this.app.currentId) {
-          dist = Infinity
-        }
+        // if (marker.shapeId != null && marker.shapeId !== this.app.currentId) {
+        //   dist = Infinity
+        // }
+        // if (dist > 10) dist = 100
         distArray.push(dist)
       }
       this.distMatrix.push(distArray)

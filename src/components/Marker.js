@@ -12,23 +12,13 @@ class Marker {
     this.app.stage.addChild(this.sketch)
     this.sketch.on('click', this.onClick.bind(this))
     this.sketch.on('pressmove', this.onPressMove.bind(this))
+    this.sketchColor = this.sketch.graphics.beginFill('#f00').command
+    this.originColor = this.origin.graphics.beginFill('#f00').command
 
     window.marker = this
   }
 
   update() {
-    if (this.isReference) {
-      this.sketch.graphics.beginFill('#00f')
-      this.origin.graphics.beginFill('#f00')
-      this.origin.graphics.drawCircle(0, 0, 10)
-      this.origin.alpha = 0.2
-      this.origin.x = this.sketch.x
-      this.origin.y = this.sketch.y
-    } else {
-      this.sketch.graphics.beginFill('#f00')
-      this.origin.graphics.clear()
-    }
-
     this.sketch.graphics.drawCircle(0, 0, 10)
     if (this.sketch.x !== this.x * this.app.offset
       || this.sketch.y !== this.y * this.app.offset) {
@@ -46,7 +36,18 @@ class Marker {
     console.log('click')
     if (this.app.state.mode !== 'constraint') return
     this.isReference = !this.isReference
-    this.update()
+    if (this.isReference) {
+      this.sketchColor.style = '#00f'
+      this.origin.graphics.beginFill('#f00')
+      this.origin.graphics.drawCircle(0, 0, 10)
+      this.origin.alpha = 0.2
+      this.origin.x = this.sketch.x
+      this.origin.y = this.sketch.y
+    } else {
+      this.sketchColor.style = '#f00'
+      this.origin.graphics.clear()
+    }
+    this.app.update = true
   }
 
   transform() {
