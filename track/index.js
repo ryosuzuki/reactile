@@ -22,13 +22,17 @@ class Track {
     this.calibrating = true
 
     this.index = 0
-    this.rect = []
+    this.rect = {}
     this.positions = []
 
     this.redMin = [170, 128, 70]
     this.redMax = [180, 255, 255]
     this.blueMin = [100, 100, 100]
     this.blueMax = [120, 255, 200]
+    this.whiteMin = [100, 0, 100]
+    this.whiteMax = [200, 100, 255]
+    this.brownMin = [156, 25, 39]
+    this.brownMax = [170, 50, 200]
 
     this.portName = null
     this.port = null
@@ -64,7 +68,10 @@ class Track {
         //   this.detectMarker(this)
         // }
         this.buffer = this.im.toBuffer()
-        this.socket.emit('buffer', this.buffer)
+        this.socket.emit('buffer', {
+          buffer: this.buffer,
+          rect: this.rect
+        })
       })
     }, this.camInterval)
   }

@@ -9,7 +9,10 @@
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io.connect('http://localhost:4000/')
-    socket.on('buffer', function (buffer) {
+    socket.on('buffer', function (data) {
+      let buffer = data.buffer
+      let rect = data.rect
+      window.rect = rect
       const canvas = document.getElementById('canvas-video')
       const context = canvas.getContext('2d')
       const img = new Image()
