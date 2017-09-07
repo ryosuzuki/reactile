@@ -8,7 +8,7 @@
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io.connect('http://localhost:8080/')
+    const socket = io.connect('http://localhost:4000/')
     socket.on('buffer', function (buffer) {
       const canvas = document.getElementById('canvas-video')
       const context = canvas.getContext('2d')

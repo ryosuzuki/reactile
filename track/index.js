@@ -59,7 +59,7 @@ class Track {
         if (err) throw err
         this.im = im
 
-        // this.detectRect()
+        this.detectRect()
         // if (!this.calibrating) {
         //   this.detectMarker(this)
         // }

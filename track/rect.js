@@ -1,10 +1,81 @@
+const _ = require('lodash')
 
 function detectRect() {
+
+  this.min = this.blueMin
+  this.max = this.blueMax
+
+  this.min = [156, 25, 39]
+  this.max = [170, 50, 200]
+
+  this.min = [100, 0, 100]
+  this.max = [200, 100, 255]
+
+
+  this.min = this.redMin
+  this.max = this.redMax
+
+  let imCanny = this.im.copy()
+  // imCanny = this.im
+  imCanny.convertHSVscale()
+  imCanny.inRange(this.min, this.max)
+  imCanny.dilate(3)
+
+  let contours = imCanny.findContours()
+  let threshold = 20
+  let ids = []
+  for (let i = 0; i < contours.size(); i++) {
+    if (threshold < contours.area(i)) {
+      ids.push(i)
+    }
+  }
+
+  let points = []
+  for (let id of ids) {
+    let pos = { x: 0, y: 0 }
+    let count = contours.cornerCount(id)
+    for (let i = 0; i < count; i++) {
+      let point = contours.point(id, i)
+      pos.x += point.x
+      pos.y += point.y
+    }
+    pos.x /= count
+    pos.y /= count
+    points.push(pos)
+  }
+
+  if (points.length >= 4) {
+    this.rect = points
+    let left = _.orderBy(points, 'x').slice(0, 2)
+    let right = _.orderBy(points, 'x').slice(2, 4)
+    let top =  _.orderBy(points, 'y').slice(0, 2)
+    let bottom =  _.orderBy(points, 'y').slice(2, 4)
+
+    const drawLine = (points) => {
+      let p0 = _.values(points[0])
+      let p1 = _.values(points[1])
+      this.im.line(p0, p1)
+    }
+
+    drawLine(left)
+    drawLine(right)
+    drawLine(top)
+    drawLine(bottom)
+  }
+
+
+  return
+
+
   if (this.index < 50) {
     let imCanny = this.im.copy()
+
+    let hoge = true
+    if (hoge) imCanny = this.im
     imCanny.convertHSVscale()
-    imCanny.inRange(this.blueMin, this.blueMax)
+    imCanny.inRange(this.min, this.max)
     imCanny.dilate(2)
+    if (hoge) return
 
     let contours = imCanny.findContours()
     let size = contours.size()
@@ -44,6 +115,7 @@ function detectRect() {
       this.calibrating = false
       console.log('done')
     }
+    this.index = 0
   }
 
   for (let i = 0; i < this.rect.length; i++) {
