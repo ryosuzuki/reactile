@@ -50,7 +50,6 @@ class Track {
     this.socket.on('markers:move', this.testMove.bind(this))
     this.socket.on('update:pos', this.updatePos.bind(this))
     this.run()
-    // this.testRun()
   }
 
   updatePos(data) {

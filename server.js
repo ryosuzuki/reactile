@@ -12,6 +12,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname + '/index.html'))
 })
 app.get('/camera', (req, res) => {
+  track.ready = false
   res.sendFile(path.join(__dirname + '/camera.html'))
 })
 

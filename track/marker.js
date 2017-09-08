@@ -2,12 +2,19 @@
 function detectMarker() {
   this.positions = []
 
+  this.min = this.redMin
+  this.max = this.redMax
+
+  this.min = [0, 110, 120]
+  this.max = [100, 255, 255]
+
   let imCanny = this.im.copy()
   imCanny.convertHSVscale()
-  imCanny.inRange(this.redMin, this.redMax)
-  imCanny.dilate(10)
+  imCanny.inRange(this.min, this.max)
+  // imCanny.dilate(4)
+
   let contours = imCanny.findContours()
-  let threshold = 100
+  let threshold = 10
   let ids = []
   for (let i = 0; i < contours.size(); i++) {
     if (threshold < contours.area(i)) {
@@ -29,19 +36,21 @@ function detectMarker() {
     positions.push(pos)
   }
 
+  let xSize = 80
+  let ySize = 40
   let width = this.im.width()
   let height = this.im.height()
   let unit = {
-    x: width / 40,
-    y: height / 16
+    x: width / xSize,
+    y: height / ySize
   }
 
   for (let pos of positions) {
     let red = [0, 0, 255]
     this.im.ellipse(pos.x, pos.y, 10, 10, red)
 
-    let x = 40 - Math.round(pos.x / unit.x)
-    let y = 16 - Math.round(pos.y / unit.y)
+    let x = xSize - Math.round(pos.x / unit.x)
+    let y = ySize - Math.round(pos.y / unit.y)
     this.positions.push({ x: x, y: y })
   }
   this.socket.emit('markers:update', this.positions)

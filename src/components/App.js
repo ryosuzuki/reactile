@@ -18,9 +18,9 @@ class App extends Component {
     super(props)
     window.app = this
 
-    this.pSize = 40 // 16
-    this.nSize = 40 // 40
-    this.offset = 20
+    this.xSize = 80 // 16
+    this.ySize = 40 // 40
+    this.offset = 15
 
     this.shapes = []
     this.currentId = -1
@@ -51,6 +51,7 @@ class App extends Component {
         markers.push(marker)
       }
     }
+    window.positions = positions
 
     for (let i = 0; i < markers.length; i++) {
       let marker = markers[i]
@@ -99,8 +100,8 @@ class App extends Component {
   }
 
   resize() {
-    this.stage.canvas.width = this.offset * (this.pSize + 1)
-    this.stage.canvas.height = this.offset * (this.nSize + 1)
+    this.stage.canvas.width = this.offset * (this.xSize + 1)
+    this.stage.canvas.height = this.offset * (this.ySize + 1)
     // $('canvas').css('left', '300px')
   }
 
