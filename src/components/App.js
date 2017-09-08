@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import actions from '../redux/actions'
 import 'createjs'
+import munkres from 'munkres-js'
 
 import Grid from './Grid'
 import Marker from './Marker'
@@ -22,6 +23,7 @@ class App extends Component {
     this.ySize = 40 // 40
     this.offset = 15
 
+    this.positions = []
     this.shapes = []
     this.currentId = -1
 
@@ -51,7 +53,9 @@ class App extends Component {
         markers.push(marker)
       }
     }
-    window.positions = positions
+    this.positions = positions
+    this.track()
+    return
 
     for (let i = 0; i < markers.length; i++) {
       let marker = markers[i]
@@ -61,6 +65,39 @@ class App extends Component {
         marker.y = pos.y
       }
       marker.id = i
+      marker.update()
+    }
+    this.updateState({ markers: markers })
+    this.constraint.check()
+  }
+
+  track() {
+    let markers = this.props.markers
+    let positions = this.positions
+    this.distMatrix = []
+    for (let marker of markers) {
+      let distArray = []
+      for (let pos of positions) {
+        let dist = Math.sqrt((marker.x-pos.x)**2+(marker.y-pos.y)**2)
+        distArray.push(dist)
+      }
+      this.distMatrix.push(distArray)
+    }
+    if (!this.distMatrix.length) return
+    this.ids = munkres(this.distMatrix)
+
+    for (let id of this.ids) {
+      let mid = id[0]
+      let pid = id[1]
+      let marker = markers[mid]
+      let pos = positions[pid]
+      let dist = Math.sqrt((marker.x-pos.x)**2+(marker.y-pos.y)**2)
+      if (dist > 1.5 || (dist > 0.9 && marker.isMoving) ) {
+        marker.x = pos.x
+        marker.y = pos.y
+      }
+      marker.id = mid
+      markers[mid] = marker
       marker.update()
     }
     this.updateState({ markers: markers })
@@ -182,19 +219,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App)
-
-
-/*
-socket.on('buffer', function (buffer) {
-  const canvas = document.getElementById('canvas-video')
-  const context = canvas.getContext('2d')
-  const img = new Image()
-  const uint8Arr = new Uint8Array(buffer);
-  const str = String.fromCharCode.apply(null, uint8Arr);
-  const base64String = btoa(str);
-  img.onload = function () {
-    context.drawImage(this, 0, 0, canvas.width, canvas.height)
-  }
-  img.src = 'data:image/png;base64,' + base64String
-})
-*/

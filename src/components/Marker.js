@@ -149,6 +149,7 @@ class Marker {
     if (this.app.state.mode === '') {
       this.moved()
     }
+    this.isMoving = false
   }
 
 

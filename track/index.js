@@ -18,9 +18,9 @@ class Track {
     this.ySize = 40
 
 
-    this.camera = new cv.VideoCapture(1)
-    this.camera.setWidth(this.camWidth)
-    this.camera.setHeight(this.camHeight)
+    // this.camera = new cv.VideoCapture(1)
+    // this.camera.setWidth(this.camWidth)
+    // this.camera.setHeight(this.camHeight)
 
     this.buffer = null
     this.im = null
@@ -55,7 +55,8 @@ class Track {
     this.connect()
     this.socket.on('markers:move', this.testMove.bind(this))
     this.socket.on('update:pos', this.updatePos.bind(this))
-    this.run()
+    // this.run()
+    this.testRun()
   }
 
   updatePos(data) {
@@ -93,7 +94,15 @@ class Track {
       })
     }
     setInterval(() => {
-      this.socket.emit('markers:update', this.positions)
+      let positions = []
+      for (let pos of this.positions) {
+        let p = _.clone(pos)
+        if (Math.random() < 0.2) p.x++
+        if (Math.random() < 0.2) p.y++
+        positions.push(p)
+      }
+      // this.socket.emit('markers:update', this.positions)
+      this.socket.emit('markers:update', positions)
     }, this.camInterval)
   }
 

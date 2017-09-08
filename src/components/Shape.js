@@ -74,7 +74,10 @@ class Shape {
         let mids = this.ids.map(a => a[0])
         for (let id of mids) {
           let markers = this.app.props.markers
-          markers[id].shapeId = this.app.currentId
+          let marker = markers[id]
+          marker.shapeId = this.app.currentId
+          marker.isMoving = false
+          markers[id] = marker
           this.app.updateState({ markers: markers })
         }
       }
@@ -113,7 +116,10 @@ class Shape {
       if (marker.x !== x || marker.y !== y) {
         marker.x = x
         marker.y = y
+        marker.isMoving = true
         change = true
+      } else {
+        marker.isMoving = false
       }
     }
     return { change: change, markers: markers }
