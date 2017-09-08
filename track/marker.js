@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 
 function detectMarker() {
   this.positions = []
@@ -5,21 +7,24 @@ function detectMarker() {
   this.min = this.redMin
   this.max = this.redMax
 
-  this.min = [0, 110, 120]
+  this.min = [0, 180, 100]
   this.max = [100, 255, 255]
 
   let imCanny = this.im.copy()
   imCanny.convertHSVscale()
   imCanny.inRange(this.min, this.max)
-  // imCanny.dilate(4)
+  imCanny.dilate(3)
+  imCanny.erode(2)
+
+  // this.im = imCanny
+  // return
 
   let contours = imCanny.findContours()
-  let threshold = 10
+  let threshold = 40
   let ids = []
   for (let i = 0; i < contours.size(); i++) {
-    if (threshold < contours.area(i)) {
-      ids.push(i)
-    }
+    if (threshold > contours.area(i)) continue
+    ids.push(i)
   }
 
   let positions = []
@@ -36,24 +41,48 @@ function detectMarker() {
     positions.push(pos)
   }
 
-  let xSize = 80
-  let ySize = 40
   let width = this.im.width()
   let height = this.im.height()
   let unit = {
-    x: width / xSize,
-    y: height / ySize
+    x: width / this.xSize,
+    y: height / this.ySize
   }
 
   for (let pos of positions) {
     let red = [0, 0, 255]
     this.im.ellipse(pos.x, pos.y, 10, 10, red)
 
-    let x = xSize - Math.round(pos.x / unit.x)
-    let y = ySize - Math.round(pos.y / unit.y)
+    let x = this.xSize - Math.round(pos.x / unit.x)
+    let y = this.ySize - Math.round(pos.y / unit.y)
     this.positions.push({ x: x, y: y })
   }
+
+  if (!this.accumulate) {
+    this.accumulate = new Array(this.positions.length).fill({ x: 0, y: 0 })
+  }
+
+  if (this.accumulate.length >= 10) {
+    let meanPositions = []
+    for (let i = 0; i < this.positions.length; i++) {
+      let history = this.accumulate.map((positions) => {
+        if (!positions[i]) return false
+        return { x: positions[i].x, y: positions[i].y }
+      }).filter(i => i)
+      let x = _.mean(_.map(history, 'x'))
+      let y = _.mean(_.map(history, 'y'))
+      x = Math.round(x)
+      y = Math.round(y)
+      meanPositions.push({ x: x, y: y })
+    }
+    // this.socket.emit('markers:update', meanPositions)
+    this.accumulate = []
+  } else {
+    this.accumulate.push(this.positions)
+  }
+
   this.socket.emit('markers:update', this.positions)
+
+
 }
 
 module.exports = detectMarker

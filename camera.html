@@ -3,14 +3,17 @@
 <head>
 </head>
 <body>
-  <canvas id="canvas-video" width="1000" height="700"></canvas>
+  <pre id="positions"></pre>
+  <canvas id="canvas-video" width="1000" height="699"></canvas>
+
 
   <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script>
-    const socket = io.connect('http://localhost:8080/')
+    const socket = io.connect('http://localhost:4000/')
     socket.on('markers:update', function (positions) {
       window.positions = positions
+      $('#positions').text(JSON.stringify(positions))
     })
 
     socket.on('buffer', function (data) {

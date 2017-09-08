@@ -8,8 +8,14 @@ class Marker {
     this.origin = new createjs.Shape()
     this.shapeId = null
 
+    this.text = new createjs.Text('', '20px Arial', '#000')
+    this.text.regX = 5
+    this.text.regY = 10
+
     this.app.stage.addChild(this.origin)
     this.app.stage.addChild(this.sketch)
+    this.app.stage.addChild(this.text)
+
     this.sketch.on('click', this.onClick.bind(this))
     this.sketch.on('pressmove', this.onPressMove.bind(this))
     this.sketchColor = this.sketch.graphics.beginFill('#f00').command
@@ -20,10 +26,13 @@ class Marker {
 
   update() {
     this.sketch.graphics.drawCircle(0, 0, 10)
+    this.text.text = this.id
     if (this.sketch.x !== this.x * this.app.offset
       || this.sketch.y !== this.y * this.app.offset) {
       this.sketch.x = this.x * this.app.offset
       this.sketch.y = this.y * this.app.offset
+      this.text.x = this.sketch.x
+      this.text.y = this.sketch.y
       this.app.update = true
     }
   }

@@ -56,8 +56,10 @@ class App extends Component {
     for (let i = 0; i < markers.length; i++) {
       let marker = markers[i]
       let pos = positions[i]
-      marker.x = pos.x
-      marker.y = pos.y
+      if (pos) {
+        marker.x = pos.x
+        marker.y = pos.y
+      }
       marker.id = i
       marker.update()
     }

@@ -14,6 +14,10 @@ class Track {
     this.camInterval = 1000 / this.camFps
     this.rectThickness = 2
 
+    this.xSize = 16 * 5
+    this.ySize = 40
+
+
     this.camera = new cv.VideoCapture(1)
     this.camera.setWidth(this.camWidth)
     this.camera.setHeight(this.camHeight)
@@ -25,6 +29,8 @@ class Track {
     this.index = 0
     this.rect = {}
     this.positions = []
+    this.accumulate = []
+    this.meanPositions = []
 
     this.redMin = [170, 128, 70]
     this.redMax = [180, 255, 255]
@@ -67,8 +73,8 @@ class Track {
         this.detectRect()
         if (this.ready) {
           this.warpWithRect()
-          this.detectMarker()
         }
+        this.detectMarker()
         this.buffer = this.im.toBuffer()
         this.socket.emit('buffer', {
           buffer: this.buffer,
