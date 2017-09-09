@@ -3,13 +3,13 @@
 Shifty shiftP;
 Shifty shiftN;
 
-int pData= 11;
-int pLatch= 12;
-int pClock= 13;
+int pData = 11;
+int pLatch = 12;
+int pClock = 13;
 
-int nData= 5;
-int nLatch = 6;
-int nClock = 7;
+int nData = 2;
+int nLatch = 3;
+int nClock = 4;
 
 int pMax = 16*5;
 int nMax = 40;
@@ -37,7 +37,7 @@ void loop() {
     Serial.println(pSize);
     for (int c=0; c<10; c++) {
       for (int i=0; i<pSize; i++) {
-        int p = root["ps"][i]["p"];
+        int p = root["ps"][i]["p"]; 
         int nSize = root["ps"][i]["s"];
         int ns[nSize];
         for (int j=0; j<nSize;j++) {
@@ -53,7 +53,7 @@ void loop() {
     }
     Serial.println("done");
   }
-}
+} 
 
 void turnOn(int p, int ns[], int nSize, int onTime) {
   shiftP.writeBit(p, LOW);

@@ -22,17 +22,26 @@ if (portName) {
   // let positions = [{x: 10, y: 2}, {x: 5, y: 8}, {x:10, y:8}]
   // sendCommands(port, positions)
 
+  let n = 38
+  let p1 = 54
+  let p2 = 63
+  let p3 = 70
+  let p4 = 77
+
+  let a = [{ x: p1, y: n }, { x: p2, y: n }, { x: p3, y: n }, { x: p4, y: n }]
+  let b = [{ x: p1+1, y: n }, { x: p2+1, y: n }, { x: p3+1, y: n }, { x: p4+1, y: n }]
+
+  let index = 0
   setTimeout(() => {
     setInterval(() => {
       if (!running) {
-        let positions = [{x: 10, y: 2}, {x: 5, y: 8}, {x:10, y:8},{x: 9, y: 2}, {x: 5, y: 3}, {x:10, y:4},{x: 30, y: 2}, {x: 25, y: 8}, {x:13, y:8}, {x: 2, y: 3}, {x:11, y:4},{x: 31, y: 20}, {x: 22, y: 11}, {x:14, y:9}]
+        let positions = (index % 2) ? a : b
         sendCommands(port, positions)
         running = true
+        index++
       }
-    }, 110)
+    }, 100)
   }, 1000)
-
-
 }
 
 function sendCommands(port, positions) {
