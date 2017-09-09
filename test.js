@@ -10,17 +10,28 @@ if (portName) {
     parser: SerialPort.parsers.readline('\n')
   })
 
+  let running = false
   port.on('data', (data) => {
-    console.log(data.toString())
+    console.log(data)
+    if (data.includes('done')) {
+      console.log('ok')
+      running = false
+    }
   })
 
   // let positions = [{x: 10, y: 2}, {x: 5, y: 8}, {x:10, y:8}]
   // sendCommands(port, positions)
 
-  setInterval(() => {
-    let positions = [{x: 10, y: 2}, {x: 5, y: 8}, {x:10, y:8},{x: 9, y: 2}, {x: 5, y: 3}, {x:10, y:4},{x: 30, y: 2}, {x: 25, y: 8}, {x:13, y:8}]
-    sendCommands(port, positions)
-  }, 3000)
+  setTimeout(() => {
+    setInterval(() => {
+      if (!running) {
+        let positions = [{x: 10, y: 2}, {x: 5, y: 8}, {x:10, y:8},{x: 9, y: 2}, {x: 5, y: 3}, {x:10, y:4},{x: 30, y: 2}, {x: 25, y: 8}, {x:13, y:8}, {x: 2, y: 3}, {x:11, y:4},{x: 31, y: 20}, {x: 22, y: 11}, {x:14, y:9}]
+        sendCommands(port, positions)
+        running = true
+      }
+    }, 110)
+  }, 1000)
+
 
 }
 
@@ -46,4 +57,42 @@ function sendCommands(port, positions) {
   let str = JSON.stringify(json)
   console.log(str)
   port.write(str)
+  return json
+}
+
+let json = {
+  "s":3,
+  "ps":[
+    {"p":5,"n":[8],"s":1},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":5,"n":[8],"s":1},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":5,"n":[8],"s":1},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":5,"n":[8],"s":1},
+    {"p":10,"n":[2,8,1,1,1,1,2,3,4,5,5,6,1],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":5,"n":[8],"s":1},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":5,"n":[8],"s":1},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2},
+    {"p":10,"n":[2,8],"s":2}
+  ]
 }
