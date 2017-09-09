@@ -11,7 +11,7 @@ int nData= 5;
 int nLatch = 6;
 int nClock = 7;
 
-int pSize = 16;
+int pSize = 16*5;
 int nSize = 40;
 
 void standby();
@@ -29,19 +29,13 @@ void setup() {
 }
 
 void loop() {
-  int p = 8;
-  int n = 39;
+  int p = pSize - 8;
+  int n = 36;
   
   move(p, n);
-//  move(p+1, n);
-//  move(p+2, n);
-//  move(p+3, n);
-//  move(p+4, n);
-//  move(p+5, n);
-//  move(p+4, n);
-//  move(p+3, n);
-//  move(p+2, n);
-//  move(p+1, n);
+  move(p+1, n);
+  move(p+2, n);
+  move(p+1, n);
 
   int t = 100;
   int m = 100;
