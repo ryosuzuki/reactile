@@ -17,7 +17,6 @@ class Track {
     this.xSize = 16 * 2
     this.ySize = 40
 
-
     this.camera = new cv.VideoCapture(1)
     this.camera.setWidth(this.camWidth)
     this.camera.setHeight(this.camHeight)
@@ -53,11 +52,45 @@ class Track {
   start(socket) {
     this.socket = socket
     this.connect()
-    this.socket.on('markers:move', this.testMove.bind(this))
+    let move = this.testMove.bind(this)
+    // let move = this.move.bind(this)
+    this.socket.on('markers:move', move)
     this.socket.on('update:pos', this.updatePos.bind(this))
     this.run()
     // this.testRun()
   }
+
+  testMove(positions) {
+    setTimeout(() => {
+      console.log(positions)
+      this.positions = positions
+    }, 100)
+  }
+
+  move(positions) {
+    // let positions = [{x: 10, y: 2}, {x: 5, y: 8}, {x:10, y:8}]
+    let commands = {}
+    for (let pos of positions) {
+      let command = commands[pos.x]
+      if (!command) command = []
+      command.push(pos.y)
+      command = _.sortBy(command)
+      commands[pos.x] = command
+    }
+
+    let ps = Object.keys(commands).map(p => parseInt(p))
+    let json = {}
+    json.s = ps.length
+    json.ps = []
+    for (let p of ps) {
+      let ns = commands[p]
+      let s = ns.length
+      json.ps.push({ p: p, ns: ns, s: s })
+    }
+    this.port.write(JSON.stringify(json))
+    // this.port.write(JSON.stringify(data))
+  }
+
 
   updatePos(data) {
     let id = data.id
@@ -106,19 +139,8 @@ class Track {
     }, this.camInterval)
   }
 
-  testMove(positions) {
-    setTimeout(() => {
-      console.log(positions)
-      this.positions = positions
-    }, 100)
-  }
-
   random() {
     return Math.floor(Math.random()*40)
-  }
-
-  move(data) {
-    // this.port.write(JSON.stringify(data))
   }
 
 
