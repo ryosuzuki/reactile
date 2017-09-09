@@ -19,6 +19,18 @@ void turnOn();
 void turnOff();
 void travel(); 
 
+void hoge(int ns[], int size) {
+  if (size > 1) {
+    Serial.println(size);
+    for (int i = 0; i < size; i++) {
+      Serial.println(ns[i]);
+    }
+  } else {
+    int n = ns[0];
+    Serial.println(n);
+  }
+}
+
 void setup() {
   shiftP.setBitCount(pSize);
   shiftP.setPins(pData, pClock, pLatch);
@@ -26,31 +38,41 @@ void setup() {
   shiftN.setPins(nData, nClock, nLatch);
   Serial.begin(9600);
   standby();
+
+  int ns[] = {110, 22, 303, 4210};
+//  int ns = 10;
+  int size = (sizeof(ns) / sizeof(int));
+  Serial.println(ns[0]);
 }
 
-void loop() {
-  int p = pSize - 8;
-  int n = 36;
-  
-  move(p, n);
-  move(p+1, n);
-  move(p+2, n);
-  move(p+1, n);
 
-  int t = 100;
-  int m = 100;
+
+
+void loop() {
+
+
+//  int p = pSize - 10;
+//  int n = 37;
+//  
+//  move(p, n);
+//  move(p+1, n);
+//  move(p+2, n);
+//  move(p+1, n);
 
 } 
 
 void move(int p, int n) {
   for (int i=1; i<10; i++) {
     turnOn(p, n);
-    delay(5*i);    
+//    turnOn(p+5, n);
+    delay(10);
     turnOff(p, n);
-    delay(1);
+//    turnOff(p+5, n);
+    delay(100);
   }
-//  turnOn(p, n);
-//  delay(100);    
+  turnOn(p, n);
+//  turnOn(p+5, n);
+  delay(100);
   standby();
   delay(1000);    
 }
