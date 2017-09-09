@@ -14,13 +14,13 @@ class Track {
     this.camInterval = 1000 / this.camFps
     this.rectThickness = 2
 
-    this.xSize = 16 * 5
+    this.xSize = 16 * 2
     this.ySize = 40
 
 
-    // this.camera = new cv.VideoCapture(1)
-    // this.camera.setWidth(this.camWidth)
-    // this.camera.setHeight(this.camHeight)
+    this.camera = new cv.VideoCapture(1)
+    this.camera.setWidth(this.camWidth)
+    this.camera.setHeight(this.camHeight)
 
     this.buffer = null
     this.im = null
@@ -32,10 +32,10 @@ class Track {
     this.accumulate = []
     this.meanPositions = []
 
-    this.redMin = [170, 128, 70]
-    this.redMax = [180, 255, 255]
-    this.blueMin = [100, 100, 100]
-    this.blueMax = [120, 255, 200]
+    this.redMin = [0, 180, 100]
+    this.redMax = [100, 255, 255]
+    this.blueMin = [100, 100, 150]
+    this.blueMax = [120, 255, 250]
     this.whiteMin = [100, 0, 100]
     this.whiteMax = [200, 100, 255]
     this.brownMin = [156, 25, 39]
@@ -55,8 +55,8 @@ class Track {
     this.connect()
     this.socket.on('markers:move', this.testMove.bind(this))
     this.socket.on('update:pos', this.updatePos.bind(this))
-    // this.run()
-    this.testRun()
+    this.run()
+    // this.testRun()
   }
 
   updatePos(data) {
@@ -74,8 +74,8 @@ class Track {
         this.detectRect()
         if (this.ready) {
           this.warpWithRect()
+          this.detectMarker()
         }
-        this.detectMarker()
         this.buffer = this.im.toBuffer()
         this.socket.emit('buffer', {
           buffer: this.buffer,

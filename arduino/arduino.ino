@@ -17,6 +17,7 @@ int nSize = 40;
 void standby();
 void turnOn();
 void turnOff();
+void travel(); 
 
 void setup() {
   shiftP.setBitCount(pSize);
@@ -28,62 +29,37 @@ void setup() {
 }
 
 void loop() {
-  String json = "";
-  while (Serial.available() > 0) {
-    json += (char) Serial.read();
-    delay(5);
-  }
+  int p = 8;
+  int n = 39;
+  
+  move(p, n);
+//  move(p+1, n);
+//  move(p+2, n);
+//  move(p+3, n);
+//  move(p+4, n);
+//  move(p+5, n);
+//  move(p+4, n);
+//  move(p+3, n);
+//  move(p+2, n);
+//  move(p+1, n);
 
-  if (json != "") {
-    Serial.println("received");
-    StaticJsonBuffer<200> jsonBuffer;
-    JsonObject &root = jsonBuffer.parseObject(json);
+  int t = 100;
+  int m = 100;
 
-    int p = root["p"];
-    int n = root["n"];
-    Serial.println(p);
-    Serial.println(n);
+} 
+
+void move(int p, int n) {
+  for (int i=1; i<10; i++) {
     turnOn(p, n);
-    delay(200);
-    standby();
+    delay(5*i);    
+    turnOff(p, n);
+    delay(1);
   }
-
-  /*
-  for (int n=39; n>0; n--) {
-    turnOn(15, n);
-    delay(10);
-    standby();
-    delay(10);
-    for (int i=1; i<10; i++) {
-      turnOn(15, n);
-      turnOff(15, n-1);
-      delay(1);
-      turnOff(15, n);
-      turnOn(15, n-1);
-      delay(1*i);
-    }
-  }
-
-  for (int n=0; n<40; n++) {
-    turnOn(15, n);
-    delay(10);
-    standby();
-    delay(10);
-    for (int i=1; i<10; i++) {
-      turnOn(15, n);
-      turnOff(15, n+1);
-      delay(1);
-      turnOff(15, n);
-      turnOn(15, n+1);
-      delay(1*i);
-    }
-  }
-
-  delay(10000);
-  */
+//  turnOn(p, n);
+//  delay(100);    
+  standby();
+  delay(1000);    
 }
-
-
 
 void standby() {
   shiftP.batchWriteBegin();
@@ -107,3 +83,64 @@ void turnOff(int p, int n) {
   shiftP.writeBit(p, HIGH);
   shiftN.writeBit(n, LOW);
 }
+
+  /*
+  String json = "";
+  while (Serial.available() > 0) {
+    json += (char) Serial.read();
+    delay(5);
+  }
+
+  if (json != "") {
+    Serial.println("received");
+    StaticJsonBuffer<200> jsonBuffer;
+    JsonObject &root = jsonBuffer.parseObject(json);
+
+    int p = root["p"];
+    int n = root["n"];
+    Serial.println(p);
+    Serial.println(n);
+    turnOn(p, n);
+    delay(200);
+    standby();
+  }
+  */
+
+
+/*
+ * 
+  for (int n=from; n>to; n--) {
+    turnOn(p, n);
+    delay(10);
+    standby();
+    delay(10);
+    for (int i=1; i<10; i++) {
+      turnOn(p, n);
+      turnOff(p, n-1);
+      delay(5);
+      turnOff(p, n);
+      turnOn(p, n-1);
+      delay(1*i);
+    }
+  }
+
+  delay(2000);
+
+  for (int n=to; n<from+1; n++) {
+    turnOn(p, n);
+    delay(10);
+    standby();
+    delay(10);
+    for (int i=1; i<10; i++) {
+      turnOn(p, n);
+      turnOff(p, n+1);
+      delay(1);
+      turnOff(p, n);
+      turnOn(p, n+1);
+      delay(1*i);
+    }
+  }
+
+  delay(10000);
+}
+*/
