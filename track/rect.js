@@ -8,7 +8,7 @@ function detectRect() {
   let imCanny = this.im.copy()
   imCanny.convertHSVscale()
   imCanny.inRange(this.min, this.max)
-  imCanny.erode(1)
+  // imCanny.erode(1)
   imCanny.dilate(2)
 
   // this.im = imCanny

@@ -7,43 +7,47 @@ const portName = glob.sync('/dev/cu.usbmodem*')[0]
 if (portName) {
   console.log('connected to ' + portName)
   let port = new SerialPort(portName, {
-    baudrate: 9600
+    baudrate: 9600,
   })
 
   const parser = port.pipe(new Readline())
 
   let running = false
+  let ready = false
+
+  if (port.isOpen) {
+    port.close()
+  }
+
   parser.on('data', (data) => {
     console.log(data)
+    if (data.includes('start')) {
+      ready = true
+    }
     if (data.includes('done')) {
-      console.log('ok')
       running = false
     }
   })
-
-  // let positions = [{x: 10, y: 2}, {x: 5, y: 8}, {x:10, y:8}]
-  // sendCommands(port, positions)
 
   let n = 38
   let p1 = 54
   let p2 = 63
   let p3 = 70
   let p4 = 77
-
   let a = [{ x: p1, y: n }, { x: p2, y: n }, { x: p3, y: n }, { x: p4, y: n }]
   let b = [{ x: p1+1, y: n }, { x: p2+1, y: n }, { x: p3+1, y: n }, { x: p4+1, y: n }]
 
   let index = 0
-  setTimeout(() => {
-    setInterval(() => {
-      if (!running) {
-        let positions = (index % 2) ? a : b
-        sendCommands(port, positions)
-        running = true
-        index++
-      }
-    }, 100)
-  }, 1000)
+  setInterval(() => {
+    if (ready && !running) {
+      // let positions = (index % 2) ? a : b
+      let positions = [{ x: 59, y: 29 }]
+      sendCommands(port, positions)
+      running = true
+      index++
+    }
+  }, 100)
+
 }
 
 function sendCommands(port, positions) {
@@ -67,9 +71,15 @@ function sendCommands(port, positions) {
   }
   let str = JSON.stringify(json)
   console.log(str)
-  port.write(str)
+  port.write(str, (err, res) => {
+    if (err) console.log(err)
+    console.log(res)
+    port.close()
+  })
   return json
 }
+
+
 
 let json = {
   "s":3,

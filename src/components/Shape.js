@@ -9,8 +9,8 @@ class Shape {
     this.id = this.app.currentId
 
     this.type = 'point'
-    this.x = 20 + 10 * this.id
-    this.y = 20
+    this.x = 60 + 10 * this.id
+    this.y = 30
     this.angle = 0
     this.scale = 1
     this.variables = []
@@ -66,7 +66,11 @@ class Shape {
       let markers = res.markers
       console.log('run')
       if (change) {
-        let positions = markers.map((marker) => {
+        let positions = markers
+        .filter((marker) => {
+          return marker.isMoving
+        })
+        .map((marker) => {
           return { x: marker.x, y: marker.y }
         })
         this.app.sendPositions(positions)
@@ -90,6 +94,7 @@ class Shape {
     this.calculate()
     let change = false
     let markers = this.app.props.markers
+    let changedIds = []
     for (let id of this.ids) {
       let mid = id[0]
       let tid = id[1]

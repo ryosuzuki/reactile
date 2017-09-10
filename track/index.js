@@ -13,6 +13,8 @@ class Track {
       this[key]= config[key]
     }
     this.ready = false
+    this.arduinoReady = false
+    this.arduinoRunning = false
     this.rect = {}
     this.positions = []
     this.init()
@@ -30,24 +32,26 @@ class Track {
   }
 
   start(socket) {
+    let connected = this.socket ? true : false
     this.socket = socket
-    this.connect()
     // let move = this.testMove.bind(this)
     let move = this.move.bind(this)
     this.socket.on('markers:move', move)
     this.socket.on('update:pos', this.updatePos.bind(this))
-    this.run()
-    // this.testRun()
-  }
-
-  testMove(positions) {
-    setTimeout(() => {
-      console.log(positions)
-      this.positions = positions
-    }, 100)
+    if (!connected) {
+      console.log('connect')
+      this.connect()
+      this.run()
+      // this.testRun()
+    } else {
+      console.log('already connected')
+    }
   }
 
   move(positions) {
+    if (!this.arduinoReady) return
+    if (this.arduinoRunning) return
+
     let commands = {}
     for (let pos of positions) {
       let command = commands[pos.x]
@@ -68,7 +72,21 @@ class Track {
     }
     let str = JSON.stringify(json)
     console.log(str)
-    this.port.write(str)
+    console.log(this.port.write)
+    this.arduinoRunning = true
+    this.port.write(str, (err, results) => {
+      if (err) console.log(err)
+      this.port.close(() => {
+        console.log('close')
+      })
+    })
+  }
+
+  testMove(positions) {
+    setTimeout(() => {
+      console.log(positions)
+      this.positions = positions
+    }, 100)
   }
 
 

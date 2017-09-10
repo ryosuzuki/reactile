@@ -36,6 +36,9 @@ class App extends Component {
     this.update = true
     this.socket = socket
     this.socket.on('markers:update', this.updateMarkers.bind(this))
+    this.socket.on('arduino:log', (data) => {
+      console.log(data)
+    })
   }
 
   sendPositions(positions) {

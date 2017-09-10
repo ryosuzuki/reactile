@@ -37,7 +37,7 @@ void loop() {
     Serial.println(pSize);
     for (int c=0; c<10; c++) {
       for (int i=0; i<pSize; i++) {
-        int p = root["ps"][i]["p"]; 
+        int p = root["ps"][i]["p"];
         int nSize = root["ps"][i]["s"];
         int ns[nSize];
         for (int j=0; j<nSize;j++) {
@@ -53,7 +53,7 @@ void loop() {
     }
     Serial.println("done");
   }
-} 
+}
 
 void turnOn(int p, int ns[], int nSize, int onTime) {
   shiftP.writeBit(p, LOW);
