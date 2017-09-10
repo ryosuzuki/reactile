@@ -1,7 +1,13 @@
 #include <ArduinoJson.h>
 #include <Shifty.h>
+
+#include "Coil.h"
+#include "Marker.h"
+
 Shifty shiftP;
 Shifty shiftN;
+Coil coil;
+Marker marker;
 
 int pData = 11;
 int pLatch = 12;
@@ -14,17 +20,17 @@ int nClock = 4;
 int pMax = 16*5;
 int nMax = 40;
 
-void standby();
-void turnOn();
-void turnOff();
-
 void setup() {
   shiftP.setBitCount(pMax);
   shiftP.setPins(pData, pClock, pLatch);
   shiftN.setBitCount(nMax);
   shiftN.setPins(nData, nClock, nLatch);
+
+  coil.init(pMax, nMax, shiftP, shiftN);
+  marker.init(coil);
+
   Serial.begin(9600);
-  standby();
+  coil.standby();
   Serial.println("start");
 }
 
@@ -33,71 +39,61 @@ void loop() {
   JsonObject &root = jsonBuffer.parseObject(Serial);
   if (root.success()) {
     Serial.println("received");
-    int pSize = root["s"];
-    Serial.println(pSize);
-    for (int c=0; c<10; c++) {
-      for (int i=0; i<pSize; i++) {
-        int p = root["ps"][i]["p"];
-        int nSize = root["ps"][i]["s"];
-        int ns[nSize];
-        for (int j=0; j<nSize;j++) {
-          int n = root["ps"][i]["ns"][j];
-          ns[j] = n;
-        }
-        turnOn(p, ns, nSize, 10);
-      }
-      if (pSize < 5) {
-        int offTime = (5-pSize)*10;
-        delay(offTime);
-      }
+    int type = root["t"];
+    if (type == 0) {
+      travel(root);
+    } else {
+      multiple(root);
     }
-    Serial.println("done");
   }
 }
 
-void turnOn(int p, int ns[], int nSize, int onTime) {
-  shiftP.writeBit(p, LOW);
-  shiftN.batchWriteBegin();
+void travel(JsonObject &root) {
+  int from = root["pf"];
+  int to = root["pt"];
+  int nSize = root["s"];
+  int ns[nSize];
   for (int i=0; i<nSize; i++) {
-    int n = ns[i];
-    shiftN.writeBit(n, HIGH);
+    int n = root["ns"][i];
+    ns[i] = n;
   }
-  shiftP.batchWriteEnd();
-  shiftN.batchWriteEnd();
-  delay(onTime);
-  standby();
+  if (from < to) {
+    for (int p = from; p < to; p++) {
+      marker.moveTo(p, ns, nSize);
+      // marker.singleMoveTo(p, n);
+    }
+  } else {
+    for (int p = from; p > to; p--) {
+      marker.moveTo(p, ns, nSize);
+    }
+  }
+  coil.turnOn(to, ns, nSize);
+  delay(100);
+  coil.standby();
+  Serial.println("done");
+?}
+
+void multiple(JsonObject &root) {
+  int pSize = root["s"];
+  Serial.println(pSize);
+  for (int c=0; c<10; c++) {
+    for (int i=0; i<pSize; i++) {
+      int p = root["ps"][i]["p"];
+      int nSize = root["ps"][i]["s"];
+      int ns[nSize];
+      for (int j=0; j<nSize;j++) {
+        int n = root["ps"][i]["ns"][j];
+        ns[j] = n;
+      }
+      coil.turnOn(p, ns, nSize);
+      delay(10);
+      coil.standby();
+    }
+    if (pSize < 5) {
+      int offTime = (5-pSize)*10;
+      delay(offTime);
+    }
+  }
+  Serial.println("done");
 }
 
-void turnOff(int p, int ns[], int nSize) {
-  shiftP.writeBit(p, HIGH);
-  shiftN.batchWriteBegin();
-  for (int i=0; i<nSize; i++) {
-    int n = ns[i];
-    shiftN.writeBit(n, LOW);
-  }
-  shiftP.batchWriteEnd();
-  shiftN.batchWriteEnd();
-}
-
-void standby() {
-  shiftP.batchWriteBegin();
-  shiftN.batchWriteBegin();
-  for (int i=0; i<pMax; i++) {
-    shiftP.writeBit(i, HIGH);
-  }
-  for (int i=0; i<nMax; i++) {
-    shiftN.writeBit(i, LOW);
-  }
-  shiftP.batchWriteEnd();
-  shiftN.batchWriteEnd();
-}
-
-void singleOn(int p, int n) {
-  shiftP.writeBit(p, LOW);
-  shiftN.writeBit(n, HIGH);
-}
-
-void singleOff(int p, int n) {
-  shiftP.writeBit(p, HIGH);
-  shiftN.writeBit(n, LOW);
-}
