@@ -7,6 +7,9 @@ function detectMarker() {
   this.min = this.redMin
   this.max = this.redMax
 
+  this.min = [150, 130, 100]
+  this.max = [170, 255, 255]
+
   let imCanny = this.im.copy()
   imCanny.convertHSVscale()
   imCanny.inRange(this.min, this.max)

@@ -5,6 +5,10 @@ function detectRect() {
 
   this.min = this.blueMin
   this.max = this.blueMax
+
+  this.min = [70, 130, 140]
+  this.max = [155, 255, 255]
+
   let imCanny = this.im.copy()
   imCanny.convertHSVscale()
   imCanny.inRange(this.min, this.max)

@@ -41,6 +41,13 @@ class App extends Component {
     })
   }
 
+  initPositions() {
+    let positions = this.props.markers.map((marker) => {
+      return { x: marker.x, y: marker.y }
+    })
+    this.socket.emit('markers:move', positions)
+  }
+
   updateMarkers(positions) {
     let markers = this.props.markers
     if (markers.length === 0) {

@@ -42,8 +42,8 @@ class Track {
     if (!connected) {
       console.log('connect')
       this.connect()
-      // this.run()
-      this.testRun()
+      this.run()
+      // this.testRun()
     } else {
       console.log('already connected')
     }
@@ -51,34 +51,38 @@ class Track {
 
   travel(commands) {
     let index = 0
-    let directon = 'x'
+    console.log(commands)
     const timer = setInterval(() => {
       if (!this.arduinoReady) return
       if (this.arduinoRunning) return
 
       let command = commands[index]
       let json = {}
-      if (directon === 'x') {
+      if (!command.x) {
         json = {
           t: 0,
           pf: command.from.x,
           pt: command.to.x,
           n: command.from.y,
         }
-      } else {
+        command.x = true
+      } else if (!command.y) {
         json = {
           t: 1,
           p: command.to.x,
           nf: command.from.y,
           nt: command.to.y,
         }
+        command.y = true
       }
-
+      commands[index] = command
       this.arduinoRunning = true
+      let str = JSON.stringify(json)
       this.port.write(str)
-      index++
-
-      if (index > commands.length) {
+      if (command.x && command.y) {
+        index++
+      }
+      if (index >= commands.length) {
         console.log('clear')
         clearInterval(timer)
       }
@@ -90,6 +94,7 @@ class Track {
     if (this.arduinoRunning) return
 
     if (!Array.isArray(positions)) return
+    console.log(positions)
 
     let commands = {}
     for (let pos of positions) {
@@ -101,16 +106,17 @@ class Track {
     }
 
     let ps = Object.keys(commands).map(p => parseInt(p))
-    let json = {}
-    json.s = ps.length
-    json.ps = []
+    let json = {
+      t: 2,
+      s: ps.length,
+      ps: []
+    }
     for (let p of ps) {
       let ns = commands[p]
       let s = ns.length
       json.ps.push({ p: p, ns: ns, s: s })
     }
     let str = JSON.stringify(json)
-    console.log(str)
     this.arduinoRunning = true
     this.port.write(str)
   }

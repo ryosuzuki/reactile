@@ -32,7 +32,12 @@ if (portName) {
     to: { x: 79, y: 39 },
   }]
 
+  commands = [{
+    from: { x: 39, y: 31 },
+    to: { x: 39, y: 39 }
+  }]
   travel(port, commands)
+  return false
 }
 
 function travel(port, commands) {
@@ -40,8 +45,6 @@ function travel(port, commands) {
   const timer = setInterval(() => {
     if (!ready) return
     if (running) return
-    console.log(index)
-
     let command = commands[index]
     let json = {}
     if (!command.x) {
@@ -67,13 +70,11 @@ function travel(port, commands) {
     port.write(str)
     if (command.x && command.y) {
       index++
-      command.x = false
-      command.y = false
-      index = index % 2
     }
     if (index >= commands.length) {
       console.log('clear')
       clearInterval(timer)
+      return false
     }
   }, 100)
 }
