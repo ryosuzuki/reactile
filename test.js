@@ -1,17 +1,19 @@
 const SerialPort = require('serialport')
 const glob = require('glob')
 const _ = require('lodash')
+const Readline = SerialPort.parsers.Readline
 
 const portName = glob.sync('/dev/cu.usbmodem*')[0]
 if (portName) {
   console.log('connected to ' + portName)
   let port = new SerialPort(portName, {
-    baudrate: 9600,
-    parser: SerialPort.parsers.readline('\n')
+    baudrate: 9600
   })
 
+  const parser = port.pipe(new Readline())
+
   let running = false
-  port.on('data', (data) => {
+  parser.on('data', (data) => {
     console.log(data)
     if (data.includes('done')) {
       console.log('ok')

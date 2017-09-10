@@ -58,6 +58,8 @@ class Shape {
   }
 
   move() {
+    const waitTime = 3000
+
     const timer = setInterval(() => {
       let res = this.check()
       let change = res.change
@@ -81,7 +83,7 @@ class Shape {
           this.app.updateState({ markers: markers })
         }
       }
-    }, 100)
+    }, waitTime)
   }
 
   check() {

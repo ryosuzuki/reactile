@@ -1,6 +1,7 @@
 const cv = require('opencv');
 const _ = require('lodash')
 
+const config = require('./config')
 const connect = require('./connect')
 const detectRect = require('./rect')
 const detectMarker = require('./marker')
@@ -8,41 +9,20 @@ const warpWithRect = require('./warp')
 
 class Track {
   constructor() {
-    this.camWidth = 580 // 720;
-    this.camHeight = 450 // 400;
-    this.camFps = 10
-    this.camInterval = 1000 / this.camFps
-    this.rectThickness = 2
-
-    this.xSize = 16 * 2
-    this.ySize = 40
-
-    this.camera = new cv.VideoCapture(1)
-    this.camera.setWidth(this.camWidth)
-    this.camera.setHeight(this.camHeight)
-
-    this.buffer = null
-    this.im = null
+    for (let key of Object.keys(config)) {
+      this[key]= config[key]
+    }
     this.ready = false
-
-    this.index = 0
     this.rect = {}
     this.positions = []
-    this.accumulate = []
-    this.meanPositions = []
+    this.init()
+  }
 
-    this.redMin = [0, 180, 100]
-    this.redMax = [100, 255, 255]
-    this.blueMin = [100, 100, 150]
-    this.blueMax = [120, 255, 250]
-    this.whiteMin = [100, 0, 100]
-    this.whiteMax = [200, 100, 255]
-    this.brownMin = [156, 25, 39]
-    this.brownMax = [170, 50, 200]
-
-    this.portName = null
-    this.port = null
-
+  init() {
+    this.camera = new cv.VideoCapture(0)
+    this.camera.setWidth(this.camWidth)
+    this.camera.setHeight(this.camHeight)
+    this.cameraInterval = 1000 / this.camFps
     this.connect = connect.bind(this)
     this.detectRect = detectRect.bind(this)
     this.detectMarker = detectMarker.bind(this)
@@ -52,8 +32,8 @@ class Track {
   start(socket) {
     this.socket = socket
     this.connect()
-    let move = this.testMove.bind(this)
-    // let move = this.move.bind(this)
+    // let move = this.testMove.bind(this)
+    let move = this.move.bind(this)
     this.socket.on('markers:move', move)
     this.socket.on('update:pos', this.updatePos.bind(this))
     this.run()
@@ -68,7 +48,6 @@ class Track {
   }
 
   move(positions) {
-    // let positions = [{x: 10, y: 2}, {x: 5, y: 8}, {x:10, y:8}]
     let commands = {}
     for (let pos of positions) {
       let command = commands[pos.x]
@@ -87,8 +66,9 @@ class Track {
       let s = ns.length
       json.ps.push({ p: p, ns: ns, s: s })
     }
-    this.port.write(JSON.stringify(json))
-    // this.port.write(JSON.stringify(data))
+    let str = JSON.stringify(json)
+    console.log(str)
+    this.port.write(str)
   }
 
 
@@ -115,7 +95,7 @@ class Track {
           rect: this.rect
         })
       })
-    }, this.camInterval)
+    }, this.cameraInterval)
   }
 
   testRun() {
@@ -136,7 +116,7 @@ class Track {
       }
       // this.socket.emit('markers:update', this.positions)
       this.socket.emit('markers:update', positions)
-    }, this.camInterval)
+    }, this.cameraInterval)
   }
 
   random() {
