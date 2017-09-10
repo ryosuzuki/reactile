@@ -49,13 +49,6 @@ class Track {
     }
   }
 
-  /*
-  Example data structure
-  { t: 0, pf: 1, pt: 10, n: 4 }
-  { t: 1, p: 4, nf: 1, nt: 10 }
-  { t: 2 , s: 2, ps: [{p: 1, ns: [1, 2], s: 2}, ….] }
-  */
-
   travel(commands) {
     let index = 0
     let directon = 'x'

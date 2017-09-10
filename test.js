@@ -4,21 +4,16 @@ const _ = require('lodash')
 const Readline = SerialPort.parsers.Readline
 
 const portName = glob.sync('/dev/cu.usbmodem*')[0]
+let running = false
+let ready = false
+let port = null
+
 if (portName) {
   console.log('connected to ' + portName)
-  let port = new SerialPort(portName, {
+  port = new SerialPort(portName, {
     baudrate: 9600,
   })
-
   const parser = port.pipe(new Readline())
-
-  let running = false
-  let ready = false
-
-  if (port.isOpen) {
-    port.close()
-  }
-
   parser.on('data', (data) => {
     console.log(data)
     if (data.includes('start')) {
@@ -29,28 +24,62 @@ if (portName) {
     }
   })
 
-  let n = 38
-  let p1 = 54
-  let p2 = 63
-  let p3 = 70
-  let p4 = 77
-  let a = [{ x: p1, y: n }, { x: p2, y: n }, { x: p3, y: n }, { x: p4, y: n }]
-  let b = [{ x: p1+1, y: n }, { x: p2+1, y: n }, { x: p3+1, y: n }, { x: p4+1, y: n }]
+  let commands = [{
+    from: { x: 79, y: 39 },
+    to: { x: 68, y: 30 }
+  }, {
+    from: { x: 68, y: 30 },
+    to: { x: 79, y: 39 },
+  }]
 
-  let index = 0
-  setInterval(() => {
-    if (ready && !running) {
-      // let positions = (index % 2) ? a : b
-      let positions = [{ x: 59, y: 29 }]
-      sendCommands(port, positions)
-      running = true
-      index++
-    }
-  }, 100)
-
+  travel(port, commands)
 }
 
-function sendCommands(port, positions) {
+function travel(port, commands) {
+  let index = 0
+  const timer = setInterval(() => {
+    if (!ready) return
+    if (running) return
+    console.log(index)
+
+    let command = commands[index]
+    let json = {}
+    if (!command.x) {
+      json = {
+        t: 0,
+        pf: command.from.x,
+        pt: command.to.x,
+        n: command.from.y,
+      }
+      command.x = true
+    } else if (!command.y) {
+      json = {
+        t: 1,
+        p: command.to.x,
+        nf: command.from.y,
+        nt: command.to.y,
+      }
+      command.y = true
+    }
+    running = true
+    commands[index] = command
+    let str = JSON.stringify(json)
+    port.write(str)
+    if (command.x && command.y) {
+      index++
+      command.x = false
+      command.y = false
+      index = index % 2
+    }
+    if (index >= commands.length) {
+      console.log('clear')
+      clearInterval(timer)
+    }
+  }, 100)
+}
+
+
+function move(port, positions) {
   let commands = {}
   for (let pos of positions) {
     let command = commands[pos.x]
@@ -80,40 +109,31 @@ function sendCommands(port, positions) {
 }
 
 
+/*
+Example data structure
+{ t: 0, pf: 1, pt: 10, n: 4 }
+{ t: 1, p: 4, nf: 1, nt: 10 }
+{ t: 2 , s: 2, ps: [{p: 1, ns: [1, 2], s: 2}, ….] }
+*/
 
-let json = {
-  "s":3,
-  "ps":[
-    {"p":5,"n":[8],"s":1},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":5,"n":[8],"s":1},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":5,"n":[8],"s":1},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":5,"n":[8],"s":1},
-    {"p":10,"n":[2,8,1,1,1,1,2,3,4,5,5,6,1],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":5,"n":[8],"s":1},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":5,"n":[8],"s":1},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2},
-    {"p":10,"n":[2,8],"s":2}
-  ]
-}
+/*
+let n = 38
+let p1 = 54
+let p2 = 63
+let p3 = 70
+let p4 = 77
+let a = [{ x: p1, y: n }, { x: p2, y: n }, { x: p3, y: n }, { x: p4, y: n }]
+let b = [{ x: p1+1, y: n }, { x: p2+1, y: n }, { x: p3+1, y: n }, { x: p4+1, y: n }]
+
+let index = 0
+setInterval(() => {
+  if (ready && !running) {
+    // let positions = (index % 2) ? a : b
+    let positions = [{ x: 59, y: 29 }]
+    move(port, positions)
+    running = true
+    index++
+  }
+}, 100)
+*/
+
