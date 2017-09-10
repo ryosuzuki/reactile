@@ -52,6 +52,8 @@ class Track {
     if (!this.arduinoReady) return
     if (this.arduinoRunning) return
 
+    if (!Array.isArray(positions)) return
+
     let commands = {}
     for (let pos of positions) {
       let command = commands[pos.x]
@@ -72,14 +74,8 @@ class Track {
     }
     let str = JSON.stringify(json)
     console.log(str)
-    console.log(this.port.write)
     this.arduinoRunning = true
-    this.port.write(str, (err, results) => {
-      if (err) console.log(err)
-      this.port.close(() => {
-        console.log('close')
-      })
-    })
+    this.port.write(str)
   }
 
   testMove(positions) {

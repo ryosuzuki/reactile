@@ -9,7 +9,7 @@ class Shape {
     this.id = this.app.currentId
 
     this.type = 'point'
-    this.x = 60 + 10 * this.id
+    this.x = 30 + 10 * this.id
     this.y = 30
     this.angle = 0
     this.scale = 1
@@ -58,8 +58,7 @@ class Shape {
   }
 
   move() {
-    const waitTime = 3000
-
+    const waitTime = 1000
     const timer = setInterval(() => {
       let res = this.check()
       let change = res.change

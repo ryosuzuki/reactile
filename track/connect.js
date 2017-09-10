@@ -20,7 +20,7 @@ function connect() {
       if (data.includes('done')) {
         this.arduinoRunning = false
       }
-      // this.socket.emit('arduino:log', data)
+      this.socket.emit('arduino:log', data)
     })
   }
 }
