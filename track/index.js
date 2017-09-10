@@ -35,17 +35,61 @@ class Track {
     let connected = this.socket ? true : false
     this.socket = socket
     // let move = this.testMove.bind(this)
-    let move = this.move.bind(this)
-    this.socket.on('markers:move', move)
+    this.socket.on('markers:move', this.move.bind(this))
+    this.socket.on('markers:travel', this.travel.bind(this))
+
     this.socket.on('update:pos', this.updatePos.bind(this))
     if (!connected) {
       console.log('connect')
       this.connect()
-      this.run()
-      // this.testRun()
+      // this.run()
+      this.testRun()
     } else {
       console.log('already connected')
     }
+  }
+
+  /*
+  Example data structure
+  { t: 0, pf: 1, pt: 10, n: 4 }
+  { t: 1, p: 4, nf: 1, nt: 10 }
+  { t: 2 , s: 2, ps: [{p: 1, ns: [1, 2], s: 2}, ….] }
+  */
+
+  travel(commands) {
+    let index = 0
+    let directon = 'x'
+    const timer = setInterval(() => {
+      if (!this.arduinoReady) return
+      if (this.arduinoRunning) return
+
+      let command = commands[index]
+      let json = {}
+      if (directon === 'x') {
+        json = {
+          t: 0,
+          pf: command.from.x,
+          pt: command.to.x,
+          n: command.from.y,
+        }
+      } else {
+        json = {
+          t: 1,
+          p: command.to.x,
+          nf: command.from.y,
+          nt: command.to.y,
+        }
+      }
+
+      this.arduinoRunning = true
+      this.port.write(str)
+      index++
+
+      if (index > commands.length) {
+        console.log('clear')
+        clearInterval(timer)
+      }
+    }, 100)
   }
 
   move(positions) {

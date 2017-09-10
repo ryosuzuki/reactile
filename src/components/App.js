@@ -41,10 +41,6 @@ class App extends Component {
     })
   }
 
-  sendPositions(positions) {
-    this.socket.emit('markers:move', positions)
-  }
-
   updateMarkers(positions) {
     let markers = this.props.markers
     if (markers.length === 0) {

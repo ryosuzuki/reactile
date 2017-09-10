@@ -34,7 +34,10 @@ class Shape {
     let shapes = this.app.props.shapes
     shapes[this.id] = this
     this.app.updateState({ shapes: shapes })
-    this.move()
+
+    this.calculate()
+    // this.move()
+    this.travel()
   }
 
   calculate() {
@@ -53,9 +56,26 @@ class Shape {
     }
     if (!this.distMatrix.length) return
     this.ids = munkres(this.distMatrix)
-
     this.drawLine()
   }
+
+  travel() {
+    let markers = this.app.props.markers
+    let commands = []
+    for (let id of this.ids) {
+      let mid = id[0]
+      let tid = id[1]
+      let marker = markers[mid]
+      let target = this.targets[tid]
+      let dist = Math.abs(marker.x - target.x) + Math.abs(marker.y - target.y)
+      commands.push({
+        from: { x: marker.x, y: marker.y },
+        to: { x: target.x, y: target.y }
+      })
+    }
+    this.app.socket.emit('markers:travel', commands)
+  }
+
 
   move() {
     const waitTime = 1000
@@ -72,7 +92,7 @@ class Shape {
         .map((marker) => {
           return { x: marker.x, y: marker.y }
         })
-        this.app.sendPositions(positions)
+        this.app.socket.emit('markers:move', positions)
       } else {
         console.log('clear')
         clearInterval(timer)

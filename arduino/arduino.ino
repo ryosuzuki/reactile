@@ -41,14 +41,57 @@ void loop() {
     Serial.println("received");
     int type = root["t"];
     if (type == 0) {
-      travel(root);
-    } else {
+      travelP(root);
+    }
+    if (type == 1) {
+      travelN(root);
+    }
+    if (type == 2) {
       multiple(root);
     }
   }
 }
 
-void travel(JsonObject &root) {
+void travelP(JsonObject &root) {
+  int from = root["pf"];
+  int to = root["pt"];
+  int n = root["n"];
+  if (from < to) {
+    for (int p = from; p < to; p++) {
+      marker.singleMoveTo(p, n);
+    }
+  } else {
+    for (int p = from; p > to; p--) {
+      marker.singleMoveTo(p, n);
+    }
+  }
+  coil.singleTurnOn(to, n);
+  delay(100);
+  coil.standby();
+  Serial.println("done");
+}
+
+
+void travelN(JsonObject &root) {
+  int p = root["p"];
+  int from = root["nf"];
+  int to = root["nt"];
+  if (from < to) {
+    for (int n = from; n < to; n++) {
+      marker.singleMoveTo(p, n);
+    }
+  } else {
+    for (int n = from; n > to; n--) {
+      marker.singleMoveTo(p, n);
+    }
+  }
+  coil.singleTurnOn(p, to);
+  delay(100);
+  coil.standby();
+  Serial.println("done");
+}
+
+void multipleTravelP(JsonObject &root) {
   int from = root["pf"];
   int to = root["pt"];
   int nSize = root["s"];
@@ -60,7 +103,6 @@ void travel(JsonObject &root) {
   if (from < to) {
     for (int p = from; p < to; p++) {
       marker.moveTo(p, ns, nSize);
-      // marker.singleMoveTo(p, n);
     }
   } else {
     for (int p = from; p > to; p--) {
@@ -71,7 +113,7 @@ void travel(JsonObject &root) {
   delay(100);
   coil.standby();
   Serial.println("done");
-?}
+}
 
 void multiple(JsonObject &root) {
   int pSize = root["s"];
