@@ -1,6 +1,5 @@
 const _ = require('lodash')
 
-
 function detectMarker() {
   this.positions = []
 
