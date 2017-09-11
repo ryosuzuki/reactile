@@ -43,7 +43,7 @@ class Track {
         if (this.ready) {
           this.warpWithRect()
           this.detectMarker()
-        // this.detectPointer()
+          this.detectPointer()
         }
         this.buffer = this.im.toBuffer()
         this.socket.emit('buffer', {
