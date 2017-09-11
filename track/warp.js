@@ -32,10 +32,10 @@ function warpWithRect() {
   let height = this.im.height()
 
   let src = [
-    topLeft.x-1, topLeft.y-1,
-    topRight.x+1, topRight.y-1,
-    bottomRight.x+1, bottomRight.y+1,
-    bottomLeft.x-1, bottomLeft.y+1,
+    topLeft.x, topLeft.y,
+    topRight.x, topRight.y,
+    bottomRight.x, bottomRight.y,
+    bottomLeft.x, bottomLeft.y,
   ]
 
   let dst = [

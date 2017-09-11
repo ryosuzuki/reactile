@@ -16,7 +16,7 @@ class Track {
     this.ready = false
     this.arduinoReady = false
     this.arduinoRunning = false
-    this.rect = {}
+    this.rect = []
     this.positions = []
     this.init()
   }

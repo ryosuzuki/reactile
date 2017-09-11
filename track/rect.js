@@ -1,7 +1,25 @@
 const _ = require('lodash')
 
 function detectRect() {
-  if (this.ready) return
+  this.rect = [
+    {x: 59, y: 125},
+    {x: 25, y: 345},
+    {x: 471, y: 363},
+    {x: 463, y: 140}
+  ]
+  this.ready = true
+
+  if (this.ready) {
+    for (let i = 0; i < this.rect.length; i++) {
+      let ci = i
+      let ni = (i+1) % 4
+      let p0 = [this.rect[ci].x, this.rect[ci].y]
+      let p1 = [this.rect[ni].x, this.rect[ni].y]
+      let red = [0, 0, 255]
+      this.im.line(p0, p1, red)
+    }
+    return
+  }
 
   this.min = this.whiteMin
   this.max = this.whiteMax
@@ -11,8 +29,8 @@ function detectRect() {
   let imCanny = this.im.copy()
   imCanny.convertHSVscale()
   imCanny.inRange(this.min, this.max)
-  imCanny.erode(2)
-  imCanny.dilate(2)
+  // imCanny.erode(1)
+  // imCanny.dilate(10)
 
   // this.im = imCanny
   // return
@@ -60,12 +78,19 @@ function detectRect() {
     let ni = (i+1) % 4
     let p0 = [this.rect[ci].x, this.rect[ci].y]
     let p1 = [this.rect[ni].x, this.rect[ni].y]
-    let black = [0, 0, 0]
-    // this.im.line(p0, p1, black)
+    let red = [0, 0, 255]
+    this.im.line(p0, p1, red)
   }
-  this.ready = true
 
+  this.socket.emit('rect:update', this.rect)
+  this.ready = true
 }
+
+
+
+
+
+
 
 function detectRectWithPoints() {
   if (this.ready) return
@@ -127,8 +152,8 @@ function detectRectWithPoints() {
       let ni = (i+1) % 4
       let p0 = [this.rect[ci].x, this.rect[ci].y]
       let p1 = [this.rect[ni].x, this.rect[ni].y]
-      let black = [0, 0, 0]
-      this.im.line(p0, p1, black)
+      let black = [0, 0, 255]
+      this.im.line(p0, p1, red)
     }
     this.ready = true
   }

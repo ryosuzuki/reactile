@@ -11,6 +11,11 @@
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io.connect('http://localhost:4000/')
+
+    socket.on('rect:update', function (rect) {
+      window.rect = rect
+    })
+
     socket.on('markers:update', function (positions) {
       window.positions = positions
       $('#positions').text(JSON.stringify(positions))

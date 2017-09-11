@@ -39,6 +39,8 @@ class Draw {
   }
 
   draw(event) {
+    console.log(this.app.stage.mouseX, this.app.stage.mouseY)
+
     if (!this.drawing) return
     console.log('stage move')
 
