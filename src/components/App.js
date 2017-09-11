@@ -98,7 +98,7 @@ class App extends Component {
       let marker = markers[mid]
       let pos = positions[pid]
       let dist = Math.sqrt((marker.x-pos.x)**2+(marker.y-pos.y)**2)
-      if (dist > 1.5 || (dist > 0.9 && marker.isMoving) ) {
+      if (dist > 1 || (dist > 0.9 && marker.isMoving) ) {
         marker.x = pos.x
         marker.y = pos.y
       }

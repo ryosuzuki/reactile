@@ -51,8 +51,8 @@ function detectMarker() {
     let red = [0, 0, 255]
     this.im.ellipse(pos.x, pos.y, 10, 10, red)
 
-    let x = this.xSize - Math.round(pos.x / unit.x)
-    let y = this.ySize - Math.round(pos.y / unit.y)
+    let x = this.xSize - Math.round(pos.x / unit.x) -1
+    let y = this.ySize - Math.round(pos.y / unit.y) -1
     this.positions.push({ x: x, y: y })
   }
 
