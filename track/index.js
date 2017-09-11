@@ -5,6 +5,7 @@ const config = require('./config')
 const connect = require('./connect')
 const detectRect = require('./rect')
 const detectMarker = require('./marker')
+const detectPointer = require('./pointer')
 const warpWithRect = require('./warp')
 
 class Track {
@@ -28,7 +29,29 @@ class Track {
     this.connect = connect.bind(this)
     this.detectRect = detectRect.bind(this)
     this.detectMarker = detectMarker.bind(this)
+    this.detectPointer = detectPointer.bind(this)
     this.warpWithRect = warpWithRect.bind(this)
+  }
+
+  run() {
+    setInterval(() => {
+      this.camera.read((err, im) => {
+        if (err) throw err
+        this.im = im
+
+        this.detectPointer()
+        // this.detectRect()
+        // if (this.ready) {
+        //   this.warpWithRect()
+        //   this.detectMarker()
+        // }
+        this.buffer = this.im.toBuffer()
+        this.socket.emit('buffer', {
+          buffer: this.buffer,
+          rect: this.rect
+        })
+      })
+    }, this.cameraInterval)
   }
 
   start(socket) {
@@ -133,26 +156,6 @@ class Track {
     let id = data.id
     let pos = data.pos
     this.positions[id] = pos
-  }
-
-  run() {
-    setInterval(() => {
-      this.camera.read((err, im) => {
-        if (err) throw err
-        this.im = im
-
-        this.detectRect()
-        if (this.ready) {
-          this.warpWithRect()
-          this.detectMarker()
-        }
-        this.buffer = this.im.toBuffer()
-        this.socket.emit('buffer', {
-          buffer: this.buffer,
-          rect: this.rect
-        })
-      })
-    }, this.cameraInterval)
   }
 
   testRun() {

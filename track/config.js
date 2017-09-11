@@ -1,6 +1,6 @@
 const config = {
-  camWidth: 580, // 720;
-  camHeight: 450, // 400;
+  camWidth: 380, // 580 720;
+  camHeight: 250, // 450 400;
   camFps: 10,
   xSize: 16 * 5,
   ySize: 40,
