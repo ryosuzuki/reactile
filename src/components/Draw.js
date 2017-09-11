@@ -22,6 +22,13 @@ class Draw {
   }
 
   start() {
+    if (this.app.state.mode === '') {
+      console.log('click')
+      shape.x = Math.round(this.app.stage.mouseX / this.app.offset)
+      shape.y = Math.round(this.app.stage.mouseY / this.app.offset)
+      shape.init()
+    }
+
     if (this.app.state.mode === 'constraint') {
 
     }

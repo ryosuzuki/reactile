@@ -25,17 +25,13 @@ if (portName) {
   })
 
   let commands = [{
-    from: { x: 79, y: 39 },
-    to: { x: 68, y: 30 }
-  }, {
-    from: { x: 68, y: 30 },
-    to: { x: 79, y: 39 },
+    from: { x: 70, y: 30 },
+    to: { x: 60, y: 20 }
+  },{
+    from: { x: 60, y: 20 },
+    to: { x: 70, y: 30 }
   }]
 
-  commands = [{
-    from: { x: 39, y: 31 },
-    to: { x: 39, y: 39 }
-  }]
   travel(port, commands)
   return false
 }
@@ -46,6 +42,7 @@ function travel(port, commands) {
     if (!ready) return
     if (running) return
     let command = commands[index]
+  console.log(command)
     let json = {}
     if (!command.x) {
       json = {
@@ -70,6 +67,9 @@ function travel(port, commands) {
     port.write(str)
     if (command.x && command.y) {
       index++
+      command.x = false
+      command.y = false
+      index = index % 2
     }
     if (index >= commands.length) {
       console.log('clear')

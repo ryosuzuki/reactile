@@ -3,11 +3,8 @@ const _ = require('lodash')
 function detectRect() {
   if (this.ready) return
 
-  this.min = this.blueMin
-  this.max = this.blueMax
-
-  this.min = [70, 130, 140]
-  this.max = [155, 255, 255]
+  this.min = [20, 100, 140]
+  this.max = [40, 130, 205]
 
   let imCanny = this.im.copy()
   imCanny.convertHSVscale()
