@@ -8,7 +8,7 @@ class Panel extends Component {
     this.app = app
     window.panel = this
     this.state = {
-      width: 260,
+      width: 310,
       height: 220,
       margin: 10,
       selected: []
@@ -109,6 +109,13 @@ class Panel extends Component {
   drawConnector(id1, id2, index) {
     let el1 = $(`#${id1}`)
     let el2 = $(`#${id2}`)
+
+    if (el1.offset().top > el2.offset().top) {
+      let temp = el1
+      el1 = el2
+      el2 = temp
+    }
+
     let info1 = {
       x: el1.offset().left,
       y: el1.offset().top,
@@ -122,9 +129,9 @@ class Panel extends Component {
       height: el2.height()
     }
 
-    let offset = 20 * (index + 1)
-    let left = info1.x + info1.width
-    let top = info1.y
+    let offset = -30 //0 * (index + 1)
+    let left = info1.x + info1.width + 40
+    let top = info1.y + 20
     let height = Math.abs(info1.y - info2.y)
 
     let connector = {
@@ -134,7 +141,7 @@ class Panel extends Component {
       left: left + offset,
       top: top,
       zIndex: 1000,
-      borderRight: '10px solid teal'
+      borderRight: '10px solid #66d2cd'
     }
     let topOffset = {
       position: 'absolute',
@@ -143,7 +150,7 @@ class Panel extends Component {
       left: left,
       top: top - 5,
       zIndex: 1000,
-      borderTop: '10px solid teal'
+      borderTop: '10px solid #66d2cd'
     }
     let bottomOffset = {
       position: 'absolute',
@@ -152,7 +159,7 @@ class Panel extends Component {
       left: left,
       top: top + height - 5,
       zIndex: 1000,
-      borderBottom: '10px solid teal'
+      borderBottom: '10px solid #66d2cd'
     }
 
     return (

@@ -2,10 +2,10 @@ const _ = require('lodash')
 
 function detectRect() {
   this.rect = [
-    {x: 50, y: 141},
-    {x: 15, y: 363},
-    {x: 465, y: 377},
-    {x: 455, y: 154}
+    {x: 61, y: 159},
+    {x: 18, y: 380},
+    {x: 470, y: 404},
+    {x: 461, y: 178}
   ]
 
   for (let i = 0; i < this.rect.length; i++) {

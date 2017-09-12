@@ -27,10 +27,10 @@ class Marker {
   update() {
     this.sketch.graphics.drawCircle(0, 0, 10)
     this.text.text = this.id
-    if (this.sketch.x !== this.x * this.app.offset
-      || this.sketch.y !== this.y * this.app.offset) {
-      this.sketch.x = this.x * this.app.offset
-      this.sketch.y = this.y * this.app.offset
+    if (this.sketch.x !== (this.x+1) * this.app.offsetX
+      || this.sketch.y !== (this.y+1) * this.app.offsetY) {
+      this.sketch.x = (this.x+1) * this.app.offsetX
+      this.sketch.y = (this.y+1) * this.app.offsetY
       this.text.x = this.sketch.x
       this.text.y = this.sketch.y
       this.app.update = true
@@ -140,8 +140,8 @@ class Marker {
     this.sketch.y = this.app.stage.mouseY
     this.app.update = true
 
-    this.x = Math.round(this.sketch.x / this.app.offset)
-    this.y = Math.round(this.sketch.y / this.app.offset)
+    this.x = Math.round(this.sketch.x / this.app.offsetX)
+    this.y = Math.round(this.sketch.y / this.app.offsetY)
 
     let pos = { x: this.x, y: this.y }
     this.app.socket.emit('update:pos', { id: this.id, pos: pos })

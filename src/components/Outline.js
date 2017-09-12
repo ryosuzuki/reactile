@@ -17,10 +17,6 @@ class Outline extends createjs.Shape {
     window.outline = this
   }
 
-  convert(val) {
-    return val * this.app.offset
-  }
-
   init() {
     this.updateShape()
     this.generateTargets()
@@ -34,9 +30,9 @@ class Outline extends createjs.Shape {
 
     switch (this.shape.type) {
       case 'circle':
-        this.radius = this.convert(this.shape.radius)
-        this.x = this.convert(this.shape.x)
-        this.y = this.convert(this.shape.y)
+        this.radius = this.shape.radius * this.app.offset
+        this.x = this.shape.x * this.app.offsetX
+        this.y = this.shape.y * this.app.offsetY
         this.regX = 0
         this.regY = 0
         this.graphics.drawCircle(0, 0, this.radius)
@@ -48,10 +44,10 @@ class Outline extends createjs.Shape {
         })
         break
       case 'rect':
-        this.width = this.convert(this.shape.width)
-        this.height = this.convert(this.shape.height)
-        this.x = this.convert(this.shape.x)
-        this.y = this.convert(this.shape.y)
+        this.width = this.shape.width * this.app.offsetX
+        this.height = this.shape.height * this.app.offsetY
+        this.x = this.shape.x * this.app.offsetX
+        this.y = this.shape.y * this.app.offsetY
         this.regX = this.width / 2
         this.regY = this.height / 2
         this.graphics.drawRect(0, 0, this.width, this.height)
@@ -66,8 +62,8 @@ class Outline extends createjs.Shape {
         break
       case 'point':
         this.radius = 10
-        this.x = this.convert(this.shape.x)
-        this.y = this.convert(this.shape.y)
+        this.x = this.shape.x * this.app.offsetX
+        this.y = this.shape.y * this.app.offsetY
         this.regX = 0
         this.regY = 0
         this.graphics.drawCircle(0, 0, this.radius)
@@ -102,8 +98,8 @@ class Outline extends createjs.Shape {
     this.targets = []
     for (let contour of this.contours) {
       this.targets.push({
-        x: Math.round(contour[0] / this.app.offset),
-        y: Math.round(contour[1] / this.app.offset)
+        x: Math.round(contour[0] / this.app.offsetX),
+        y: Math.round(contour[1] / this.app.offsetY)
       })
     }
 
@@ -137,8 +133,8 @@ class Outline extends createjs.Shape {
       this.targetMarker = new createjs.Shape()
       this.targetMarker.graphics.beginFill('#f00')
       this.targetMarker.graphics.drawCircle(0, 0, 10)
-      this.targetMarker.x = target.x * this.app.offset
-      this.targetMarker.y = target.y * this.app.offset
+      this.targetMarker.x = target.x * this.app.offsetX
+      this.targetMarker.y = target.y * this.app.offsetY
       this.targetMarker.alpha = 0.3
       this.app.stage.addChild(this.targetMarker)
       this.targetMarkers.push(this.targetMarker)

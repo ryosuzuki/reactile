@@ -24,8 +24,8 @@ class Draw {
   start() {
     if (this.app.state.mode === '') {
       console.log('click')
-      shape.x = Math.round(this.app.stage.mouseX / this.app.offset)
-      shape.y = Math.round(this.app.stage.mouseY / this.app.offset)
+      shape.x = Math.round(this.app.stage.mouseX / this.app.offsetX)
+      shape.y = Math.round(this.app.stage.mouseY / this.app.offsetY)
       shape.init()
     }
 
@@ -39,7 +39,6 @@ class Draw {
   }
 
   draw(event) {
-    console.log(this.app.stage.mouseX, this.app.stage.mouseY)
 
     if (!this.drawing) return
     console.log('stage move')

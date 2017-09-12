@@ -19,9 +19,12 @@ class App extends Component {
     super(props)
     window.app = this
 
+    this.isSimulator = window.isSimulator
     this.xSize = 80 // 16
     this.ySize = 40 // 40
-    this.offset = 15
+    this.offsetX = 19
+    this.offsetY = 19.7
+    this.offset = (this.offsetX + this.offsetY) / 2
 
     this.positions = []
     this.shapes = []
@@ -54,7 +57,7 @@ class App extends Component {
       x: this.stage.canvas.width * (1-pos.x),
       y: this.stage.canvas.width * (1-pos.y),
     }
-    console.log(this.pointer)
+    // console.log(this.pointer)
   }
 
   updateMarkers(positions) {
@@ -127,8 +130,10 @@ class App extends Component {
     createjs.Touch.enable(this.stage)
     createjs.Ticker.on('tick', this.tick.bind(this))
 
-    this.grid = new Grid()
-    this.grid.render()
+    if (this.isSimulator) {
+      this.grid = new Grid()
+      this.grid.render()
+    }
 
     this.draw = new Draw()
     this.draw.init()
@@ -154,8 +159,8 @@ class App extends Component {
   }
 
   resize() {
-    this.stage.canvas.width = this.offset * (this.xSize + 1)
-    this.stage.canvas.height = this.offset * (this.ySize + 1)
+    this.stage.canvas.width = this.offsetX * (this.xSize + 1)
+    this.stage.canvas.height = this.offsetY * (this.ySize + 1)
     // $('canvas').css('left', '300px')
   }
 
@@ -170,6 +175,11 @@ class App extends Component {
   }
 
   onClick(mode) {
+    if (mode === 'init') {
+      this.initPositions()
+      return
+    }
+
     if (this.state.mode === mode) {
       this.setState({ mode: '' })
       return
@@ -204,11 +214,8 @@ class App extends Component {
             shapes={ this.props.shapes }
             mappings={ this.props.mappings }
            />
-        </div>
-        <div id="main">
-          <canvas ref="canvas" id="canvas" width="1000" height="600"></canvas>
-
           <div style={{ display: 'block' }}>
+            <button className="ui button" onClick={ this.onClick.bind(this, 'init') }>Init</button>
             <button className="ui button" onClick={ this.onClick.bind(this, 'new') }>New</button>
             <button className={ `ui button ${ this.state.mode === 'draw' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'draw') }>Draw</button>
             <button className={ `ui button ${ this.state.mode === 'constraint' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'constraint') }>Constraint</button>
@@ -216,13 +223,16 @@ class App extends Component {
             <button className="ui button" onClick={ this.onClick.bind(this, 'run') }>Run</button>
           </div>
         </div>
+        <div id="main">
+          <canvas ref="canvas" id="canvas" width="1000" height="600"></canvas>
+        </div>
       </div>
     )
   }
 }
 
 window.addEventListener('resize', () => {
-  window.app.resize()
+  // window.app.resize()
 }, false)
 
 function mapStateToProps(state) {

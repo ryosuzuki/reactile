@@ -15,7 +15,6 @@ class Shape {
     this.scale = 1
     this.variables = []
     this.values = {}
-    /*
     if (this.id === 0) {
       this.variables = ['x']
       this.values['x'] = this.x
@@ -23,7 +22,10 @@ class Shape {
       this.variables = ['y']
       this.values['y'] = this.y
     }
-    */
+
+    // this.type = 'circle'
+    // this.radius = 4
+
     this.outline = new Outline(this)
     window.shape = this
   }
@@ -162,8 +164,8 @@ class Shape {
     for (let id of this.ids) {
       let pos = this.app.props.markers[id[0]]
       let target = this.targets[id[1]]
-      this.line.graphics.moveTo(pos.x * this.app.offset, pos.y * this.app.offset)
-      this.line.graphics.lineTo(target.x * this.app.offset, target.y * this.app.offset)
+      this.line.graphics.moveTo(pos.x * this.app.offsetX, pos.y * this.app.offsetY)
+      this.line.graphics.lineTo(target.x * this.app.offsetX, target.y * this.app.offsetY)
     }
     this.line.graphics.endStroke()
     this.app.stage.addChild(this.line)
@@ -175,22 +177,17 @@ class Shape {
     this.variables = []
     switch (info.type) {
       case 'circle':
-        this.x = this.convert(info.x)
-        this.y = this.convert(info.y)
-        this.radius = this.convert(info.radius)
+        this.x = Math.round(info.x / this.app.offsetX)
+        this.y = Math.round(info.y / this.app.offsetY)
+        this.radius = Math.round(info.radius / this.app.offset)
         break
       case 'rect':
-        this.width = this.convert(info.width)
-        this.height = this.convert(info.height)
-        this.x = this.convert(info.x) + this.width / 2
-        this.y = this.convert(info.y) + this.height / 2
+        this.width = Math.round(info.width / this.app.offsetX)
+        this.height = Math.round(info.height / this.app.offsetY)
+        this.x = Math.round(info.x / this.app.offsetX) + this.width / 2
+        this.y = Math.round(info.y / this.app.offsetY) + this.height / 2
         break
     }
-    this.init()
-  }
-
-  convert(val) {
-    return Math.round(val / this.app.offset)
   }
 
 }
