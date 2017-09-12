@@ -6,6 +6,7 @@ const connect = require('./connect')
 const detectRect = require('./rect')
 const detectMarker = require('./marker')
 const detectPointer = require('./pointer')
+const detectPanel = require('./panel')
 const warpWithRect = require('./warp')
 
 class Track {
@@ -30,6 +31,7 @@ class Track {
     this.detectRect = detectRect.bind(this)
     this.detectMarker = detectMarker.bind(this)
     this.detectPointer = detectPointer.bind(this)
+    this.detectPanel = detectPanel.bind(this)
     this.warpWithRect = warpWithRect.bind(this)
   }
 
@@ -37,18 +39,29 @@ class Track {
     setInterval(() => {
       this.camera.read((err, im) => {
         if (err) throw err
-        this.im = im
+        this.im = im.copy()
+        this.imPanel = im.copy()
 
         this.detectRect()
         if (this.ready) {
-          this.warpWithRect()
+          this.warpWithRect('rect')
+          this.detectPointer('rect')
           this.detectMarker()
-          this.detectPointer()
         }
+
+        this.detectPanel()
+        if (this.panelReady) {
+          this.warpWithRect('panel')
+          this.detectPointer('panel')
+        }
+
         this.buffer = this.im.toBuffer()
+        this.bufferPanel = this.imPanel.toBuffer()
         this.socket.emit('buffer', {
           buffer: this.buffer,
-          rect: this.rect
+          bufferPanel: this.bufferPanel,
+          rect: this.rect,
+          panel: this.panel,
         })
       })
     }, this.cameraInterval)

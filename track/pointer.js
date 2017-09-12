@@ -1,17 +1,33 @@
 const _ = require('lodash')
 
-function detectPointer() {
+function detectPointer(type) {
+  let points
+  let im
 
-  this.min = [130, 0, 230]
-  this.max = [150, 130, 255]
+  if (type === 'panel') {
+    points = this.panel
+    im = this.imPanel
+    this.min = [100, 130, 30]
+    this.max = [2150, 250, 55]
+  } else {
+    points = this.rect
+    im = this.im
+    this.min = [130, 0, 230]
+    this.max = [150, 130, 255]
+  }
 
-  let imCanny = this.im.copy()
+
+  let imCanny = im.copy()
   imCanny.convertHSVscale()
   imCanny.inRange(this.min, this.max)
   imCanny.dilate(3)
   imCanny.erode(2)
 
-  // this.im = imCanny
+  // if (type === 'panel') {
+  //   this.imPanel = imCanny
+  // } else {
+  //   this.im = imCanny
+  // }
   // return
 
   let contours = imCanny.findContours()
@@ -31,10 +47,10 @@ function detectPointer() {
       pos.y /= count
 
       let green = [0, 255, 0]
-      this.im.ellipse(pos.x, pos.y, 10, 10, green)
+      im.ellipse(pos.x, pos.y, 10, 10, green)
 
-      let width = this.im.width()
-      let height = this.im.height()
+      let width = im.width()
+      let height = im.height()
       pos.x = pos.x / width
       pos.y = pos.y / height
 

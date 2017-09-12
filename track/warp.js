@@ -1,11 +1,22 @@
 
-function warpWithRect() {
-  if (this.rect.length < 4) return
+function warpWithRect(type) {
+  let points
+  let im
 
-  let topLeft = this.rect[0]
-  let bottomLeft = this.rect[1]
-  let bottomRight = this.rect[2]
-  let topRight = this.rect[3]
+  if (type === 'panel') {
+    points = this.panel
+    im = this.imPanel
+  } else {
+    points = this.rect
+    im = this.im
+  }
+
+  if (points.length < 4) return
+
+  let topLeft = points[0]
+  let bottomLeft = points[1]
+  let bottomRight = points[2]
+  let topRight = points[3]
 
   if (!topLeft || !bottomLeft || !bottomRight || !topRight) return
 
@@ -28,8 +39,8 @@ function warpWithRect() {
   let dstWidth = Math.max(topWidth, bottomWidth)
   let dstHeight = Math.max(leftHeight, rightHeight)
 
-  let width = this.im.width()
-  let height = this.im.height()
+  let width = im.width()
+  let height = im.height()
 
   let src = [
     topLeft.x, topLeft.y,
@@ -45,8 +56,8 @@ function warpWithRect() {
     0, height
   ]
 
-  let M = this.im.getPerspectiveTransform(src, dst)
-  this.im.warpPerspective(M, width, height)
+  let M = im.getPerspectiveTransform(src, dst)
+  im.warpPerspective(M, width, height)
 }
 
 module.exports = warpWithRect
