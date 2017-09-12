@@ -5,6 +5,7 @@ const config = require('./config')
 const connect = require('./connect')
 const detectRect = require('./rect')
 const detectMarker = require('./marker')
+const detectConstraint = require('./constraint')
 const detectPointer = require('./pointer')
 const detectPanel = require('./panel')
 const detectPanelMarker = require('./panel-marker')
@@ -22,6 +23,7 @@ class Track {
     this.rect = []
     this.panel = []
     this.positions = []
+    this.constraints = []
     this.init()
   }
 
@@ -33,6 +35,7 @@ class Track {
     this.connect = connect.bind(this)
     this.detectRect = detectRect.bind(this)
     this.detectMarker = detectMarker.bind(this)
+    this.detectConstraint = detectConstraint.bind(this)
     this.detectPointer = detectPointer.bind(this)
     this.detectPanel = detectPanel.bind(this)
     this.detectPanelMarker = detectPanelMarker.bind(this)
@@ -51,6 +54,7 @@ class Track {
           this.warpWithRect('rect')
           this.detectPointer()
           this.detectMarker()
+          this.detectConstraint()
         }
 
         this.detectPanel()

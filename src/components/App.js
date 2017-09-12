@@ -43,6 +43,7 @@ class App extends Component {
     this.update = true
     this.socket = socket
     this.socket.on('markers:update', this.updateMarkers.bind(this))
+    this.socket.on('constraints:update', this.updateConstraints.bind(this))
     this.socket.on('pointer:update', this.updatePointer.bind(this))
     this.socket.on('panel-markers:update', this.updatePanelMarkers.bind(this))
     this.socket.on('arduino:log', (data) => {
@@ -63,6 +64,11 @@ class App extends Component {
       y: this.stage.canvas.height * (1-pos.y),
     }
     this.pointer.update(pos)
+  }
+
+  updateConstraints(positions) {
+    if (positions.length === 0) return
+    console.log(JSON.stringify(positions))
   }
 
   updatePanelMarkers(positions) {
