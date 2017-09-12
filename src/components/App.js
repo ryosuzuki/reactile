@@ -24,7 +24,7 @@ class App extends Component {
     this.ySize = 40 // 40
     this.offsetX = 19
     this.offsetY = 19.7
-    this.offset = (this.offsetX + this.offsetY) / 2
+    this.offset = 19 // (this.offsetX + this.offsetY) / 2
 
     this.positions = []
     this.shapes = []

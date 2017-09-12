@@ -15,6 +15,7 @@ class Track {
       this[key]= config[key]
     }
     this.ready = false
+    this.isSimulation = false
     this.arduinoReady = false
     this.arduinoRunning = false
     this.rect = []
@@ -70,16 +71,23 @@ class Track {
   start(socket) {
     let connected = this.socket ? true : false
     this.socket = socket
+    if (this.isSimulation) {
+      this.socket.on('markers:move', this.testMove.bind(this))
+    } else {
+      this.socket.on('markers:move', this.move.bind(this))
+    }
     // let move = this.testMove.bind(this)
-    this.socket.on('markers:move', this.move.bind(this))
     this.socket.on('markers:travel', this.travel.bind(this))
 
     this.socket.on('update:pos', this.updatePos.bind(this))
     if (!connected) {
       console.log('connect')
       this.connect()
-      this.run()
-      // this.testRun()
+      if (this.isSimulation) {
+        this.testRun()
+      } else {
+        this.run()
+      }
     } else {
       console.log('already connected')
     }

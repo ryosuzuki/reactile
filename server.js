@@ -14,6 +14,7 @@ app.get('/', (req, res) => {
 
 app.get('/simulator', (req, res) => {
   track.ready = false
+  // track.isSimulation = true
   res.sendFile(path.join(__dirname + '/simulator.html'))
 })
 
