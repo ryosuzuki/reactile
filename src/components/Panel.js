@@ -64,7 +64,8 @@ class Panel extends Component {
                   return (
                     <button
                       id={ `${shape.id}-${variable}` }
-                      className={ `ui button ${ this.includes(this.state.selected, { shapeId: shape.id, variable: variable }) ? 'orange' : 'teal' }` }
+                      className="ui variable button off"
+                      // className={ `ui button ${ this.includes(this.state.selected, { shapeId: shape.id, variable: variable }) ? 'orange' : 'teal' }` }
                       style={{ width: '100%', marginBottom: '10px' }}
                       key={ variable }
                       onClick={ this.onClick.bind(this, shape.id, variable) }
@@ -101,9 +102,11 @@ class Panel extends Component {
     )
   }
 
-  getName(info) {
-    let shape = this.props.shapes[info.shapeId]
-    return `${shape.type}.${info.variable}`
+  getName(id) {
+    let shapeId = id.split('-')[0]
+    let variable = id.split('-')[1]
+    let shape = this.props.shapes[shapeId]
+    return `${shape.type}.${variable}`
   }
 
   drawConnector(id1, id2, index) {
@@ -141,7 +144,7 @@ class Panel extends Component {
       left: left + offset,
       top: top,
       zIndex: 1000,
-      borderRight: '10px solid #66d2cd'
+      borderRight: '10px solid #f26202'
     }
     let topOffset = {
       position: 'absolute',
@@ -150,7 +153,7 @@ class Panel extends Component {
       left: left,
       top: top - 5,
       zIndex: 1000,
-      borderTop: '10px solid #66d2cd'
+      borderTop: '10px solid #f26202'
     }
     let bottomOffset = {
       position: 'absolute',
@@ -159,7 +162,7 @@ class Panel extends Component {
       left: left,
       top: top + height - 5,
       zIndex: 1000,
-      borderBottom: '10px solid #66d2cd'
+      borderBottom: '10px solid #f26202'
     }
 
     return (

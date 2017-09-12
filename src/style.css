@@ -18,6 +18,13 @@ body {
   position: absolute;
 }
 
+.variable.button {
+  background: #66d2cd;
+}
+
+.variable.button.on {
+  background: #f26202;
+}
 
 #main {
   /*width: 70%;*/
@@ -26,6 +33,7 @@ body {
   position: relative;
   margin-left: 370px;
 }
+
 
 #canvas, #bitmap {
   /*margin-top: 20px;*/

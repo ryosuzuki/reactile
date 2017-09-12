@@ -72,16 +72,36 @@ class App extends Component {
         x: this.panelWidth * (1-pos.x),
         y: this.stage.canvas.height * (1-pos.y)
       }
-      if ($('.teal.button').offset()) {
-        let top = $('.teal.button').offset().top
-        let height = $('.teal.button').height()
+      $('.variable.button').each(function(index, el) {
+        let top = $(this).offset().top
+        let height = $(this).height()
         if (top < pos.y && pos.y < top + height) {
-          console.log('hit')
+          $(this).addClass('on')
+        } else {
+          $(this).addClass('off')
         }
+      })
+
+      if ($('.variable.button.on').length === 2) {
+        let mapping = []
+        for (let i = 0; i < 2; i++) {
+          let el = $('.variable.button.on')[i]
+          let id = $(el).attr('id')
+          mapping.push(id)
+        }
+        mapping = _.orderBy(mapping)
+        let mappings = this.props.mappings
+        let exist = false
+        for (let existing of mapping) {
+          if (_.isEqual(existing, mapping)) exist = true
+        }
+        if (!exist) {
+          mappings.push(mapping)
+          this.app.updateState({ mappings: mappings })
+        }
+
       }
-
     }
-
     // this.pointer.update(pos)
   }
 
