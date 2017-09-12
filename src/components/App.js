@@ -67,8 +67,7 @@ class App extends Component {
   }
 
   updateConstraints(positions) {
-    if (positions.length === 0) return
-    console.log(JSON.stringify(positions))
+    this.constraint.positions = positions
   }
 
   updatePanelMarkers(positions) {

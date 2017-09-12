@@ -12,6 +12,7 @@ class Constraint {
     this.app.stage.addChild(this.line)
   }
 
+
   run() {
     console.log('run')
     console.log(this.diff)
@@ -24,7 +25,37 @@ class Constraint {
   }
 
   check() {
-    this.references = this.app.props.markers.filter(marker => marker.isReference)
+    let markers = this.props.markers
+    let constraints = this.positions
+    this.distMatrix = []
+    for (let marker of markers) {
+      let distArray = []
+      for (let pos of constraints) {
+        let dist = Math.sqrt((marker.x-pos.x)**2+(marker.y-pos.y)**2)
+        distArray.push(dist)
+      }
+      this.distMatrix.push(distArray)
+    }
+    if (!this.distMatrix.length) return
+    this.ids = munkres(this.distMatrix)
+
+    for (let id of this.ids) {
+      let mid = id[0]
+      let cid = id[1]
+      let marker = markers[mid]
+      let pos = constraints[cid]
+      let dist = Math.sqrt((marker.x-pos.x)**2+(marker.y-pos.y)**2)
+      if (dist < 1) {
+        marker.isReference = true
+      } else {
+        marker.isReference = false
+      }
+      marker.id = mid
+      markers[mid] = marker
+      // marker.update() => make blue if isReference
+    }
+
+    this.references = markers.filter(marker => marker.isReference)
     this.diff = null
     this.line.graphics.clear()
     if (this.references.length > 1) {
@@ -46,7 +77,7 @@ class Constraint {
       }
       variables = _.uniq(variables)
       Object.assign(info, { variables: variables })
-      this.app.updateState({ info: info })
+      this.app.updateState({ info: info, markers: markers })
     }
     // this.app.update = true
   }
