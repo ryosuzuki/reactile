@@ -188,6 +188,7 @@ class Shape {
         this.y = Math.round(info.y / this.app.offsetY) + this.height / 2
         break
     }
+    this.init()
   }
 
 }
