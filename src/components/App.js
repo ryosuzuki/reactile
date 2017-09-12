@@ -8,6 +8,7 @@ import munkres from 'munkres-js'
 import Grid from './Grid'
 import Marker from './Marker'
 import Draw from './Draw'
+import Pointer from './Pointer'
 import Shape from './Shape'
 import Panel from './Panel'
 import Constraint from './Constraint'
@@ -53,11 +54,11 @@ class App extends Component {
   }
 
   updatePointer(pos) {
-    this.pointer = {
+    pos = {
       x: this.stage.canvas.width * (1-pos.x),
-      y: this.stage.canvas.width * (1-pos.y),
+      y: this.stage.canvas.height * (1-pos.y),
     }
-    // console.log(this.pointer)
+    this.pointer.update(pos)
   }
 
   updateMarkers(positions) {
@@ -137,6 +138,9 @@ class App extends Component {
 
     this.draw = new Draw()
     this.draw.init()
+
+    this.pointer = new Pointer()
+    this.pointer.init()
 
     this.constraint = new Constraint()
     this.constraint.init()

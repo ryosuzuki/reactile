@@ -58,7 +58,6 @@ function detectPointer(type) {
     }
   }
 
-
 }
 
 module.exports = detectPointer
