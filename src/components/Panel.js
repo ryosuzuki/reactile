@@ -45,8 +45,8 @@ class Panel extends Component {
     return (
       <div id="panel" className="panel">
         { this.props.mappings.map((mapping, index) => {
-          let id0 = _.values(mapping[0]).join('-')
-          let id1 = _.values(mapping[1]).join('-')
+          let id0 = mapping[0]
+          let id1 = mapping[1]
           return (
             this.drawConnector(id0, id1, index)
           )
@@ -89,9 +89,9 @@ class Panel extends Component {
               let name1 = this.getName(mapping[1])
               return (
                 <div key={ index }>
-                  <span className="ui teal large label">{ name0 }</span>
+                  <span className="ui orange large label">{ name0 }</span>
                   <span> = </span>
-                  <span className="ui teal large label">{ name1 }</span>
+                  <span className="ui orange large label">{ name1 }</span>
                 </div>
               )
             })}

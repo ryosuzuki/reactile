@@ -66,12 +66,14 @@ class App extends Component {
   }
 
   updatePanelMarkers(positions) {
-    window.hoge = positions
-    for (let pos of positions) {
-      pos = {
+    positions = positions.map((pos) => {
+      return {
         x: this.panelWidth * (1-pos.x),
         y: this.stage.canvas.height * (1-pos.y)
       }
+    })
+    window.hoge = positions
+    for (let pos of positions) {
       $('.variable.button').each(function(index, el) {
         let top = $(this).offset().top
         let height = $(this).height()
@@ -92,12 +94,12 @@ class App extends Component {
         mapping = _.orderBy(mapping)
         let mappings = this.props.mappings
         let exist = false
-        for (let existing of mapping) {
+        for (let existing of mappings) {
           if (_.isEqual(existing, mapping)) exist = true
         }
         if (!exist) {
           mappings.push(mapping)
-          this.app.updateState({ mappings: mappings })
+          this.updateState({ mappings: mappings })
         }
 
       }

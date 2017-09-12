@@ -20,6 +20,7 @@ body {
 
 .variable.button {
   background: #66d2cd;
+  color: white;
 }
 
 .variable.button.on {

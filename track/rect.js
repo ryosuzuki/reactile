@@ -13,8 +13,8 @@ function detectRect() {
   if (!this.ready) {
     this.min = this.whiteMin
     this.max = this.whiteMax
-    this.min = [100, 0, 160]
-    this.max = [150, 100, 255]
+    // this.min = [100, 0, 160]
+    // this.max = [150, 100, 255]
 
     let imCanny = this.im.copy()
     imCanny.convertHSVscale()
@@ -26,7 +26,7 @@ function detectRect() {
     // return
 
     let contours = imCanny.findContours()
-    let threshold = 100
+    let threshold = 100 * 100
     let points = []
     for (let i = 0; i < contours.size(); i++) {
       if (contours.area(i) < threshold) continue
