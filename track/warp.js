@@ -3,12 +3,12 @@ function warpWithRect(type) {
   let points
   let im
 
-  if (type === 'panel') {
-    points = this.panel
-    im = this.imPanel
-  } else {
+  if (type === 'rect') {
     points = this.rect
     im = this.im
+  } else {
+    points = this.panel
+    im = this.imPanel
   }
 
   if (points.length < 4) return

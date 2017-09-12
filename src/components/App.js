@@ -27,6 +27,9 @@ class App extends Component {
     this.offsetY = 19.7
     this.offset = 19 // (this.offsetX + this.offsetY) / 2
 
+    this.panelWidth = 350
+    this.panelHeight = 350
+
     this.positions = []
     this.shapes = []
     this.currentId = -1
@@ -41,6 +44,7 @@ class App extends Component {
     this.socket = socket
     this.socket.on('markers:update', this.updateMarkers.bind(this))
     this.socket.on('pointer:update', this.updatePointer.bind(this))
+    this.socket.on('panel-markers:update', this.updatePanelMarkers.bind(this))
     this.socket.on('arduino:log', (data) => {
       console.log(data)
     })
@@ -59,6 +63,26 @@ class App extends Component {
       y: this.stage.canvas.height * (1-pos.y),
     }
     this.pointer.update(pos)
+  }
+
+  updatePanelMarkers(positions) {
+    window.hoge = positions
+    for (let pos of positions) {
+      pos = {
+        x: this.panelWidth * (1-pos.x),
+        y: this.stage.canvas.height * (1-pos.y)
+      }
+      if ($('.teal.button').offset()) {
+        let top = $('.teal.button').offset().top
+        let height = $('.teal.button').height()
+        if (top < pos.y && pos.y < top + height) {
+          console.log('hit')
+        }
+      }
+
+    }
+
+    // this.pointer.update(pos)
   }
 
   updateMarkers(positions) {

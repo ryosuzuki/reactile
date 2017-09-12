@@ -8,7 +8,7 @@ class Panel extends Component {
     this.app = app
     window.panel = this
     this.state = {
-      width: 310,
+      width: 350,
       height: 220,
       margin: 10,
       selected: []

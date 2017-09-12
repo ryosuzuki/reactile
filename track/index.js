@@ -7,6 +7,7 @@ const detectRect = require('./rect')
 const detectMarker = require('./marker')
 const detectPointer = require('./pointer')
 const detectPanel = require('./panel')
+const detectPanelMarker = require('./panel-marker')
 const warpWithRect = require('./warp')
 
 class Track {
@@ -19,6 +20,7 @@ class Track {
     this.arduinoReady = false
     this.arduinoRunning = false
     this.rect = []
+    this.panel = []
     this.positions = []
     this.init()
   }
@@ -33,6 +35,7 @@ class Track {
     this.detectMarker = detectMarker.bind(this)
     this.detectPointer = detectPointer.bind(this)
     this.detectPanel = detectPanel.bind(this)
+    this.detectPanelMarker = detectPanelMarker.bind(this)
     this.warpWithRect = warpWithRect.bind(this)
   }
 
@@ -46,14 +49,14 @@ class Track {
         this.detectRect()
         if (this.ready) {
           this.warpWithRect('rect')
-          this.detectPointer('rect')
+          this.detectPointer()
           this.detectMarker()
         }
 
         this.detectPanel()
         if (this.panelReady) {
           this.warpWithRect('panel')
-          this.detectPointer('panel')
+          this.detectPanelMarker()
         }
 
         this.buffer = this.im.toBuffer()
@@ -96,6 +99,7 @@ class Track {
   travel(commands) {
     let index = 0
     console.log(commands)
+    if (!commands.length) return
     const timer = setInterval(() => {
       if (!this.arduinoReady) return
       if (this.arduinoRunning) return
