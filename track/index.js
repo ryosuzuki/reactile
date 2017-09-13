@@ -18,7 +18,7 @@ class Track {
     }
     this.ready = false
     this.isSimulation = false
-    this.isSimulation = true
+    // this.isSimulation = true
     this.arduinoReady = false
     this.arduinoRunning = false
     this.cameraInterval = 1000 / this.camFps
