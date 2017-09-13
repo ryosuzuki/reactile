@@ -16,7 +16,7 @@ class Shape {
     this.scale = 1
     this.variables = []
 
-    this.demo = 3
+    this.demo = 4
 
     if (this.demo === 1) {
       this.type = 'rect'
@@ -65,15 +65,16 @@ class Shape {
     window.shape = this
   }
 
-  propagate() {
-    if (this.app.demo === 4) {
+  propagate(marker) {
+    console.log(marker.x, marker.y)
+    if (this.demo === 4) {
       // move rectangle width
       let shape = this.app.props.shapes[0]
-      shape.width = this.x
+      shape.width = marker.x
       shape.init()
     }
 
-    if (this.app.demo === 5) {
+    if (this.demo === 5) {
 
     }
   }

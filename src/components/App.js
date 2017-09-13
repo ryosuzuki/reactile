@@ -120,16 +120,21 @@ class App extends Component {
     // this.pointer.update(pos)
   }
 
-  updateMarkers(positions) {
+  initMarkers(positions) {
     let markers = this.props.markers
-    if (markers.length === 0) {
-      for (let pos of positions) {
-        let marker = new Marker()
-        marker.x = pos.x
-        marker.y = pos.y
-        marker.update()
-        markers.push(marker)
-      }
+    for (let pos of positions) {
+      let marker = new Marker()
+      marker.x = pos.x
+      marker.y = pos.y
+      marker.update()
+      markers.push(marker)
+    }
+    this.updateState({ markers: markers })
+  }
+
+  updateMarkers(positions) {
+    if (!this.props.markers.length) {
+      this.initMarkers(positions)
     }
     this.positions = positions
     this.track()
@@ -176,9 +181,8 @@ class App extends Component {
 
         if (marker.shapeId) {
           let shape = this.props.shapes[marker.shapeId]
-          shape.propagate()
+          shape.propagate(marker)
         }
-
       }
       marker.id = mid
       markers[mid] = marker
@@ -215,6 +219,14 @@ class App extends Component {
       this.shape = new Shape()
       this.shape.init()
       this.shapes.push(this.shape)
+
+      if (this.shape.demo === 4) {
+        this.currentId++
+        this.shape = new Shape()
+        this.shape.init()
+        this.shapes.push(this.shape)
+      }
+
     }
 
   }
