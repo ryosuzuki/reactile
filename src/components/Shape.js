@@ -8,6 +8,7 @@ class Shape {
     this.ids = []
     this.id = this.app.currentId
 
+    this.dependent = false
     this.repeatCount = 0
     this.type = 'point'
     this.x = 30 + 10 * this.id
@@ -15,6 +16,7 @@ class Shape {
     this.angle = 0
     this.scale = 1
     this.variables = []
+
 
     this.demo = 3
 
@@ -68,9 +70,10 @@ class Shape {
   propagate(marker) {
     console.log(marker.x, marker.y)
     if (this.demo === 4) {
-      // move rectangle width
+      // _.intersect(this.app.props.shapes, this)
       let shape = this.app.props.shapes[0]
-      shape.width = marker.x
+      shape.dependent = true
+      shape.width = 10 // marker.x
       shape.init()
     }
 

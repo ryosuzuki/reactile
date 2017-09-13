@@ -137,6 +137,27 @@ class Outline extends createjs.Shape {
         })
       }
     }
+
+    if (this.shape.dependent) {
+      this.distMatrix = []
+      let shapeMarkers = this.app.props.markers.filter((marker) => {
+        return marker.shapeId === this.shape.id
+      })
+      this.targets = this.targets.map((target) => {
+        let minDist = Infinity
+        for (let marker of shapeMarkers) {
+          let dist = (marker.x-target.x)**2 + (marker.y-target.y)**2
+          min = dist < min ? dist : min
+        }
+        target.dist = minDist
+        return target
+      }).sort((a, b) => {
+        return a.dist - b.dist
+      })
+
+      this.targets = this.targets.slice(0, this.shape.markers.length)
+    }
+
     this.app.updateState({ targets: this.targets })
 
     // if (this.shape.type === 'rect') {

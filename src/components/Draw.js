@@ -88,6 +88,12 @@ class Draw {
     let maxY = Math.max(...y)
     let minY = Math.min(...y)
 
+    if (this.app.shape.type === detect.pattern) {
+      this.app.shape.dependent = true
+    } else {
+      this.app.shape.dependent = false
+    }
+
     // let shape = this.app.props.shapes[this.app.currentId]
     switch (detect.pattern) {
       case 'circle':

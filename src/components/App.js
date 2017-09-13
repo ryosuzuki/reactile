@@ -200,10 +200,10 @@ class App extends Component {
         marker.x = pos.x
         marker.y = pos.y
 
-        // if (marker.shapeId === 1) {
-        //   let shape = this.props.shapes[marker.shapeId]
-        //   shape.propagate(marker)
-        // }
+        if (marker.shapeId === 1) {
+          let shape = this.props.shapes[marker.shapeId]
+          shape.propagate(marker)
+        }
       }
       marker.id = mid
       markers[mid] = marker
