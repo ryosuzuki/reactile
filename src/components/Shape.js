@@ -65,6 +65,33 @@ class Shape {
     this.drawLine()
   }
 
+  redo() {
+    let markers = this.app.props.markers
+    let commands = []
+    for (let id of this.ids) {
+      let mid = id[0]
+      let tid = id[1]
+      let marker = markers[mid]
+      let target = this.targets[tid]
+      // let dist = Math.abs(marker.x - target.x) + Math.abs(marker.y - target.y)
+      let dist = Math.sqrt((marker.x-target.x)**2 + (marker.y-target.y)**2)
+      if (dist > 1) {
+        commands.push({
+          from: { x: marker.x, y: marker.y },
+          to: { x: target.x, y: target.y },
+          dist: dist
+        })
+      }
+    }
+    commands.sort((a, b) => {
+      return b.dist - a.dist
+    })
+    if (commands.length > 0) {
+      console.log(commands)
+      this.app.socket.emit('markers:travel', commands)
+    }
+  }
+
   travel() {
     let markers = this.app.props.markers
     let commands = []

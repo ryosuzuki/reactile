@@ -46,6 +46,7 @@ class App extends Component {
     this.socket.on('constraints:update', this.updateConstraints.bind(this))
     this.socket.on('pointer:update', this.updatePointer.bind(this))
     this.socket.on('panel-markers:update', this.updatePanelMarkers.bind(this))
+    this.socket.on('arduino:finish', this.checkFinish.bind(this))
     this.socket.on('arduino:log', (data) => {
       console.log(data)
     })
@@ -56,6 +57,13 @@ class App extends Component {
       return { x: marker.x, y: marker.y }
     })
     this.socket.emit('markers:move', positions)
+  }
+
+  checkFinish() {
+    this.initPositions()
+    setTimeout(() => {
+      this.shape.redo()
+    }, 1000)
   }
 
   updatePointer(pos) {

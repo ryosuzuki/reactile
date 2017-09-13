@@ -21,6 +21,7 @@ function connect() {
         this.arduinoRunning = false
         if (this.timerFinish) {
           console.log('all done')
+          this.socket.emit('arduino:finish', true)
         }
       }
       this.socket.emit('arduino:log', data)
