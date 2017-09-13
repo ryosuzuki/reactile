@@ -109,16 +109,28 @@ class Outline extends createjs.Shape {
     this.pathData = toPath(this.svg)
     this.path = parse(this.pathData)
     this.contours = contours(this.path)[0]
+    let original = this.contours
 
     this.contours = simplify.douglasPeucker(this.contours, 1)
     this.contours = simplify.radialDistance(this.contours, 5 * this.app.offset)
     this.contours = _.uniqWith(this.contours, _.isEqual)
 
+    if (this.shape.dependent && this.shape.type === 'circle') {
+      let shapeMarkers = this.app.props.markers.filter((marker) => {
+        return marker.shapeId === this.shape.id
+      })
+      let count = shapeMarkers.length
+      let limit = Math.floor(original.length / count) + 1
+      this.contours = original.filter((contour, index) => {
+        return (index % limit) === 0
+      })
+    }
+
     if (this.contours.length > 1) {
       let first = _.first(this.contours)
       let last = _.last(this.contours)
       let dist = Math.sqrt((first[0] - last[0])**2 + (first[1] - last[1])**2)
-      if (dist < 5 * this.app.offset) {
+      if (dist < 4 * this.app.offset) {
         this.contours.splice(-1)
       }
     }
@@ -138,25 +150,8 @@ class Outline extends createjs.Shape {
       }
     }
 
-    if (this.shape.dependent) {
-      this.distMatrix = []
-      let shapeMarkers = this.app.props.markers.filter((marker) => {
-        return marker.shapeId === this.shape.id
-      })
-      this.targets = this.targets.map((target) => {
-        let minDist = Infinity
-        for (let marker of shapeMarkers) {
-          let dist = (marker.x-target.x)**2 + (marker.y-target.y)**2
-          min = dist < min ? dist : min
-        }
-        target.dist = minDist
-        return target
-      }).sort((a, b) => {
-        return a.dist - b.dist
-      })
 
-      this.targets = this.targets.slice(0, this.shape.markers.length)
-    }
+
 
     this.app.updateState({ targets: this.targets })
 

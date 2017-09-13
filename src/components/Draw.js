@@ -88,19 +88,14 @@ class Draw {
     let maxY = Math.max(...y)
     let minY = Math.min(...y)
 
-    if (this.app.shape.type === detect.pattern) {
-      this.app.shape.dependent = true
-    } else {
-      this.app.shape.dependent = false
-    }
-
     // let shape = this.app.props.shapes[this.app.currentId]
+    let shape = this.app.shape
     switch (detect.pattern) {
       case 'circle':
         let radius = (maxX + maxY - minX - minY) / 4
         let x = (maxX + minX) / 2
         let y = (maxY + minY) / 2
-        this.app.shape.initFromCanvas({
+        shape.initFromCanvas({
           type: 'circle',
           radius: radius,
           x: x,
@@ -110,7 +105,7 @@ class Draw {
       case 'square':
         let width = maxX - minX
         let height = maxY - minY
-        this.app.shape.initFromCanvas({
+        shape.initFromCanvas({
           type: 'rect',
           x: minX,
           y: minY,
@@ -119,7 +114,7 @@ class Draw {
         })
         break
       case 'triangle':
-        this.app.shape.initFromCanvas({
+        shape.initFromCanvas({
           type: 'triangle',
           x: (maxX + minX) / 2,
           y: (maxY + minY) / 2,

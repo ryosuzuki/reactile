@@ -183,7 +183,7 @@ class Shape {
       let change = res.change
       let markers = res.markers
       console.log('run')
-      if (change && repeatCount < 100) {
+      if (change && repeatCount < 0) {
         let positions = markers.map((marker) => {
           return { x: marker.x, y: marker.y }
         })
@@ -271,6 +271,7 @@ class Shape {
   }
 
   initFromCanvas(info) {
+    this.dependent = (this.type === info.type)
     this.type = info.type
     this.variables = []
     switch (info.type) {
