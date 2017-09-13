@@ -206,7 +206,7 @@ class Shape {
     this.calculate()
     let change = false
     let markers = this.app.props.markers
-    let max = { id: null, dist: 0 }
+    let longIds = []
     let changedIds = []
     for (let id of this.ids) {
       let mid = id[0]
@@ -221,7 +221,7 @@ class Shape {
       let dist = Math.sqrt(dx**2 + dy**2)
       if (dx !== 0) {
         x = (dx > 0) ? x - 1 : x + 1
-      } else if (dx !== 0) {
+      } else if (dy !== 0) {
         y = (dy > 0) ? y - 1 : y + 1
       }
       if (marker.x !== x || marker.y !== y) {
@@ -229,24 +229,21 @@ class Shape {
         marker.y = y
         marker.isMoving = true
         change = true
-        if (dist > max.dist) {
-          max = { id: mid, dist: dist }
+        if (dist > 4) {
+          longIds.push(mid)
         }
       } else {
         marker.isMoving = false
       }
     }
 
-    if (max.dist > 5) {
-      markers = markers.filter((marker) => {
-        return marker.id === max.id
-      })
-    } else {
-      markers = markers.filter((marker) => {
+    markers = markers.filter((marker) => {
+      if (longIds.length > 0) {
+        return longIds.includes(marker.id)
+      } else {
         return marker.isMoving
-      })
-    }
-
+      }
+    })
     return { change: change, markers: markers }
   }
 
