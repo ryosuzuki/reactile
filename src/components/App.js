@@ -40,6 +40,10 @@ class App extends Component {
       height: 720
     }
 
+    this.demo = 1 // rect
+    this.demo = 2 // circle
+    this.demo = 3 // point
+
     this.update = true
     this.socket = socket
     this.socket.on('markers:update', this.updateMarkers.bind(this))
@@ -202,14 +206,13 @@ class App extends Component {
     this.constraint = new Constraint()
     this.constraint.init()
 
-    if (window.Maptastic) {
-      const config = {
-        autoSave: false,
-        autoLoad: false,
-        layers: ['react-app']
-      }
-      Maptastic(config)
+    if (this.demo) {
+      this.currentId++
+      this.shape = new Shape()
+      this.shape.init()
+      this.shapes.push(this.shape)
     }
+
   }
 
   tick(event) {

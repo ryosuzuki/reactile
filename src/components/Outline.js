@@ -111,19 +111,14 @@ class Outline extends createjs.Shape {
     this.contours = contours(this.path)[0]
 
     this.contours = simplify.douglasPeucker(this.contours, 1)
-
-    if (this.shape.type === 'circle') {
-      this.contours = simplify.radialDistance(this.contours, 8 * this.app.offset)
-    } else {
-      this.contours = simplify.radialDistance(this.contours, 5 * this.app.offset)
-    }
+    this.contours = simplify.radialDistance(this.contours, 5 * this.app.offset)
     this.contours = _.uniqWith(this.contours, _.isEqual)
 
     if (this.contours.length > 1) {
       let first = _.first(this.contours)
       let last = _.last(this.contours)
       let dist = Math.sqrt((first[0] - last[0])**2 + (first[1] - last[1])**2)
-      if (dist < 5 * this.app.offset) {
+      if (dist < 4 * this.app.offset) {
         this.contours.splice(-1)
       }
     }
@@ -149,14 +144,14 @@ class Outline extends createjs.Shape {
       let maxX = _.max(this.targets.map(t => t.x))
       let minY = _.min(this.targets.map(t => t.y))
       let maxY = _.max(this.targets.map(t => t.y))
-      // if (maxX - minX > 4 * 2) {
-      //   this.targets.push({ x: Math.round((maxX + minX)/2), y: minY })
-      //   this.targets.push({ x: Math.round((maxX + minX)/2), y: maxY })
-      // }
-      // if (maxY - minY > 4 * 2) {
-      //   this.targets.push({ x: minX, y: Math.round((maxY + minY)/2) })
-      //   this.targets.push({ x: maxX, y: Math.round((maxY + minY)/2) })
-      // }
+      if (maxX - minX > 10) {
+        this.targets.push({ x: Math.round((maxX + minX)/2), y: minY })
+        this.targets.push({ x: Math.round((maxX + minX)/2), y: maxY })
+      }
+      if (maxY - minY > 10) {
+        this.targets.push({ x: minX, y: Math.round((maxY + minY)/2) })
+        this.targets.push({ x: maxX, y: Math.round((maxY + minY)/2) })
+      }
     }
 
   }

@@ -15,14 +15,32 @@ class Shape {
     this.angle = 0
     this.scale = 1
     this.variables = []
-    this.values = {}
-    if (this.id === 0) {
-      this.variables = ['x']
-      this.values['x'] = this.x
-    } else {
-      this.variables = ['y']
-      this.values['y'] = this.y
+
+    if (this.app.demo === 1) {
+      this.type = 'rect'
+      this.variables = []
+      this.x = 15
+      this.y = 10
+      this.width = 15
+      this.height = 15
     }
+
+    if (this.app.demo === 2) {
+      this.type = 'circle'
+      this.variables = []
+      this.x = 15
+      this.y = 15
+      this.radius = 7
+      this.diameter = this.radius * 2
+    }
+
+    if (this.app.demo === 3) {
+      this.type = 'point'
+      this.x = 15
+      this.y = 15
+    }
+
+
 
     // this.type = 'circle'
     // this.radius = 4
@@ -223,6 +241,7 @@ class Shape {
         this.x = Math.round(info.x / this.app.offsetX)
         this.y = Math.round(info.y / this.app.offsetY)
         this.radius = Math.round(info.radius / this.app.offset)
+        this.diameter = this.radius * 2
         break
       case 'rect':
         this.width = Math.round(info.width / this.app.offsetX)
