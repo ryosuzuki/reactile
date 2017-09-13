@@ -164,8 +164,8 @@ class Shape {
     for (let id of this.ids) {
       let pos = this.app.props.markers[id[0]]
       let target = this.targets[id[1]]
-      this.line.graphics.moveTo(pos.x * this.app.offsetX, pos.y * this.app.offsetY)
-      this.line.graphics.lineTo(target.x * this.app.offsetX, target.y * this.app.offsetY)
+      this.line.graphics.moveTo((pos.x+1) * this.app.offsetX, (pos.y+1) * this.app.offsetY)
+      this.line.graphics.lineTo((target.x+1) * this.app.offsetX, (target.y+1) * this.app.offsetY)
     }
     this.line.graphics.endStroke()
     this.app.stage.addChild(this.line)

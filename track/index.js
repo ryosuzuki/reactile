@@ -106,8 +106,7 @@ class Track {
     console.log(commands)
     if (!commands.length) return
     const timer = setInterval(() => {
-      console.log(index)
-      // if (!this.arduinoReady) return
+      if (!this.arduinoReady) return
       if (this.arduinoRunning) return
 
       let command = commands[index]
@@ -132,22 +131,17 @@ class Track {
       commands[index] = command
       this.arduinoRunning = true
       let str = JSON.stringify(json)
-      // this.port.write(str)
+      this.port.write(str)
       console.log(str)
-      // if (command.x && command.y) {
+      if (command.x && command.y) {
         index++
-      // }
+      }
       if (index >= commands.length) {
         console.log('clear')
         clearInterval(timer)
         this.arduinoRunning = false
       }
-    }, 1000)
-
-    setInterval(() => {
-      this.arduinoRunning = false
-    }, 5000)
-
+    }, 100)
   }
 
   move(positions) {

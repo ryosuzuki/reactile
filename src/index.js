@@ -14,7 +14,8 @@ import { Provider } from 'react-redux'
 let initialStore = {
   markers: [],
   shapes: [],
-  mappings: []
+  mappings: [],
+  targets: []
 }
 
 let store = configureStore(initialStore)

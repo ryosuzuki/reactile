@@ -1,4 +1,5 @@
 import Shape from './Shape'
+import munkres from 'munkres-js'
 
 class Constraint {
   constructor() {
@@ -9,6 +10,7 @@ class Constraint {
     this.app = app
     this.line = new createjs.Shape()
     this.line.alpha = 0.4
+    this.positions = []
     this.app.stage.addChild(this.line)
   }
 
@@ -25,7 +27,7 @@ class Constraint {
   }
 
   check() {
-    let markers = this.props.markers
+    let markers = this.app.props.markers
     let constraints = this.positions
     this.distMatrix = []
     for (let marker of markers) {
@@ -39,6 +41,7 @@ class Constraint {
     if (!this.distMatrix.length) return
     this.ids = munkres(this.distMatrix)
 
+    if (!Array.isArray(this.ids)) return
     for (let id of this.ids) {
       let mid = id[0]
       let cid = id[1]

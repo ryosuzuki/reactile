@@ -5,20 +5,20 @@ void Marker::init(Coil c) {
 }
 
 void Marker::singleMoveTo(int p, int n) {
-  int time = 15; 
+  int time = 3; 
   if ( (16 <= p && p <= 18)
     || (32 <= p && p <= 34)
     || (48 <= p && p <= 50)
     || (64 <= p && p <= 66) ) 
   { 
-    time = 50;
+    time = 10;
   }  
   coil.singleTurnOn(p, n);
-  delay(time);
+  delay(time*5);
   coil.standby();
   for (int i = 0; i < 10; i++) {
     coil.singleTurnOn(p, n);
-    delay(3);
+    delay(time);
     coil.singleTurnOff(p, n);
     delay(1);
   }

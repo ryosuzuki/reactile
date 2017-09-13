@@ -92,33 +92,32 @@ class Outline extends createjs.Shape {
     this.contours = contours(this.path)[0]
 
     this.contours = simplify.douglasPeucker(this.contours, 1)
-    this.contours = simplify.radialDistance(this.contours, 3 * this.app.offset)
+    this.contours = simplify.radialDistance(this.contours, 5 * this.app.offset)
     this.contours = _.uniqWith(this.contours, _.isEqual)
 
     this.targets = []
     for (let contour of this.contours) {
       this.targets.push({
-        x: Math.round(contour[0] / this.app.offsetX),
-        y: Math.round(contour[1] / this.app.offsetY)
+        x: Math.round(contour[0] / this.app.offsetX) - 1,
+        y: Math.round(contour[1] / this.app.offsetY) - 1
       })
     }
+    this.app.updateState({ targets: this.targets })
 
-    /*
     if (this.shape.type === 'rect') {
       let minX = _.min(this.targets.map(t => t.x))
       let maxX = _.max(this.targets.map(t => t.x))
       let minY = _.min(this.targets.map(t => t.y))
       let maxY = _.max(this.targets.map(t => t.y))
-      if (maxX - minX > 6) {
-        this.targets.push({ x: Math.round((maxX + minX)/2), y: minY })
-        this.targets.push({ x: Math.round((maxX + minX)/2), y: maxY })
-      }
-      if (maxY - minY > 6) {
-        this.targets.push({ x: minX, y: Math.round((maxY + minY)/2) })
-        this.targets.push({ x: maxX, y: Math.round((maxY + minY)/2) })
-      }
+      // if (maxX - minX > 6) {
+      //   this.targets.push({ x: Math.round((maxX + minX)/2), y: minY })
+      //   this.targets.push({ x: Math.round((maxX + minX)/2), y: maxY })
+      // }
+      // if (maxY - minY > 6) {
+      //   this.targets.push({ x: minX, y: Math.round((maxY + minY)/2) })
+      //   this.targets.push({ x: maxX, y: Math.round((maxY + minY)/2) })
+      // }
     }
-    */
 
   }
 
@@ -133,8 +132,8 @@ class Outline extends createjs.Shape {
       this.targetMarker = new createjs.Shape()
       this.targetMarker.graphics.beginFill('#f00')
       this.targetMarker.graphics.drawCircle(0, 0, 10)
-      this.targetMarker.x = target.x * this.app.offsetX
-      this.targetMarker.y = target.y * this.app.offsetY
+      this.targetMarker.x = (target.x+1) * this.app.offsetX
+      this.targetMarker.y = (target.y+1) * this.app.offsetY
       this.targetMarker.alpha = 0.3
       this.app.stage.addChild(this.targetMarker)
       this.targetMarkers.push(this.targetMarker)

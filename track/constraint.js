@@ -7,7 +7,7 @@ function detectConstraint() {
   this.max = this.blueMax
 
   this.min = [70, 130, 0]
-  this.max = [160, 155, 255]
+  this.max = [150, 155, 160]
 
 
   let imCanny = this.im.copy()

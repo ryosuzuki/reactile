@@ -9,19 +9,16 @@ app.use(bodyParser.json())
 app.use('/', express.static(__dirname))
 app.get('/', (req, res) => {
   track.ready = false
-  track.isSimulation = false
   res.sendFile(path.join(__dirname + '/index.html'))
 })
 
 app.get('/simulator', (req, res) => {
   track.ready = false
-  track.isSimulation = true
   res.sendFile(path.join(__dirname + '/simulator.html'))
 })
 
 app.get('/camera', (req, res) => {
   track.ready = false
-  track.isSimulation = false
   res.sendFile(path.join(__dirname + '/camera.html'))
 })
 

@@ -269,6 +269,16 @@ class App extends Component {
             shapes={ this.props.shapes }
             mappings={ this.props.mappings }
            />
+          <pre style={{ color: 'white', width: '100%', whiteSpace: 'normal' }}>
+            { JSON.stringify(this.props.markers.map((marker) => {
+              return { x: marker.x, y: marker.y }
+            } )) }
+          </pre>
+          <pre style={{ color: 'white' }}>
+            { JSON.stringify(this.props.targets.map((target) => {
+              return { x: target.x, y: target.y }
+            } )) }
+          </pre>
           <div style={{ display: 'block' }}>
             <button className="ui button" onClick={ this.onClick.bind(this, 'init') }>Init</button>
             <button className="ui button" onClick={ this.onClick.bind(this, 'new') }>New</button>
