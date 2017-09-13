@@ -187,6 +187,14 @@ class Shape {
         this.x = Math.round(info.x / this.app.offsetX) + this.width / 2
         this.y = Math.round(info.y / this.app.offsetY) + this.height / 2
         break
+      case 'triangle':
+        this.points = info.points.map((point) => {
+          let x = Math.round(point.x  / this.app.offsetX)
+          let y = Math.round(point.y  / this.app.offsetY)
+          return { x: x, y: y }
+        })
+        console.log(this.points)
+        break
     }
     this.init()
   }

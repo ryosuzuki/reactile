@@ -190,6 +190,12 @@ class Panel extends Component {
             <rect x={ (this.state.width - 50) / 2 } y={ height / 4 } width={ height / 2 } height={ height / 2} strokeWidth={10} stroke="#f00" fill="none"/>
           </svg>
         )
+      case 'triangle':
+        return (
+          <svg height={ height } width="100%">
+            <polygon points={ `${this.state.width / 2},${ height * 1 / 4 },${this.state.width * 0.4},${ height * 3 / 4 },${this.state.width * 0.6},${ height * 3 / 4 }` } strokeWidth={10} stroke="#f00" fill="none"/>
+          </svg>
+        )
       case 'slider':
         return (
           <svg height={ height } width="100%">

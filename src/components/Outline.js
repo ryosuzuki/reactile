@@ -75,6 +75,22 @@ class Outline extends createjs.Shape {
         })
         break
       case 'triangle':
+        this.points = this.shape.points.map((point) => {
+          let x = point.x * this.app.offsetX
+          let y = point.y * this.app.offsetY
+          return [x, y]
+        })
+        this.graphics
+        .moveTo(this.points[0])
+        .lineTo(this.points[1])
+        .lineTo(this.points[2])
+        .lineTo(this.points[0])
+        // this.regX = this.width / 2
+        // this.regY = this.height / 2
+        this.svg = toPoints({
+          type: 'polygon',
+          points: this.points.join()
+        })
         break
       default:
         break
@@ -109,14 +125,14 @@ class Outline extends createjs.Shape {
       let maxX = _.max(this.targets.map(t => t.x))
       let minY = _.min(this.targets.map(t => t.y))
       let maxY = _.max(this.targets.map(t => t.y))
-      // if (maxX - minX > 6) {
-      //   this.targets.push({ x: Math.round((maxX + minX)/2), y: minY })
-      //   this.targets.push({ x: Math.round((maxX + minX)/2), y: maxY })
-      // }
-      // if (maxY - minY > 6) {
-      //   this.targets.push({ x: minX, y: Math.round((maxY + minY)/2) })
-      //   this.targets.push({ x: maxX, y: Math.round((maxY + minY)/2) })
-      // }
+      if (maxX - minX > 4 * 2) {
+        this.targets.push({ x: Math.round((maxX + minX)/2), y: minY })
+        this.targets.push({ x: Math.round((maxX + minX)/2), y: maxY })
+      }
+      if (maxY - minY > 4 * 2) {
+        this.targets.push({ x: minX, y: Math.round((maxY + minY)/2) })
+        this.targets.push({ x: maxX, y: Math.round((maxY + minY)/2) })
+      }
     }
 
   }
