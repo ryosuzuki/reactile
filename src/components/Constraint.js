@@ -25,40 +25,81 @@ class Constraint {
     }
   }
 
-  check() {
+  check2() {
+    for (let id of this.ids) {
+      let mid = id[0]
+      let cid = id[1]
+      let marker = markers[mid]
+      let pos = constraints[cid]
+      let dist = Math.sqrt((marker.x-pos.x)**2+(marker.y-pos.y)**2)
+      if (dist < 2) {
+        marker.isReference = true
+      } else {
+        marker.isReference = false
+      }
+      marker.id = mid
+      markers[mid] = marker
+      // marker.update() => make blue if isReference
+    }
+  }
+
+  move() {
     let markers = this.app.props.markers
-    // let constraints = this.positions
-    // this.distMatrix = []
-    // for (let marker of markers) {
-    //   let distArray = []
-    //   for (let pos of constraints) {
-    //     let dist = Math.sqrt((marker.x-pos.x)**2+(marker.y-pos.y)**2)
-    //     distArray.push(dist)
-    //   }
-    //   this.distMatrix.push(distArray)
-    // }
-    // if (!this.distMatrix.length) return
-    // this.ids = munkres(this.distMatrix)
-
-    // if (!Array.isArray(this.ids)) return
-    // for (let id of this.ids) {
-    //   let mid = id[0]
-    //   let cid = id[1]
-    //   let marker = markers[mid]
-    //   let pos = constraints[cid]
-    //   let dist = Math.sqrt((marker.x-pos.x)**2+(marker.y-pos.y)**2)
-    //   if (dist < 2) {
-    //     marker.isReference = true
-    //   } else {
-    //     marker.isReference = false
-    //   }
-    //   marker.id = mid
-    //   markers[mid] = marker
-    //   // marker.update() => make blue if isReference
-    // }
-
-
+    let constraints = this.positions
+    for (let id of this.ids) {
+      let mid = id[0]
+      let cid = id[1]
+      let marker = markers[mid]
+      let pos = constraints[cid]
+      marker.x = pos.x
+      marker.y = pos.y
+      markers[mid] = marker
+    }
     this.references = markers.filter(marker => marker.isReference)
+    this.update(markers)
+  }
+
+  check() {
+    if (this.demo === 3 && this.references.length !== 2) {
+      this.move()
+      return
+    }
+
+    let markers = this.app.props.markers
+    let constraints = this.positions
+    this.distMatrix = []
+    for (let marker of markers) {
+      let distArray = []
+      for (let pos of constraints) {
+        let dist = Math.sqrt((marker.x-pos.x)**2+(marker.y-pos.y)**2)
+        distArray.push(dist)
+      }
+      this.distMatrix.push(distArray)
+    }
+    if (!this.distMatrix.length) return
+    this.ids = munkres(this.distMatrix)
+
+    if (!Array.isArray(this.ids)) return
+    for (let id of this.ids) {
+      let mid = id[0]
+      let cid = id[1]
+      let marker = markers[mid]
+      let pos = constraints[cid]
+      let dist = Math.sqrt((marker.x-pos.x)**2+(marker.y-pos.y)**2)
+      if (dist < 2) {
+        marker.isReference = true
+      } else {
+        marker.isReference = false
+      }
+      marker.id = mid
+      markers[mid] = marker
+      // marker.update() => make blue if isReference
+    }
+    this.references = markers.filter(marker => marker.isReference)
+    this.update(markers)
+  }
+
+  update(markers) {
     this.diff = null
     this.line.graphics.clear()
     if (this.references.length > 1) {
@@ -113,7 +154,9 @@ class Constraint {
   visualize() {
     let r0 = this.references[0]
     let r1 = this.references[1]
-    this.line.graphics.setStrokeStyle(3)
+    this.line.graphics.setStrokeDash([10, 10])
+    this.line.graphics.setStrokeStyle(10)
+
     this.line.graphics.beginStroke('#66d2cd')
     this.line.graphics.moveTo((r0.x+1) * this.app.offsetX, (r0.y+1) * this.app.offsetY)
     this.line.graphics.lineTo((r1.x+1) * this.app.offsetX, (r1.y+1) * this.app.offsetY)

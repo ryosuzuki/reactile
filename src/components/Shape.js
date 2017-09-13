@@ -16,31 +16,33 @@ class Shape {
     this.scale = 1
     this.variables = []
 
-    if (this.app.demo === 1) {
+    this.demo = 3
+
+    if (this.demo === 1) {
       this.type = 'rect'
       this.variables = []
-      this.x = 15
-      this.y = 10
+      this.x = 20
+      this.y = 20
       this.width = 15
       this.height = 15
     }
 
-    if (this.app.demo === 2) {
+    if (this.demo === 2) {
       this.type = 'circle'
       this.variables = []
-      this.x = 15
-      this.y = 15
-      this.radius = 7
+      this.x = 25
+      this.y = 20
+      this.radius = 9
       this.diameter = this.radius * 2
     }
 
-    if (this.app.demo === 3) {
+    if (this.demo === 3) {
       this.type = 'point'
-      this.x = 15
-      this.y = 15
+      this.x = 35
+      this.y = 30
     }
 
-    if (this.app.demo === 4) {
+    if (this.demo === 4) {
       if (this.id === 0) {
         this.type = 'rect'
         this.variables = ['width']

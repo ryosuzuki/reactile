@@ -40,10 +40,7 @@ class App extends Component {
       height: 720
     }
 
-    this.demo = 1 // rect
-    this.demo = 2 // circle
-    this.demo = 3 // point
-    this.demo = 4 // rect and point
+    this.demo = true
 
     this.update = true
     this.socket = socket
@@ -285,17 +282,17 @@ class App extends Component {
             shapes={ this.props.shapes }
             mappings={ this.props.mappings }
            />
-          <pre style={{ color: 'white', width: '100%', whiteSpace: 'normal' }}>
-            { JSON.stringify(this.props.markers.map((marker) => {
-              return { x: marker.x, y: marker.y }
-            } )) }
-          </pre>
-          <pre style={{ color: 'white' }}>
-            { JSON.stringify(this.props.targets.map((target) => {
-              return { x: target.x, y: target.y }
-            } )) }
-          </pre>
-          <div style={{ display: 'block' }}>
+          <div style={{ display: 'none' }}>
+            <pre style={{ color: 'white', width: '100%', whiteSpace: 'normal' }}>
+              { JSON.stringify(this.props.markers.map((marker) => {
+                return { x: marker.x, y: marker.y }
+              } )) }
+            </pre>
+            <pre style={{ color: 'white' }}>
+              { JSON.stringify(this.props.targets.map((target) => {
+                return { x: target.x, y: target.y }
+              } )) }
+            </pre>
             <button className="ui button" onClick={ this.onClick.bind(this, 'init') }>Init</button>
             <button className="ui button" onClick={ this.onClick.bind(this, 'new') }>New</button>
             <button className={ `ui button ${ this.state.mode === 'draw' ? 'primary' : '' }` } onClick={ this.onClick.bind(this, 'draw') }>Draw</button>

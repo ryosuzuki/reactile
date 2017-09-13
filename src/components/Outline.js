@@ -118,7 +118,7 @@ class Outline extends createjs.Shape {
       let first = _.first(this.contours)
       let last = _.last(this.contours)
       let dist = Math.sqrt((first[0] - last[0])**2 + (first[1] - last[1])**2)
-      if (dist < 4 * this.app.offset) {
+      if (dist < 5 * this.app.offset) {
         this.contours.splice(-1)
       }
     }
