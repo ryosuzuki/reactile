@@ -2,13 +2,13 @@ const _ = require('lodash')
 
 function detectRect() {
 
-  // this.rect = [
-  //   {x: 61, y: 159},
-  //   {x: 18, y: 380},
-  //   {x: 470, y: 404},
-  //   {x: 461, y: 178}
-  // ]
-  // this.ready = true
+  this.rect = [
+    {x: 54, y: 125},
+    {x: 21, y: 346},
+    {x: 467, y: 363},
+    {x: 460, y: 141}
+  ]
+  this.ready = true
 
   if (!this.ready) {
     this.min = this.whiteMin

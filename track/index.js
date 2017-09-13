@@ -32,7 +32,7 @@ class Track {
 
   init() {
     if (this.isSimulation) return
-    this.camera = new cv.VideoCapture(1)
+    this.camera = new cv.VideoCapture(0)
     this.camera.setWidth(this.camWidth)
     this.camera.setHeight(this.camHeight)
     this.connect = connect.bind(this)
@@ -54,7 +54,7 @@ class Track {
 
         this.detectRect()
         if (this.ready) {
-          // this.warpWithRect('rect')
+          this.warpWithRect('rect')
           this.detectPointer()
           this.detectMarker()
           this.detectConstraint()

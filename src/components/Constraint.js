@@ -1,5 +1,6 @@
 import Shape from './Shape'
 import munkres from 'munkres-js'
+import _ from 'lodash'
 
 class Constraint {
   constructor() {
@@ -11,6 +12,7 @@ class Constraint {
     this.line = new createjs.Shape()
     this.line.alpha = 1
     this.positions = []
+    this.references = []
     this.app.stage.addChild(this.line)
   }
 
@@ -25,42 +27,31 @@ class Constraint {
     }
   }
 
-  check2() {
-    for (let id of this.ids) {
-      let mid = id[0]
-      let cid = id[1]
-      let marker = markers[mid]
-      let pos = constraints[cid]
-      let dist = Math.sqrt((marker.x-pos.x)**2+(marker.y-pos.y)**2)
-      if (dist < 2) {
-        marker.isReference = true
-      } else {
-        marker.isReference = false
-      }
-      marker.id = mid
-      markers[mid] = marker
-      // marker.update() => make blue if isReference
-    }
-  }
-
   move() {
     let markers = this.app.props.markers
-    let constraints = this.positions
+    let constraints = this.positions.slice(0, 2)
+    console.log(JSON.stringify(constraints))
+    // constraints = _.uniqBy(constraints, _.isEqual)
+    // console.log(JSON.stringify(constraints))
     for (let id of this.ids) {
       let mid = id[0]
       let cid = id[1]
       let marker = markers[mid]
       let pos = constraints[cid]
-      marker.x = pos.x
-      marker.y = pos.y
-      markers[mid] = marker
+      if (pos) {
+        marker.x = pos.x
+        marker.y = pos.y
+        markers[mid] = marker
+      } else {
+        return
+      }
     }
     this.references = markers.filter(marker => marker.isReference)
     this.update(markers)
   }
 
   check() {
-    if (this.demo === 3 && this.references.length !== 2) {
+    if (this.references.length === 2) {
       this.move()
       return
     }
