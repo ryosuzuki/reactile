@@ -21,6 +21,7 @@ class Track {
     this.isSimulation = true
     this.arduinoReady = false
     this.arduinoRunning = false
+    this.timerFinish = true
     this.cameraInterval = 1000 / this.camFps
     this.rect = []
     this.panel = []
@@ -107,6 +108,7 @@ class Track {
     let index = 0
     console.log(commands)
     if (!commands.length) return
+    this.timerFinish = false
     const timer = setInterval(() => {
       if (!this.arduinoReady) return
       if (this.arduinoRunning) return
@@ -141,7 +143,7 @@ class Track {
       if (index >= commands.length) {
         console.log('clear')
         clearInterval(timer)
-        this.arduinoRunning = false
+        this.timerFinish = true
       }
     }, 100)
   }
@@ -216,7 +218,6 @@ class Track {
       if (index >= commands.length) {
         console.log('clear')
         clearInterval(timer)
-        this.arduinoRunning = false
       }
     }, 100)
   }
