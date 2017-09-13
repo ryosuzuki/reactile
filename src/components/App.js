@@ -43,6 +43,7 @@ class App extends Component {
     this.demo = 1 // rect
     this.demo = 2 // circle
     this.demo = 3 // point
+    this.demo = 4 // rect and point
 
     this.update = true
     this.socket = socket
@@ -175,6 +176,12 @@ class App extends Component {
       if (dist > 1 || (dist > 0.9 && marker.isMoving) ) {
         marker.x = pos.x
         marker.y = pos.y
+
+        if (marker.shapeId) {
+          let shape = this.props.shapes[marker.shapeId]
+          shape.propagate()
+        }
+
       }
       marker.id = mid
       markers[mid] = marker

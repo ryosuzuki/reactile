@@ -40,13 +40,40 @@ class Shape {
       this.y = 15
     }
 
-
-
+    if (this.app.demo === 4) {
+      if (this.id === 0) {
+        this.type = 'rect'
+        this.variables = ['width']
+        this.x = 15
+        this.y = 10
+        this.width = 15
+        this.height = 15
+      }
+      if (this.id === 1) {
+        this.type = 'point'
+        this.x = 15
+        this.y = 25
+        this.variables = ['x']
+      }
+    }
     // this.type = 'circle'
     // this.radius = 4
 
     this.outline = new Outline(this)
     window.shape = this
+  }
+
+  propagate() {
+    if (this.app.demo === 4) {
+      // move rectangle width
+      let shape = this.app.props.shapes[0]
+      shape.width = this.x
+      shape.init()
+    }
+
+    if (this.app.demo === 5) {
+
+    }
   }
 
   init() {
