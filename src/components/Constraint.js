@@ -45,7 +45,7 @@ class Constraint {
       let marker = markers[mid]
       let pos = constraints[cid]
       let dist = Math.sqrt((marker.x-pos.x)**2+(marker.y-pos.y)**2)
-      if (dist < 1) {
+      if (dist < 2) {
         marker.isReference = true
       } else {
         marker.isReference = false
