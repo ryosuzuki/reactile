@@ -172,7 +172,6 @@ class Shape {
     this.app.socket.emit('markers:travel', commands)
   }
 
-
   move() {
     const waitTime = 100
     let repeatCount = 0
@@ -222,20 +221,10 @@ class Shape {
       let dy = marker.y - target.y
       let x = marker.x
       let y = marker.y
-      if (Math.abs(dx) > Math.abs(dy)) {
-        if (dx > 0) {
-          x = x - 1
-        }
-        if (dx < 0) {
-          x = x + 1
-        }
-      } else {
-        if (dy > 0) {
-          y = y - 1
-        }
-        if (dy < 0) {
-          y = y + 1
-        }
+      if (dx !== 0) {
+        x = (dx > 0) ? x - 1 : x + 1
+      } else if (dx !== 0) {
+        y = (dy > 0) ? y - 1 : y + 1
       }
       if (marker.x !== x || marker.y !== y) {
         marker.x = x
