@@ -181,11 +181,7 @@ class Shape {
       let markers = res.markers
       console.log('run')
       if (change && repeatCount < 100) {
-        let positions = markers
-        .filter((marker) => {
-          return marker.isMoving
-        })
-        .map((marker) => {
+        let positions = markers.map((marker) => {
           return { x: marker.x, y: marker.y }
         })
         repeatCount++
@@ -210,6 +206,7 @@ class Shape {
     this.calculate()
     let change = false
     let markers = this.app.props.markers
+    let max = { id: null, dist: 0 }
     let changedIds = []
     for (let id of this.ids) {
       let mid = id[0]
@@ -221,6 +218,7 @@ class Shape {
       let dy = marker.y - target.y
       let x = marker.x
       let y = marker.y
+      let dist = Math.sqrt(dx**2 + dy**2)
       if (dx !== 0) {
         x = (dx > 0) ? x - 1 : x + 1
       } else if (dx !== 0) {
@@ -231,10 +229,24 @@ class Shape {
         marker.y = y
         marker.isMoving = true
         change = true
+        if (dist > max.dist) {
+          max = { id: mid, dist: dist }
+        }
       } else {
         marker.isMoving = false
       }
     }
+
+    if (max.dist > 5) {
+      markers = markers.filter((marker) => {
+        return marker.id === max.id
+      })
+    } else {
+      markers = markers.filter((marker) => {
+        return marker.isMoving
+      })
+    }
+
     return { change: change, markers: markers }
   }
 
@@ -244,6 +256,7 @@ class Shape {
     } else {
       this.line.graphics.clear()
     }
+    this.line.graphics.setStrokeDash([10, 10])
     this.line.graphics.setStrokeStyle(3)
     this.line.graphics.beginStroke('#0f0')
     for (let id of this.ids) {
