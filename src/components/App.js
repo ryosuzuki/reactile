@@ -20,7 +20,7 @@ class App extends Component {
     super(props)
     window.app = this
 
-    this.isSimulator = window.isSimulator
+    this.isSimulation = window.isSimulation
     this.xSize = 80 // 16
     this.ySize = 40 // 40
     this.offsetX = 19
@@ -182,7 +182,7 @@ class App extends Component {
     createjs.Touch.enable(this.stage)
     createjs.Ticker.on('tick', this.tick.bind(this))
 
-    if (this.isSimulator) {
+    if (this.isSimulation) {
       this.grid = new Grid()
       this.grid.render()
     }

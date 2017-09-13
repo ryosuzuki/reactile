@@ -18,6 +18,7 @@ class Track {
     }
     this.ready = false
     this.isSimulation = false
+    this.isSimulation = true
     this.arduinoReady = false
     this.arduinoRunning = false
     this.cameraInterval = 1000 / this.camFps
@@ -81,19 +82,20 @@ class Track {
     this.socket = socket
     if (this.isSimulation) {
       this.socket.on('markers:move', this.testMove.bind(this))
+      this.socket.on('markers:travel', this.testTravel.bind(this))
     } else {
       this.socket.on('markers:move', this.move.bind(this))
+      this.socket.on('markers:travel', this.travel.bind(this))
     }
     // let move = this.testMove.bind(this)
-    this.socket.on('markers:travel', this.travel.bind(this))
 
     this.socket.on('update:pos', this.updatePos.bind(this))
     if (!connected) {
       console.log('connect')
-      this.connect()
       if (this.isSimulation) {
         this.testRun()
       } else {
+        this.connect()
         this.run()
       }
     } else {
@@ -176,6 +178,49 @@ class Track {
     this.port.write(str)
   }
 
+  testTravel(commands) {
+    let index = 0
+    console.log(commands)
+    if (!commands.length) return
+    const timer = setInterval(() => {
+      if (!this.arduinoReady) return
+      if (this.arduinoRunning) return
+
+      let command = commands[index]
+      let json = {}
+      if (!command.x) {
+        json = {
+          t: 0,
+          pf: command.from.x,
+          pt: command.to.x,
+          n: command.from.y,
+        }
+        command.x = true
+      } else if (!command.y) {
+        json = {
+          t: 1,
+          p: command.to.x,
+          nf: command.from.y,
+          nt: command.to.y,
+        }
+        command.y = true
+      }
+      commands[index] = command
+      this.arduinoRunning = true
+      let str = JSON.stringify(json)
+      this.port.write(str)
+      console.log(str)
+      if (command.x && command.y) {
+        index++
+      }
+      if (index >= commands.length) {
+        console.log('clear')
+        clearInterval(timer)
+        this.arduinoRunning = false
+      }
+    }, 100)
+  }
+
   testMove(positions) {
     setTimeout(() => {
       console.log(positions)
@@ -206,8 +251,8 @@ class Track {
         if (Math.random() < 0.2) p.y++
         positions.push(p)
       }
-      // this.socket.emit('markers:update', this.positions)
-      this.socket.emit('markers:update', positions)
+      this.socket.emit('markers:update', this.positions)
+      // this.socket.emit('markers:update', positions)
     }, this.cameraInterval)
   }
 

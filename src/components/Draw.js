@@ -115,11 +115,13 @@ class Draw {
       case 'triangle':
         this.app.shape.initFromCanvas({
           type: 'triangle',
+          x: (maxX + minX) / 2,
+          y: (maxY + minY) / 2,
           points: [
             { x: (maxX + minX) / 2, y: minY },
             { x: minX, y: maxY },
             { x: maxX, y: maxY }
-          ]
+          ],
         })
         break
       default:

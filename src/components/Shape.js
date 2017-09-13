@@ -38,8 +38,12 @@ class Shape {
     this.app.updateState({ shapes: shapes })
 
     this.calculate()
-    // this.move()
-    this.travel()
+    if (this.app.isSimulation) {
+      this.move()
+      // this.travel()
+    } else {
+      this.travel()
+    }
   }
 
   calculate() {
@@ -69,18 +73,25 @@ class Shape {
       let tid = id[1]
       let marker = markers[mid]
       let target = this.targets[tid]
-      let dist = Math.abs(marker.x - target.x) + Math.abs(marker.y - target.y)
+      // let dist = Math.abs(marker.x - target.x) + Math.abs(marker.y - target.y)
+      let dist = Math.sqrt((marker.x-target.x)**2 + (marker.y-target.y)**2)
       commands.push({
         from: { x: marker.x, y: marker.y },
-        to: { x: target.x, y: target.y }
+        to: { x: target.x, y: target.y },
+        dist: dist
       })
     }
+
+    commands.sort((a, b) => {
+      return b.dist - a.dist
+    })
+    console.log(commands)
     this.app.socket.emit('markers:travel', commands)
   }
 
 
   move() {
-    const waitTime = 1000
+    const waitTime = 100
     const timer = setInterval(() => {
       let res = this.check()
       let change = res.change
@@ -193,6 +204,8 @@ class Shape {
           let y = Math.round(point.y  / this.app.offsetY)
           return { x: x, y: y }
         })
+        this.x = Math.round(info.x / this.app.offsetX)
+        this.y = Math.round(info.y / this.app.offsetY)
         console.log(this.points)
         break
     }

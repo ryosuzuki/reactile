@@ -76,17 +76,20 @@ class Outline extends createjs.Shape {
         break
       case 'triangle':
         this.points = this.shape.points.map((point) => {
-          let x = point.x * this.app.offsetX
-          let y = point.y * this.app.offsetY
+          let x = (point.x-1) * this.app.offsetX
+          let y = (point.y-1) * this.app.offsetY
           return [x, y]
         })
         this.graphics
-        .moveTo(this.points[0])
-        .lineTo(this.points[1])
-        .lineTo(this.points[2])
-        .lineTo(this.points[0])
-        // this.regX = this.width / 2
-        // this.regY = this.height / 2
+        .moveTo(this.points[0][0], this.points[0][1])
+        .lineTo(this.points[1][0], this.points[1][1])
+        .lineTo(this.points[2][0], this.points[2][1])
+        .lineTo(this.points[0][0], this.points[0][1])
+        .closePath()
+        this.x = this.shape.x
+        this.y = this.shape.y
+        this.regX = 0
+        this.regY = 0
         this.svg = toPoints({
           type: 'polygon',
           points: this.points.join()
@@ -113,10 +116,17 @@ class Outline extends createjs.Shape {
 
     this.targets = []
     for (let contour of this.contours) {
-      this.targets.push({
-        x: Math.round(contour[0] / this.app.offsetX) - 1,
-        y: Math.round(contour[1] / this.app.offsetY) - 1
-      })
+      if (this.shape.type === 'triangle') {
+        this.targets.push({
+          x: Math.round(contour[0] / this.app.offsetX),
+          y: Math.round(contour[1] / this.app.offsetY)
+        })
+      } else {
+        this.targets.push({
+          x: Math.round(contour[0] / this.app.offsetX) - 1,
+          y: Math.round(contour[1] / this.app.offsetY) - 1
+        })
+      }
     }
     this.app.updateState({ targets: this.targets })
 
