@@ -79,6 +79,27 @@ class App extends Component {
   }
 
   updatePanelMarkers(positions) {
+    if (this.shape.demo === 4) {
+      $('.variable.button').addClass('on')
+      let mapping = []
+      for (let i = 0; i < 2; i++) {
+        let el = $('.variable.button.on')[i]
+        let id = $(el).attr('id')
+        mapping.push(id)
+      }
+      mapping = _.orderBy(mapping)
+      let mappings = this.props.mappings
+      let exist = false
+      for (let existing of mappings) {
+        if (_.isEqual(existing, mapping)) exist = true
+      }
+      if (!exist) {
+        mappings.push(mapping)
+        this.updateState({ mappings: mappings })
+      }
+    }
+
+
     positions = positions.map((pos) => {
       return {
         x: this.panelWidth * (1-pos.x),
@@ -179,10 +200,10 @@ class App extends Component {
         marker.x = pos.x
         marker.y = pos.y
 
-        if (marker.shapeId) {
-          let shape = this.props.shapes[marker.shapeId]
-          shape.propagate(marker)
-        }
+        // if (marker.shapeId === 1) {
+        //   let shape = this.props.shapes[marker.shapeId]
+        //   shape.propagate(marker)
+        // }
       }
       marker.id = mid
       markers[mid] = marker
@@ -294,7 +315,7 @@ class App extends Component {
             shapes={ this.props.shapes }
             mappings={ this.props.mappings }
            />
-          <div style={{ display: 'none' }}>
+          <div style={{ display: 'block' }}>
             <pre style={{ color: 'white', width: '100%', whiteSpace: 'normal' }}>
               { JSON.stringify(this.props.markers.map((marker) => {
                 return { x: marker.x, y: marker.y }

@@ -96,24 +96,23 @@ void travelN(JsonObject &root) {
 void multiple(JsonObject &root) {
   int pSize = root["s"];
   Serial.println(pSize);
-  for (int c=0; c<5; c++) {
-    for (int i=0; i<pSize; i++) {
-      int p = root["ps"][i]["p"];
-      int nSize = root["ps"][i]["s"];
-      int ns[nSize];
-      for (int j=0; j<nSize;j++) {
-        int n = root["ps"][i]["ns"][j];
-        ns[j] = n;
-      }
-      coil.turnOn(p, ns, nSize);
-      delay(1);
-      coil.standby();
+  for (int i=0; i<pSize; i++) {
+    int p = root["ps"][i]["p"];
+    int nSize = root["ps"][i]["s"];
+    int ns[nSize];
+    for (int j=0; j<nSize;j++) {
+      int n = root["ps"][i]["ns"][j];
+      ns[j] = n;
     }
-    if (pSize < 5) {
-      int offTime = (5-pSize)*10;
-      delay(offTime);
-    }
+//    coil.turnOn(p, ns, nSize);
+//    delay(20);
+//    coil.standby();
+    marker.moveTo(p, ns, nSize);
   }
+//  if (pSize < 5) {
+//    int offTime = (5-pSize)*10;
+//    delay(offTime);
+//  }
   Serial.println("done");
 }
 

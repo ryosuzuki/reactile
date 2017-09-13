@@ -16,7 +16,7 @@ class Shape {
     this.scale = 1
     this.variables = []
 
-    this.demo = 4
+    this.demo = 3
 
     if (this.demo === 1) {
       this.type = 'rect'
@@ -46,15 +46,15 @@ class Shape {
       if (this.id === 0) {
         this.type = 'rect'
         this.variables = ['width']
-        this.x = 15
+        this.x = 25
         this.y = 10
         this.width = 15
         this.height = 15
       }
       if (this.id === 1) {
         this.type = 'point'
-        this.x = 15
-        this.y = 25
+        this.x = 25
+        this.y = 30
         this.variables = ['x']
       }
     }
@@ -91,7 +91,8 @@ class Shape {
       this.move()
       // this.travel()
     } else {
-      this.travel()
+      // this.travel()
+      this.move()
     }
   }
 
@@ -115,6 +116,7 @@ class Shape {
   }
 
   redo() {
+    return
     let markers = this.app.props.markers
     let commands = []
     for (let id of this.ids) {
@@ -153,6 +155,7 @@ class Shape {
       let tid = id[1]
       let marker = markers[mid]
       let target = this.targets[tid]
+      marker.shapeId = this.id
       // let dist = Math.abs(marker.x - target.x) + Math.abs(marker.y - target.y)
       let dist = Math.sqrt((marker.x-target.x)**2 + (marker.y-target.y)**2)
       commands.push({
@@ -161,7 +164,7 @@ class Shape {
         dist: dist
       })
     }
-
+    this.app.updateState({ markers: markers })
     commands.sort((a, b) => {
       return b.dist - a.dist
     })
@@ -172,12 +175,13 @@ class Shape {
 
   move() {
     const waitTime = 100
+    let repeatCount = 0
     const timer = setInterval(() => {
       let res = this.check()
       let change = res.change
       let markers = res.markers
       console.log('run')
-      if (change) {
+      if (change && repeatCount < 100) {
         let positions = markers
         .filter((marker) => {
           return marker.isMoving
@@ -185,6 +189,7 @@ class Shape {
         .map((marker) => {
           return { x: marker.x, y: marker.y }
         })
+        repeatCount++
         this.app.socket.emit('markers:move', positions)
       } else {
         console.log('clear')
