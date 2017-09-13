@@ -96,7 +96,7 @@ void travelN(JsonObject &root) {
 void multiple(JsonObject &root) {
   int pSize = root["s"];
   Serial.println(pSize);
-  for (int c=0; c<10; c++) {
+  for (int c=0; c<5; c++) {
     for (int i=0; i<pSize; i++) {
       int p = root["ps"][i]["p"];
       int nSize = root["ps"][i]["s"];
@@ -106,7 +106,7 @@ void multiple(JsonObject &root) {
         ns[j] = n;
       }
       coil.turnOn(p, ns, nSize);
-      delay(10);
+      delay(1);
       coil.standby();
     }
     if (pSize < 5) {

@@ -115,15 +115,7 @@ class Track {
 
       let command = commands[index]
       let json = {}
-      if (!command.x) {
-        json = {
-          t: 0,
-          pf: command.from.x,
-          pt: command.to.x,
-          n: command.from.y,
-        }
-        command.x = true
-      } else if (!command.y) {
+      if (!command.y) {
         json = {
           t: 1,
           p: command.to.x,
@@ -131,6 +123,14 @@ class Track {
           nt: command.to.y,
         }
         command.y = true
+      } else if (!command.x) {
+        json = {
+          t: 0,
+          pf: command.from.x,
+          pt: command.to.x,
+          n: command.from.y,
+        }
+        command.x = true
       }
       commands[index] = command
       this.arduinoRunning = true

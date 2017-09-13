@@ -8,6 +8,7 @@ class Shape {
     this.ids = []
     this.id = this.app.currentId
 
+    this.repeatCount = 0
     this.type = 'point'
     this.x = 30 + 10 * this.id
     this.y = 30
@@ -75,7 +76,7 @@ class Shape {
       let target = this.targets[tid]
       // let dist = Math.abs(marker.x - target.x) + Math.abs(marker.y - target.y)
       let dist = Math.sqrt((marker.x-target.x)**2 + (marker.y-target.y)**2)
-      if (dist > 1) {
+      if (dist > 2) {
         commands.push({
           from: { x: marker.x, y: marker.y },
           to: { x: target.x, y: target.y },
@@ -86,9 +87,13 @@ class Shape {
     commands.sort((a, b) => {
       return b.dist - a.dist
     })
-    if (commands.length > 0) {
+    if (commands.length > 0 && this.repeatCount < 2) {
       console.log(commands)
+      this.app.initPositions()
       this.app.socket.emit('markers:travel', commands)
+      this.repeatCount++
+    } else {
+      this.repeatCount = 0
     }
   }
 

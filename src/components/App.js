@@ -60,10 +60,8 @@ class App extends Component {
   }
 
   checkFinish() {
-    this.initPositions()
-    setTimeout(() => {
-      this.shape.redo()
-    }, 1000)
+    if (!this.shape) return
+    this.shape.redo()
   }
 
   updatePointer(pos) {
