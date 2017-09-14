@@ -200,6 +200,22 @@ class Shape {
     let repeatCount = 0
     let markers = this.app.props.markers
     if (!markers.length) return
+
+    let commands = []
+
+    for (let id of this.ids) {
+      let mid = id[0]
+      let tid = id[1]
+      let marker = markers[mid]
+      let target = this.targets[tid]
+      let dx = marker.x - target.x
+      let dy = marker.y - target.y
+      if (dx !== 0 || dy !== 0) {
+
+      }
+
+    }
+
     const timer = setInterval(() => {
       if (this.running) return
       let res = this.check(markers)
