@@ -35,7 +35,7 @@ class App extends Component {
     this.currentId = -1
 
     this.state = {
-      mode: '',
+      mode: 'draw',
       width: 1080,
       height: 720
     }
@@ -50,7 +50,7 @@ class App extends Component {
     this.socket.on('panel-markers:update', this.updatePanelMarkers.bind(this))
     this.socket.on('arduino:finish', this.checkFinish.bind(this))
     this.socket.on('arduino:log', (data) => {
-      console.log(data)
+      // console.log(data)
     })
   }
 
@@ -64,7 +64,7 @@ class App extends Component {
   checkFinish() {
     if (!this.shape) return
     this.shape.running = false
-    // this.shape.redo()
+    this.shape.redo()
   }
 
   updatePointer(pos) {
@@ -114,7 +114,7 @@ class App extends Component {
         }
         if (!exist) {
           setInterval(() => {
-            this.shape.x = Math.floor((Date.now()-panel.startTime)/1000)
+            this.shape.angle = 10 * Math.floor((Date.now()-panel.startTime)/1000)
             this.shape.init()
           }, 1000)
 
@@ -301,7 +301,7 @@ class App extends Component {
             shapes={ this.props.shapes }
             mappings={ this.props.mappings }
            />
-          <div style={{ display: 'block' }}>
+          <div style={{ display: 'none' }}>
             <pre style={{ color: 'white', width: '100%', whiteSpace: 'normal' }}>
               { JSON.stringify(this.props.markers.map((marker) => {
                 return { x: marker.x, y: marker.y }

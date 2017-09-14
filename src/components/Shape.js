@@ -63,14 +63,19 @@ class Shape {
 
     if (this.demo === 5) {
       if (this.id === 0) {
-        this.type = 'point'
+        this.type = 'rect'
         // this.variables = ['angle', 'radius']
-        this.variables = ['x']
-        this.x = 20
-        this.y = 10
+        this.variables = ['angle']
+        this.x = 65
+        this.y = 30
         this.radius = 7
         this.width = 10
         this.height = 10
+        this.points = [
+          { x: 15, y: 10 },
+          { x: 20, y: 5 },
+          { x: 25, y: 10 }
+        ]
       }
       if (this.id === 1) {
         this.type = 'point'
@@ -103,6 +108,22 @@ class Shape {
   }
 
   init() {
+    // let marker = this.app.props.markers[0]
+    // if (!marker) return
+    // let commands = [{
+    //   from: { x: marker.x, y: marker.y },
+    //   to: { x: marker.x+5, y: marker.y+5 },
+    // }, {
+    //   from: { x: marker.x+5, y: marker.y+5 },
+    //   to: { x: marker.x, y: marker.y+10 },
+    // }, {
+    //   from: { x: marker.x, y: marker.y+10 },
+    //   to: { x: marker.x-5, y: marker.y+5 },
+    // }]
+    // this.app.socket.emit('markers:travel', commands)
+
+    // return
+
     this.outline.init()
     this.targets = this.outline.targets
     let shapes = this.app.props.shapes
@@ -114,8 +135,8 @@ class Shape {
       this.move()
       // this.travel()
     } else {
-      // this.travel()
-      this.move()
+      this.travel()
+      // this.move()
     }
   }
 
@@ -139,7 +160,7 @@ class Shape {
   }
 
   redo() {
-    return
+    // return
     let markers = this.app.props.markers
     let commands = []
     for (let id of this.ids) {
@@ -198,8 +219,9 @@ class Shape {
   move() {
     let markers = this.app.props.markers
     if (!markers.length) return
-    let commands = new Array(100).fill([])
-    for (let id of this.ids) {
+
+    const hoge = (id) => {
+      let commands = new Array(100)
       let index = 0
       let mid = id[0]
       let tid = id[1]
@@ -208,43 +230,52 @@ class Shape {
       let dx = marker.x - target.x
       let dy = marker.y - target.y
       if (dx > 0) {
-        for (let i = 1; i < Math.abs(dx); i++) {
+        for (let i = 0; i <= Math.abs(dx); i++) {
           let pos = { x: marker.x-i, y: marker.y }
-          commands[index].push(pos)
+          commands[index] = pos
           index++
         }
       }
       if (dx < 0) {
-        for (let i = 1; i < Math.abs(dx); i++) {
+        for (let i = 0; i <= Math.abs(dx); i++) {
           let pos = { x: marker.x+i, y: marker.y }
-          commands[index].push(pos)
+          commands[index] = pos
           index++
         }
       }
       if (dy > 0) {
-        for (let i = 1; i < Math.abs(dx); i++) {
+        for (let i = 0; i <= Math.abs(dy); i++) {
           let pos = { x: target.x, y: marker.y-i }
-          commands[index].push(pos)
+          commands[index] = pos
           index++
         }
       }
       if (dy < 0) {
-        for (let i = 1; i < Math.abs(dx); i++) {
+        for (let i = 0; i <= Math.abs(dy); i++) {
           let pos = { x: target.x, y: marker.y+i }
-          commands[index].push(pos)
+          commands[index] = pos
           index++
         }
       }
+      return commands
     }
 
-    const waitTime = 100
+    let commands = this.ids.map((id) => {
+      let fuga = hoge(id)
+      return fuga
+    })
+
+    commands = _.unzip(commands)
+
+    const waitTime = 30
     let repeatCount = 0
-    index = 0
+    let index = 0
+    console.log('commands')
+    console.log(commands)
     const timer = setInterval(() => {
       if (this.running) return
       let command = commands[index]
-      console.log('run')
-      console.log(command)
+      command = _.compact(command)
       if (command.length > 0) {
         index++
         this.running = true

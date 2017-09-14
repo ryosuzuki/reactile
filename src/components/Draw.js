@@ -1,5 +1,3 @@
-import ShapeDetector from 'shape-detector'
-import Shape from './Shape'
 
 class Draw {
   constructor() {
@@ -25,9 +23,33 @@ class Draw {
     this.app.stage.on('stagemousedown', this.start.bind(this))
     this.app.stage.on('stagemousemove', this.draw.bind(this))
     this.app.stage.on('stagemouseup', this.end.bind(this))
+
+
   }
 
   start() {
+    if (stroke) {
+      let index = 0
+      const timer = setInterval(() => {
+        let prev = stroke[index]
+        let current = stroke[index+1]
+        this.line.graphics.beginStroke('#0f0')
+        this.line.graphics.setStrokeStyle(3)
+        this.line.graphics.moveTo(prev.x, prev.y)
+        this.line.graphics.lineTo(current.x, current.y)
+        this.app.update = true
+        index++
+        if (index >= stroke.length-1) {
+          clearInterval(timer)
+          this.line.graphics.endStroke()
+          this.stroke = stroke
+          this.beautify()
+        }
+      }, 15)
+      return
+    }
+
+
     if (this.app.state.mode === '') {
       console.log('click')
       shape.x = Math.round(this.app.stage.mouseX / this.app.offsetX)
@@ -45,7 +67,6 @@ class Draw {
   }
 
   draw(event) {
-
     if (!this.drawing) return
     console.log('stage move')
 
@@ -70,6 +91,9 @@ class Draw {
     this.drawing = false
     this.prev = null
     this.line.graphics.endStroke()
+
+    console.log(this.stroke)
+
     this.beautify()
   }
 

@@ -87,9 +87,9 @@ void travelN(JsonObject &root) {
     }
   }
   coil.singleTurnOn(p, to);
-  delay(100);
+  delay(10);
   coil.standby();
-  delay(100);
+  delay(10);
   Serial.println("done");
 }
 
