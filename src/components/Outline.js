@@ -86,10 +86,10 @@ class Outline extends createjs.Shape {
         .lineTo(this.points[2][0], this.points[2][1])
         .lineTo(this.points[0][0], this.points[0][1])
         .closePath()
-        this.x = this.shape.x
-        this.y = this.shape.y
-        this.regX = 0
-        this.regY = 0
+        this.x = this.shape.x * this.app.offsetX
+        this.y = this.shape.y * this.app.offsetY
+        this.regX = this.shape.x * this.app.offsetX
+        this.regY = this.shape.y * this.app.offsetY
         this.svg = toPoints({
           type: 'polygon',
           points: this.points.join()
@@ -130,7 +130,7 @@ class Outline extends createjs.Shape {
       let first = _.first(this.contours)
       let last = _.last(this.contours)
       let dist = Math.sqrt((first[0] - last[0])**2 + (first[1] - last[1])**2)
-      if (dist < 4 * this.app.offset) {
+      if (dist < 5 * this.app.offset) {
         this.contours.splice(-1)
       }
     }

@@ -2,14 +2,13 @@ const _ = require('lodash')
 
 function detectPanel() {
 
-  // this.panel = [
-  //   {x: 451, y: 93},
-  //   {x: 465, y: 424},
-  //   {x: 577, y: 428},
-  //   {x: 548, y: 95}
-  // ]
-  // this.panelReady = true
-
+  this.panel = [
+    {x: 460, y: 140},
+    {x: 470, y: 366},
+    {x: 578, y: 367},
+    {x: 559, y: 143}
+  ]
+  this.panelReady = true
 
   if (!this.panelReady) {
     this.min = this.yellowMin

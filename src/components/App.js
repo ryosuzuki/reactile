@@ -63,7 +63,8 @@ class App extends Component {
 
   checkFinish() {
     if (!this.shape) return
-    this.shape.redo()
+    this.shape.running = false
+    // this.shape.redo()
   }
 
   updatePointer(pos) {
@@ -79,26 +80,6 @@ class App extends Component {
   }
 
   updatePanelMarkers(positions) {
-    if (this.shape.demo === 4) {
-      $('.variable.button').addClass('on')
-      let mapping = []
-      for (let i = 0; i < 2; i++) {
-        let el = $('.variable.button.on')[i]
-        let id = $(el).attr('id')
-        mapping.push(id)
-      }
-      mapping = _.orderBy(mapping)
-      let mappings = this.props.mappings
-      let exist = false
-      for (let existing of mappings) {
-        if (_.isEqual(existing, mapping)) exist = true
-      }
-      if (!exist) {
-        mappings.push(mapping)
-        this.updateState({ mappings: mappings })
-      }
-    }
-
 
     positions = positions.map((pos) => {
       return {
@@ -132,6 +113,11 @@ class App extends Component {
           if (_.isEqual(existing, mapping)) exist = true
         }
         if (!exist) {
+          setInterval(() => {
+            this.shape.x = Math.floor((Date.now()-panel.startTime)/1000)
+            this.shape.init()
+          }, 1000)
+
           mappings.push(mapping)
           this.updateState({ mappings: mappings })
         }
@@ -199,11 +185,11 @@ class App extends Component {
       if (dist > 1 || (dist > 0.9 && marker.isMoving) ) {
         marker.x = pos.x
         marker.y = pos.y
+      }
 
-        if (marker.shapeId === 1) {
-          let shape = this.props.shapes[marker.shapeId]
-          shape.propagate(marker)
-        }
+      if (dist > 3 && marker.shapeId === 1) {
+        let shape = this.props.shapes[marker.shapeId]
+        shape.propagate(marker)
       }
       marker.id = mid
       markers[mid] = marker

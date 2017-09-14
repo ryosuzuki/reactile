@@ -16,9 +16,9 @@ class Shape {
     this.angle = 0
     this.scale = 1
     this.variables = []
+    this.running = false
 
-
-    this.demo = 3
+    // this.demo = 5
 
     if (this.demo === 1) {
       this.type = 'rect'
@@ -48,18 +48,38 @@ class Shape {
       if (this.id === 0) {
         this.type = 'rect'
         this.variables = ['width']
-        this.x = 25
+        this.x = 20
         this.y = 10
         this.width = 15
         this.height = 15
       }
       if (this.id === 1) {
         this.type = 'point'
-        this.x = 25
+        this.x = 20
         this.y = 30
         this.variables = ['x']
       }
     }
+
+    if (this.demo === 5) {
+      if (this.id === 0) {
+        this.type = 'point'
+        // this.variables = ['angle', 'radius']
+        this.variables = ['x']
+        this.x = 20
+        this.y = 10
+        this.radius = 7
+        this.width = 10
+        this.height = 10
+      }
+      if (this.id === 1) {
+        this.type = 'point'
+        this.x = 20
+        this.y = 30
+        this.variables = ['x']
+      }
+    }
+
     // this.type = 'circle'
     // this.radius = 4
 
@@ -178,23 +198,24 @@ class Shape {
   move() {
     const waitTime = 100
     let repeatCount = 0
+    let markers = this.app.props.markers
+    if (!markers.length) return
     const timer = setInterval(() => {
-      let res = this.check()
-      let change = res.change
-      let markers = res.markers
+      if (this.running) return
+      let res = this.check(markers)
+      let targets = res.targets
       console.log('run')
-      if (change && repeatCount < 0) {
-        let positions = markers.map((marker) => {
-          return { x: marker.x, y: marker.y }
-        })
+      console.log(targets)
+      if (targets.length > 0 && repeatCount < 50) {
         repeatCount++
-        this.app.socket.emit('markers:move', positions)
+        this.running = true
+        this.app.socket.emit('markers:move', targets)
       } else {
         console.log('clear')
         clearInterval(timer)
         let mids = this.ids.map(a => a[0])
         for (let id of mids) {
-          let markers = this.app.props.markers
+          // let markers = this.app.props.markers
           let marker = markers[id]
           marker.shapeId = this.app.currentId
           marker.isMoving = false
@@ -205,12 +226,13 @@ class Shape {
     }, waitTime)
   }
 
-  check() {
+  check(markers) {
     this.calculate()
     let change = false
-    let markers = this.app.props.markers
+    // let markers = this.app.props.markers
     let longIds = []
     let changedIds = []
+    let targets = []
     for (let id of this.ids) {
       let mid = id[0]
       let tid = id[1]
@@ -223,31 +245,36 @@ class Shape {
       let y = marker.y
       let dist = Math.sqrt(dx**2 + dy**2)
       if (dx !== 0) {
-        x = (dx > 0) ? x - 1 : x + 1
-      } else if (dy !== 0) {
-        y = (dy > 0) ? y - 1 : y + 1
-      }
-      if (marker.x !== x || marker.y !== y) {
-        marker.x = x
-        marker.y = y
-        marker.isMoving = true
-        change = true
-        if (dist > 4) {
-          longIds.push(mid)
+        if (dx > 0) {
+          targets.push({ x: marker.x-1, y: marker.y })
+        } else {
+          targets.push({ x: marker.x+1, y: marker.y })
         }
+      } else if (dy !== 0) {
+        if (dy > 0) {
+          targets.push({ x: marker.x,   y: marker.y-1 })
+        } else {
+          targets.push({ x: marker.x,   y: marker.y+1 })
+        }
+      }
+      if (dx !== 0 || dy !== 0) {
+        marker.isMoving = true
+        if (dist > 4) longIds.push(mid)
       } else {
         marker.isMoving = false
       }
+      markers[mid] = marker
     }
+    this.app.updateState({ markers: markers })
 
-    markers = markers.filter((marker) => {
-      if (longIds.length > 0) {
-        return longIds.includes(marker.id)
-      } else {
-        return marker.isMoving
-      }
-    })
-    return { change: change, markers: markers }
+    // let targets = markers.filter((marker) => {
+    //   if (longIds.length > 0) {
+    //     return longIds.includes(marker.id)
+    //   } else {
+    //     return marker.isMoving
+    //   }
+    // })
+    return { change: change, markers: markers, targets: targets }
   }
 
   drawLine() {
