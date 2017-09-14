@@ -196,36 +196,59 @@ class Shape {
   }
 
   move() {
-    const waitTime = 100
-    let repeatCount = 0
     let markers = this.app.props.markers
     if (!markers.length) return
-
-    let commands = []
-
+    let commands = new Array(100).fill([])
     for (let id of this.ids) {
+      let index = 0
       let mid = id[0]
       let tid = id[1]
       let marker = markers[mid]
       let target = this.targets[tid]
       let dx = marker.x - target.x
       let dy = marker.y - target.y
-      if (dx !== 0 || dy !== 0) {
-
+      if (dx > 0) {
+        for (let i = 1; i < Math.abs(dx); i++) {
+          let pos = { x: marker.x-i, y: marker.y }
+          commands[index].push(pos)
+          index++
+        }
       }
-
+      if (dx < 0) {
+        for (let i = 1; i < Math.abs(dx); i++) {
+          let pos = { x: marker.x+i, y: marker.y }
+          commands[index].push(pos)
+          index++
+        }
+      }
+      if (dy > 0) {
+        for (let i = 1; i < Math.abs(dx); i++) {
+          let pos = { x: target.x, y: marker.y-i }
+          commands[index].push(pos)
+          index++
+        }
+      }
+      if (dy < 0) {
+        for (let i = 1; i < Math.abs(dx); i++) {
+          let pos = { x: target.x, y: marker.y+i }
+          commands[index].push(pos)
+          index++
+        }
+      }
     }
 
+    const waitTime = 100
+    let repeatCount = 0
+    index = 0
     const timer = setInterval(() => {
       if (this.running) return
-      let res = this.check(markers)
-      let targets = res.targets
+      let command = commands[index]
       console.log('run')
-      console.log(targets)
-      if (targets.length > 0 && repeatCount < 50) {
-        repeatCount++
+      console.log(command)
+      if (command.length > 0) {
+        index++
         this.running = true
-        this.app.socket.emit('markers:move', targets)
+        this.app.socket.emit('markers:move', command)
       } else {
         console.log('clear')
         clearInterval(timer)
