@@ -139,7 +139,7 @@ class Outline extends createjs.Shape {
     for (let contour of this.contours) {
       if (this.shape.type === 'triangle') {
         this.targets.push({
-          x: Math.round(contour[0] / this.app.offsetX),
+          x: Math.round(contour[0] / this.app.offsetX) ,
           y: Math.round(contour[1] / this.app.offsetY)
         })
       } else {
@@ -155,20 +155,20 @@ class Outline extends createjs.Shape {
 
     this.app.updateState({ targets: this.targets })
 
-    // if (this.shape.type === 'rect') {
-    //   let minX = _.min(this.targets.map(t => t.x))
-    //   let maxX = _.max(this.targets.map(t => t.x))
-    //   let minY = _.min(this.targets.map(t => t.y))
-    //   let maxY = _.max(this.targets.map(t => t.y))
-    //   if (maxX - minX > 10) {
-    //     this.targets.push({ x: Math.round((maxX + minX)/2), y: minY })
-    //     this.targets.push({ x: Math.round((maxX + minX)/2), y: maxY })
-    //   }
-    //   if (maxY - minY > 10) {
-    //     this.targets.push({ x: minX, y: Math.round((maxY + minY)/2) })
-    //     this.targets.push({ x: maxX, y: Math.round((maxY + minY)/2) })
-    //   }
-    // }
+    if (this.shape.type === 'rect') {
+      let minX = _.min(this.targets.map(t => t.x))
+      let maxX = _.max(this.targets.map(t => t.x))
+      let minY = _.min(this.targets.map(t => t.y))
+      let maxY = _.max(this.targets.map(t => t.y))
+      if (maxX - minX > 10) {
+        this.targets.push({ x: Math.round((maxX + minX)/2), y: minY })
+        this.targets.push({ x: Math.round((maxX + minX)/2), y: maxY })
+      }
+      if (maxY - minY > 10) {
+        this.targets.push({ x: minX, y: Math.round((maxY + minY)/2) })
+        this.targets.push({ x: maxX, y: Math.round((maxY + minY)/2) })
+      }
+    }
 
   }
 

@@ -18,7 +18,7 @@ class Shape {
     this.variables = []
     this.running = false
 
-    // this.demo = 5
+    this.demo = 3
 
     if (this.demo === 1) {
       this.type = 'rect'
@@ -47,7 +47,7 @@ class Shape {
     if (this.demo === 4) {
       if (this.id === 0) {
         this.type = 'rect'
-        this.variables = ['width']
+        this.variables = ['width', 'height', 'x', 'y']
         this.x = 20
         this.y = 10
         this.width = 15
@@ -156,7 +156,7 @@ class Shape {
     }
     if (!this.distMatrix.length) return
     this.ids = munkres(this.distMatrix)
-    this.drawLine()
+    // this.drawLine()
   }
 
   redo() {

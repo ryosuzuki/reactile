@@ -55,7 +55,7 @@ class Panel extends Component {
         }) }
         { this.props.shapes.map((shape, index) => {
           return (
-            <div className="ui card" key={ index } style={{ width: '100%', height: this.state.height, margin: `${this.state.margin}px 0` }}>
+            <div className="ui card" key={ index } style={{ width: '100%', margin: `${this.state.margin}px 0` }}>
               <div className="content" style={{ flexGrow: 0 }}>
                 <div className="header">{ _.capitalize(shape.type) }</div>
               </div>

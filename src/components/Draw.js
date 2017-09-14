@@ -1,3 +1,5 @@
+import ShapeDetector from 'shape-detector'
+import Shape from './Shape'
 
 class Draw {
   constructor() {

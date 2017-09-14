@@ -21,6 +21,8 @@ body {
 .variable.button {
   background: #66d2cd;
   color: white;
+  font-size: 3em;
+  padding: 3px;
 }
 
 .variable.button.on {
