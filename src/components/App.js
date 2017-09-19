@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import actions from '../redux/actions'
 import 'createjs'
 import munkres from 'munkres-js'
+import _ from 'lodash'
 
 import Grid from './Grid'
 import Marker from './Marker'
@@ -34,6 +35,9 @@ class App extends Component {
     this.shapes = []
     this.currentId = -1
 
+    this.finish = false
+
+
     this.state = {
       mode: '',
       width: 1080,
@@ -50,11 +54,12 @@ class App extends Component {
     this.socket.on('panel-markers:update', this.updatePanelMarkers.bind(this))
     this.socket.on('arduino:finish', this.checkFinish.bind(this))
     this.socket.on('arduino:log', (data) => {
-      console.log(data)
+      // console.log(data)
     })
   }
 
   initPositions() {
+    console.log('init position')
     let positions = this.props.markers.map((marker) => {
       return { x: marker.x, y: marker.y }
     })
@@ -62,9 +67,13 @@ class App extends Component {
   }
 
   checkFinish() {
-    if (!this.shape) return
-    this.shape.running = false
-    // this.shape.redo()
+    this.running = false
+    let shape = this.props.shapes[0]
+
+    if (!shape) return
+    if (!this.finish) {
+      shape.redo()
+    }
   }
 
   updatePointer(pos) {
@@ -237,8 +246,25 @@ class App extends Component {
         this.shapes.push(this.shape)
       }
 
-    }
+      if (this.shape.demo === 8) {
+        this.currentId++
+        this.shape = new Shape()
+        this.shape.init()
+        this.shapes.push(this.shape)
 
+
+        setTimeout(() => {
+          this.initShape()
+        }, 1000)
+      }
+
+    }
+  }
+
+  initShape() {
+    for (let shape of this.props.shapes) {
+      shape.init()
+    }
   }
 
   tick(event) {
@@ -304,7 +330,7 @@ class App extends Component {
             shapes={ this.props.shapes }
             mappings={ this.props.mappings }
            />
-          <div style={{ display: 'none' }}>
+          <div style={{ display: 'block' }}>
             <pre style={{ color: 'white', width: '100%', whiteSpace: 'normal' }}>
               { JSON.stringify(this.props.markers.map((marker) => {
                 return { x: marker.x, y: marker.y }
