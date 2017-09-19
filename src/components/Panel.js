@@ -55,7 +55,7 @@ class Panel extends Component {
         }) }
         { this.props.shapes.map((shape, index) => {
           return (
-            <div className="ui card" key={ index } style={{ width: '100%', height: this.state.height, margin: `${this.state.margin}px 0` }}>
+            <div className="ui card" key={ index } style={{ width: '100%', margin: `${this.state.margin}px 0` }}>
               <div className="content" style={{ flexGrow: 0 }}>
                 <div className="header">{ _.capitalize(shape.type) }</div>
               </div>
@@ -98,7 +98,7 @@ class Panel extends Component {
           </div>
         </div>
         <div style={{ display: (this.app.shape && this.app.shape.demo === 6) ? 'block' : 'none' }}>
-          <div className="ui card" style={{ width: '100%', height: this.state.height, margin: `${this.state.margin}px 0` }}>
+          <div className="ui card" style={{ width: '100%', margin: `${this.state.margin}px 0` }}>
             <div className="content" style={{ flexGrow: 0 }}>
               <div className="header">Data</div>
             </div>
@@ -122,7 +122,7 @@ class Panel extends Component {
           </div>
         </div>
 
-        <div className="ui card" style={{ display: (this.props.mappings.length > 0) ? 'block' : 'none', width: '100%', height: this.state.height, marginTop: `${this.state.margin*5}px` }}>
+        <div className="ui card" style={{ display: (this.props.mappings.length > 0) ? 'block' : 'none', width: '100%', marginTop: `${this.state.margin*5}px` }}>
           <div className="content">
             <div className="header">Mapping</div>
           </div>
@@ -131,10 +131,11 @@ class Panel extends Component {
               let name0 = this.getName(mapping[0])
               let name1 = this.getName(mapping[1])
               return (
-                <div key={ index }>
-                  <span className="ui orange large label">{ name0 }</span>
+                <div key={ index } style={{ fontSize: '3em' }}>
+                  <span className="ui orange large label" style={{ fontSize: '0.5em', padding: '10px' }}>{ name0 }</span>
                   <span> = </span>
-                  <span className="ui orange large label">{ name1 }</span>
+                  <span className="ui orange large label" style={{ fontSize: '0.5em', padding: '10px' }}>{ name1 }</span>
+                  <span> - 5 </span>
                 </div>
               )
             })}
@@ -148,7 +149,7 @@ class Panel extends Component {
   getName(id) {
     let shapeId = id.split('-')[0]
     let variable = id.split('-')[1]
-    if (Number.isInteger(shapeId)) {
+    if (!['time', 'data'].includes(shapeId)) {
       let shape = this.props.shapes[shapeId]
       return `${shape.type}.${variable}`
     } else {

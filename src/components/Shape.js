@@ -18,7 +18,7 @@ class Shape {
     this.variables = []
     this.running = false
 
-    // this.demo = 5
+    this.demo = 4
 
     if (this.demo === 1) {
       this.type = 'rect'
@@ -91,10 +91,26 @@ class Shape {
     console.log(marker.x, marker.y)
     if (this.demo === 4) {
       // _.intersect(this.app.props.shapes, this)
+
       let shape = this.app.props.shapes[0]
+      let shape1 = this.app.props.shapes[1]
       shape.dependent = true
-      shape.width = 10 // marker.x
-      shape.init()
+      shape1.dependent = true
+      if (marker.x > 25) {
+        if (shape.width !== 20) {
+          shape.width = 20 // marker.x
+          shape1.x = 25
+          shape.init()
+          shape1.init()
+        }
+      } else if (marker.x < 10) {
+        if (shape.width !== 10) {
+          shape.width = 10 // marker.x
+          shape1.x = 15
+          shape.init()
+          shape1.init()
+        }
+      }
     }
 
     if (this.demo === 5) {
@@ -114,8 +130,8 @@ class Shape {
       this.move()
       // this.travel()
     } else {
-      // this.travel()
-      this.move()
+      this.travel()
+      // this.move()
     }
   }
 

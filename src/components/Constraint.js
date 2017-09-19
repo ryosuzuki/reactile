@@ -14,6 +14,11 @@ class Constraint {
     this.positions = []
     this.references = []
     this.app.stage.addChild(this.line)
+
+    this.secondLine = new createjs.Shape()
+    this.secondLine.alpha = 1
+    this.app.stage.addChild(this.secondLine)
+
   }
 
   run() {
@@ -93,6 +98,7 @@ class Constraint {
   update(markers) {
     this.diff = null
     this.line.graphics.clear()
+    this.secondLine.graphics.clear()
     if (this.references.length > 1) {
       this.visualize()
       this.calculate()
@@ -113,8 +119,23 @@ class Constraint {
           } else if (Math.abs(r0.x - r1.x) < 3) {
             variables = ['y']
           } else {
-            variables = ['dist']
-            shape.dist = Math.round(Math.sqrt((r1.x-r0.x)**2+(r1.y-r1.y)**2))
+            variables = ['angle']
+            // shape.dist = Math.round(Math.sqrt((r1.x-r0.x)**2+(r1.y-r1.y)**2))
+            let o = (r0.x < r1.x) ? r0 : r1
+            let v = (r0.x < r1.x) ? r1 : r0
+            let v1 = { x: v.x - o.x, y: v.y - o.y }
+            let v2 = { x: o.x + 10, y: o.y }
+
+            let a = v1.x*v2.x + v1.y*v2.y
+            let b = Math.sqrt(v1.x**2 + v1.y**2)
+            let c = Math.sqrt(v2.x**2 + v2.y**2)
+            shape.angle = Math.floor(Math.acos(a / (b*c)) / Math.PI * 180) - 45
+
+            this.secondLine.graphics.setStrokeDash([10, 10])
+            this.secondLine.graphics.setStrokeStyle(10)
+            this.secondLine.graphics.beginStroke('#66d2cd')
+            this.secondLine.graphics.moveTo((o.x+1) * this.app.offsetX, (o.y+1) * this.app.offsetY)
+            this.secondLine.graphics.lineTo((o.x+30) * this.app.offsetX, (o.y+1) * this.app.offsetY)
           }
           break
         case 'rect':

@@ -113,10 +113,12 @@ class App extends Component {
           if (_.isEqual(existing, mapping)) exist = true
         }
         if (!exist) {
-          setInterval(() => {
-            this.shape.x = Math.floor((Date.now()-panel.startTime)/1000)
-            this.shape.init()
-          }, 1000)
+          if (this.shape.demo === 5) {
+            setInterval(() => {
+              this.shape.x = Math.floor((Date.now()-panel.startTime)/1000)
+              this.shape.init()
+            }, 1000)
+          }
 
           mappings.push(mapping)
           this.updateState({ mappings: mappings })
@@ -187,7 +189,7 @@ class App extends Component {
         marker.y = pos.y
       }
 
-      if (dist > 3 && marker.shapeId === 1) {
+      if (marker.shapeId === 1) {
         let shape = this.props.shapes[marker.shapeId]
         shape.propagate(marker)
       }
@@ -301,7 +303,7 @@ class App extends Component {
             shapes={ this.props.shapes }
             mappings={ this.props.mappings }
            />
-          <div style={{ display: 'block' }}>
+          <div style={{ display: 'none' }}>
             <pre style={{ color: 'white', width: '100%', whiteSpace: 'normal' }}>
               { JSON.stringify(this.props.markers.map((marker) => {
                 return { x: marker.x, y: marker.y }
