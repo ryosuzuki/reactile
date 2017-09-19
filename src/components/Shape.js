@@ -18,7 +18,7 @@ class Shape {
     this.variables = []
     this.running = false
 
-    this.demo = 4
+    this.demo = 5
 
     if (this.demo === 1) {
       this.type = 'rect'
@@ -63,9 +63,10 @@ class Shape {
 
     if (this.demo === 5) {
       if (this.id === 0) {
-        this.type = 'point'
+        // this.type = 'point'
+        this.type = 'rect'
         // this.variables = ['angle', 'radius']
-        this.variables = ['x']
+        this.variables = ['angle']
         this.x = 20
         this.y = 10
         this.radius = 7

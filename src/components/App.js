@@ -115,7 +115,8 @@ class App extends Component {
         if (!exist) {
           if (this.shape.demo === 5) {
             setInterval(() => {
-              this.shape.x = Math.floor((Date.now()-panel.startTime)/1000)
+              // this.shape.x = Math.floor((Date.now()-panel.startTime)/1000)
+              this.shape.angle = Math.floor((Date.now()-panel.startTime)/1000)
               this.shape.init()
             }, 1000)
           }
