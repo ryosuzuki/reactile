@@ -31,6 +31,28 @@ class Draw {
   }
 
   start() {
+    if (stroke) {
+      let index = 0
+      const timer = setInterval(() => {
+        let prev = stroke[index]
+        let current = stroke[index+1]
+        this.line.graphics.beginStroke('#0f0')
+        this.line.graphics.setStrokeStyle(3)
+        this.line.graphics.moveTo(prev.x, prev.y)
+        this.line.graphics.lineTo(current.x, current.y)
+        this.app.update = true
+        index++
+        if (index >= stroke.length-1) {
+          clearInterval(timer)
+          this.line.graphics.endStroke()
+          this.stroke = stroke
+          this.beautify()
+        }
+      }, 15)
+      return
+    }
+
+
     if (this.app.state.mode === '') {
       console.log('click')
       shape.x = Math.round(this.app.stage.mouseX / this.app.offsetX)

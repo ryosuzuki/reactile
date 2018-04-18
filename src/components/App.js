@@ -68,9 +68,15 @@ class App extends Component {
 
   checkFinish() {
     this.running = false
-    let shape = this.props.shapes[0]
+    if (this.shape.demo === 8) {
+      this.shape.redo()
+      return
+    }
 
+
+    let shape = this.props.shapes[0]
     if (!shape) return
+
     if (!this.finish) {
       shape.redo()
     }

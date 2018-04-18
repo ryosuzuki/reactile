@@ -23,16 +23,16 @@ class Shape {
     if (this.demo === 8) {
       if (this.id === 0) {
         this.type = 'point'
-        this.x = 15
-        this.y = 30
+        this.x = 25
+        this.y = 35
         this.variables = ['x']
       }
-      if (this.id === 1) {
-        this.type = 'point'
-        this.x = 15
-        this.y = 30
-        this.variables = []
-      }
+      // if (this.id === 1) {
+      //   this.type = 'point'
+      //   this.x = 25
+      //   this.y = 20
+      //   this.variables = []
+      // }
     }
 
 
@@ -139,9 +139,29 @@ class Shape {
 
     this.outline = new Outline(this)
     window.shape = this
+
+    window.hoge = false
   }
 
   propagate(marker) {
+    if (this.demo === 8) {
+      let shape0 = this.app.props.shapes[0]
+      let shape = this.app.props.shapes[1]
+      shape0.x = marker.x
+      shape.dependent = true
+      let diameter
+      if (!window.hoge) {
+        window.delta = shape0.x - (shape.radius * 2)
+        window.hoge = true
+      }
+      diameter = shape0.x - window.delta
+      if (shape.diameter !== diameter) {
+        shape.radius = Math.floor(diameter / 2)
+      }
+
+    }
+
+
     if (this.demo === 4) {
       // _.intersect(this.app.props.shapes, this)
 
