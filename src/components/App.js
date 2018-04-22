@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import actions from '../redux/actions'
 import 'createjs'
 import munkres from 'munkres-js'
+import _ from 'lodash'
 
 import Grid from './Grid'
 import Marker from './Marker'
@@ -34,6 +35,9 @@ class App extends Component {
     this.shapes = []
     this.currentId = -1
 
+    this.finish = false
+
+
     this.state = {
       mode: 'draw',
       width: 1080,
@@ -55,6 +59,7 @@ class App extends Component {
   }
 
   initPositions() {
+    console.log('init position')
     let positions = this.props.markers.map((marker) => {
       return { x: marker.x, y: marker.y }
     })
@@ -65,6 +70,24 @@ class App extends Component {
     if (!this.shape) return
     this.shape.running = false
     this.shape.redo()
+
+    /*
+    >>>>>>> dev
+
+    this.running = false
+    if (this.shape.demo === 8) {
+      this.shape.redo()
+      return
+    }
+
+
+    let shape = this.props.shapes[0]
+    if (!shape) return
+
+    if (!this.finish) {
+      shape.redo()
+    }
+    */
   }
 
   updatePointer(pos) {
@@ -113,10 +136,20 @@ class App extends Component {
           if (_.isEqual(existing, mapping)) exist = true
         }
         if (!exist) {
+<<<<<<< HEAD
           setInterval(() => {
             this.shape.angle = 10 * Math.floor((Date.now()-panel.startTime)/1000)
             this.shape.init()
           }, 1000)
+=======
+          if (this.shape.demo === 5) {
+            setInterval(() => {
+              // this.shape.x = Math.floor((Date.now()-panel.startTime)/1000)
+              this.shape.angle = Math.floor((Date.now()-panel.startTime)/1000)
+              this.shape.init()
+            }, 1000)
+          }
+>>>>>>> dev
 
           mappings.push(mapping)
           this.updateState({ mappings: mappings })
@@ -187,7 +220,7 @@ class App extends Component {
         marker.y = pos.y
       }
 
-      if (dist > 3 && marker.shapeId === 1) {
+      if (marker.shapeId === 1) {
         let shape = this.props.shapes[marker.shapeId]
         shape.propagate(marker)
       }
@@ -234,8 +267,25 @@ class App extends Component {
         this.shapes.push(this.shape)
       }
 
-    }
+      if (this.shape.demo === 8) {
+        this.currentId++
+        this.shape = new Shape()
+        this.shape.init()
+        this.shapes.push(this.shape)
 
+
+        setTimeout(() => {
+          this.initShape()
+        }, 1000)
+      }
+
+    }
+  }
+
+  initShape() {
+    for (let shape of this.props.shapes) {
+      shape.init()
+    }
   }
 
   tick(event) {

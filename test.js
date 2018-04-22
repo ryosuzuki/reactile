@@ -24,13 +24,29 @@ if (portName) {
     }
   })
 
-  let commands = [{
-    from: { x: 70, y: 30 },
-    to: { x: 60, y: 20 }
-  },{
-    from: { x: 60, y: 20 },
-    to: { x: 70, y: 30 }
-  }]
+  let commands
+  // commands = [
+  // {
+  //   from: { x: 70, y: 35 },
+  //   to: { x: 70, y: 5 }
+  // },
+  // {
+  //   from: { x: 70, y: 5 },
+  //   to: { x: 70, y: 35 }
+  // }
+  // ]
+
+  commands = [
+  {
+    from: { x: 78, y: 30 },
+    to: { x: 67, y: 20 }
+  },
+  {
+    from: { x: 67, y: 20 },
+    to: { x: 78, y: 30 }
+  }
+  ]
+
 
   travel(port, commands)
   return false

@@ -45,6 +45,7 @@ void loop() {
     }
     if (type == 1) {
       travelN(root);
+      delay(20);
     }
     if (type == 2) {
       multiple(root);
@@ -66,9 +67,9 @@ void travelP(JsonObject &root) {
     }
   }
   coil.singleTurnOn(to, n);
-  delay(100);
+  delay(10);
   coil.standby();
-  delay(100);  
+  // delay(100);
   Serial.println("done");
 }
 
@@ -90,6 +91,8 @@ void travelN(JsonObject &root) {
   delay(10);
   coil.standby();
   delay(10);
+  // >>>>>>> dev
+  // delay(100);
   Serial.println("done");
 }
 

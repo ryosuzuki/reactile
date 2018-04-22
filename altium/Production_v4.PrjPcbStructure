@@ -1,0 +1,5 @@
+Record=TopLevelDocument|FileName=Top_Layer.SchDoc
+Record=SheetSymbol|SourceDocument=Top_Layer.SchDoc|Designator=U_N_FET|SchDesignator=U_N_FET|FileName=N_FET.SchDoc|SymbolType=Normal|RawFileName=N_FET.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=Top_Layer.SchDoc|Designator=U_N_Shift|SchDesignator=U_N_Shift|FileName=N_Shift.SchDoc|SymbolType=Normal|RawFileName=N_Shift.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=Top_Layer.SchDoc|Designator=U_P_FET|SchDesignator=U_P_FET|FileName=P_FET.SchDoc|SymbolType=Normal|RawFileName=P_FET.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|SourceDocument=Top_Layer.SchDoc|Designator=U_P_Shift|SchDesignator=U_P_Shift|FileName=P_Shift.SchDoc|SymbolType=Normal|RawFileName=P_Shift.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
