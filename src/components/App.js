@@ -136,12 +136,12 @@ class App extends Component {
           if (_.isEqual(existing, mapping)) exist = true
         }
         if (!exist) {
-<<<<<<< HEAD
           setInterval(() => {
             this.shape.angle = 10 * Math.floor((Date.now()-panel.startTime)/1000)
             this.shape.init()
           }, 1000)
-=======
+          /*
+          >>>>>>> dev
           if (this.shape.demo === 5) {
             setInterval(() => {
               // this.shape.x = Math.floor((Date.now()-panel.startTime)/1000)
@@ -149,7 +149,7 @@ class App extends Component {
               this.shape.init()
             }, 1000)
           }
->>>>>>> dev
+          */
 
           mappings.push(mapping)
           this.updateState({ mappings: mappings })

@@ -198,7 +198,6 @@ class Shape {
   }
 
   init() {
-<<<<<<< HEAD
     // let marker = this.app.props.markers[0]
     // if (!marker) return
     // let commands = [{
@@ -215,9 +214,8 @@ class Shape {
 
     // return
 
-=======
     console.log(this.type)
->>>>>>> dev
+
     this.outline.init()
     this.targets = this.outline.targets
     let shapes = this.app.props.shapes
